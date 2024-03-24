@@ -1,11 +1,8 @@
-import './assets/main.css'
-
+// 引入 createApp 用于创建应用
 import { createApp } from 'vue'
-import App from './App.vue'
-import router from './router'
+import Index from './view/index/index.vue';
+import router from './router'; // 导入路由实例
 
-const app = createApp(App)
-
-app.use(router)
-
-app.mount('#app')
+const app = createApp(Index);
+app.use(router); // 使用路由实例
+app.mount('#app');

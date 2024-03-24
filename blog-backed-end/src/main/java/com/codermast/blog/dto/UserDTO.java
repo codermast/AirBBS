@@ -1,3 +1,17 @@
 package com.codermast.blog.dto;
-public class UserDTO {
+
+import lombok.Data;
+
+import java.io.Serializable;
+
+@Data
+public class UserDTO implements Serializable {
+
+    Long uid;
+
+    String username;
+
+    String password;
+
+    String email;
 }
