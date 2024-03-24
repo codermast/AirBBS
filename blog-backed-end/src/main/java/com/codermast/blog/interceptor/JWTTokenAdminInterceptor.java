@@ -60,7 +60,7 @@ public class JWTTokenAdminInterceptor implements HandlerInterceptor {
         Long uid = (Long) header.get("uid");
 
         BaseContext.setCurrentId(uid);
-        log.info("当前员工id：" + uid);
+        log.info("当前用户id：" + uid);
         return true;
     }
 
