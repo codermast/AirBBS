@@ -1,0 +1,11 @@
+# 系统配置信息
+system:
+  name:
+    airblog
+#  数据库配置信息
+database:
+  host: localhost
+  port: 3306
+  dbname: airblog
+  username: codermast
+  password: 123456
