@@ -49,13 +49,14 @@ func UserLoginAuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		err := utils.VerifyJWTToken(jwtToken)
+		claims, err := utils.VerifyJWTToken(jwtToken)
 
 		// 校验失败
 		if err != nil {
 			c.JSON(http.StatusUnauthorized, utils.Error("JWT token is invalid"))
 			c.Abort()
 		} else {
+			c.Set("userID", claims.UserID)
 			c.Next()
 		}
 	}
