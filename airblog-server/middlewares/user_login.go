@@ -2,6 +2,7 @@ package middlewares
 
 import (
 	"codermast.com/airblog/config"
+	"codermast.com/airblog/models"
 	"codermast.com/airblog/utils"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -9,21 +10,21 @@ import (
 )
 
 // 放行的路由列表
-var unauthenticatedRoutes = []string{"login"}
+var unauthenticatedRoutes = []models.Router{
+	{"/users/login", "POST"},
+	{"/article/", "GET"},
+}
 
 // UserLoginAuthMiddleware 用户登录校验
 func UserLoginAuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 
-		requestPath := c.Request.URL.Path
-
-		urlParts := strings.Split(requestPath, "/")
-
-		requestUrl := urlParts[len(urlParts)-1]
+		requestMethod := c.Request.Method
+		requestUrl := c.Request.URL.Path
 
 		// 0. 放行指定路由
 		for _, route := range unauthenticatedRoutes {
-			if requestUrl == route {
+			if requestUrl == route.Url && requestMethod == route.Method {
 				c.Next()
 				return
 			}

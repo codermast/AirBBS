@@ -48,7 +48,7 @@ func GetJwtToken(userID string) (string, error) {
 }
 
 // VerifyJWTToken 校验客户端传递的 JWT
-func VerifyJWTToken(jwtToken string) error {
+func VerifyJWTToken(jwtToken string) (*Claims, error) {
 
 	// 解析 Token
 	token, err := jwt.ParseWithClaims(jwtToken, &Claims{}, func(token *jwt.Token) (interface{}, error) {
@@ -56,20 +56,20 @@ func VerifyJWTToken(jwtToken string) error {
 	})
 
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	// 校验 Token 是否有效
 	if !token.Valid {
-		return errors.New("jwt token invalid")
+		return nil, errors.New("jwt token invalid")
 	}
 
 	// 提取声明（Claims）中的信息
-	_, ok := token.Claims.(*Claims)
+	claims, ok := token.Claims.(*Claims)
 	if !ok {
-		return errors.New("claim Extract Error")
+		return nil, errors.New("claim Extract Error")
 	}
 
 	// 返回校验通过的信息
-	return nil
+	return claims, nil
 }
