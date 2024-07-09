@@ -12,7 +12,11 @@
     "type-check": "vue-tsc --build --force"
   },
   "dependencies": {
+    "@vicons/ionicons5": "^0.12.0",
+    "naive-ui": "^2.38.2",
     "pinia": "^2.1.7",
+    "unplugin-auto-import": "^0.17.6",
+    "unplugin-vue-components": "^0.27.2",
     "vue": "^3.4.29",
     "vue-router": "^4.3.3"
   },
