@@ -9,3 +9,11 @@ database:
   dbname: airblog
   username: codermast
   password: 123456
+# JWT 配置信息
+jwt:
+  signing_key: "jwt_key_golangnotes"
+  header: "Authorization"
+  secret: "jwt_key_golangnotes"
+  issuer: "air_blog"
+  subject : "test"
+  expire_hours: 24

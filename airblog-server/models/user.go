@@ -7,4 +7,5 @@ type User struct {
 	Nickname string `gorm:"size:255" json:"nickname"`
 	Mail     string `gorm:"size:255" json:"mail"`
 	Tel      string `gorm:"size:255" json:"tel"`
+	Admin    bool   `gorm:"default:false" json:"admin"`
 }

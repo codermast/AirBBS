@@ -70,3 +70,12 @@ func DeleteUserByID(userID string) error {
 	}
 	return result.Error
 }
+
+func UserLogin(user *models.User) error {
+	result := DB.Where("username = ? AND password = ?", user.Username, user.Password).First(user)
+	if result.Error != nil || result.RowsAffected == 0 {
+		return errors.New("登录失败")
+	}
+
+	return nil
+}

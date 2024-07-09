@@ -38,3 +38,9 @@ func DeleteUserByID(userID string) error {
 	err := daos.DeleteUserByID(userID)
 	return err
 }
+
+// UserLogin 用户登录
+func UserLogin(user *models.User) error {
+	err := daos.UserLogin(user)
+	return err
+}

@@ -85,3 +85,30 @@ func (uc *UserController) DeleteUser(c *gin.Context) {
 	// 处理根据用户ID获取用户信息的逻辑
 	c.JSON(http.StatusOK, utils.SuccessMsg("删除成功！"))
 }
+
+// UserLogin 用户登录
+func (uc *UserController) UserLogin(c *gin.Context) {
+	var user models.User
+
+	// 用户解析
+	if err := c.BindJSON(&user); err != nil {
+		c.JSON(http.StatusBadRequest, utils.Error("用户数据解析失败！"))
+		return
+	}
+
+	err := services.UserLogin(&user)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, utils.Error(fmt.Sprintf("%v", err)))
+		return
+	}
+
+	tokenString, err := utils.GetJwtToken(user.ID)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, utils.Error("Failed to generate token"))
+		return
+	}
+
+	// 将 Token 返回给客户端
+	c.JSON(http.StatusBadRequest, utils.Success("登录成功", tokenString))
+}
