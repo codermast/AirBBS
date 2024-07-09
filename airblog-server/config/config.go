@@ -32,6 +32,12 @@ func AirBlogSystemConfig() {
 	})
 }
 
+// GetServerConfig 获取系统配置
+func GetServerConfig() *models.Server {
+	AirBlogSystemConfig() // 确保配置加载完成
+	return &config.Server
+}
+
 // GetDatabaseConfig 获取数据库配置信息
 func GetDatabaseConfig() *models.Database {
 	AirBlogSystemConfig() // 确保配置加载完成

@@ -22,7 +22,7 @@ func main() {
 	router.AirBlogRouterConfig(r)
 
 	// 4. 启动运行
-	err := r.Run(":8080")
+	err := r.Run(":" + config.GetServerConfig().Port)
 
 	if err != nil {
 		return
