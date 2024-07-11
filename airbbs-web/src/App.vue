@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import Navbar from "@/components/Navbar.vue";
-import Footer from "@/components/Footer.vue";
+import Navbar from "@/layouts/Navbar.vue";
+import Footer from "@/layouts/Footer.vue";
 
 import { computed } from 'vue';
 
@@ -14,12 +14,12 @@ const themeOverrides = computed(() => ({
 <template>
   <n-config-provider :theme-overrides="themeOverrides">
     <n-message-provider>
-      <n-grid :cols="1" :y-gap="20">
-        <n-gi :span="1">
+      <n-grid :cols="1" :y-gap="20" class="container">
+        <n-gi :span="1" class="header">
           <Navbar></Navbar>
         </n-gi>
-        <n-gi :span="1">
-          <router-view></router-view>
+        <n-gi :span="1" class="main">
+          <router-view ></router-view>
         </n-gi>
         <n-gi :span="1">
           <Footer></Footer>
@@ -30,5 +30,13 @@ const themeOverrides = computed(() => ({
 </template>
 
 <style scoped>
+.container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
 
+.main{
+  flex-grow: 1;
+}
 </style>
