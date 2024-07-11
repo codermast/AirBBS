@@ -12,6 +12,7 @@ import (
 // 放行的路由列表
 var unauthenticatedRoutes = []models.Router{
 	{"/users/login", "POST"},
+	{"/users/", "POST"},
 	{"/articles/", "GET"},
 	{"/articles/**", "GET"},
 }
