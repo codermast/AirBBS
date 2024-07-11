@@ -3,13 +3,15 @@ import { ref } from "vue"
 import { ImageSharp as ImageSharpIcon, Menu as MenuIcon,LockClosed as LockClosedIcon } from '@vicons/ionicons5'
 import Random from '@/icons/Random.vue'
 import Phone from "@/icons/Phone.vue";
+import { useRouter } from "vue-router";
 
+const router = useRouter()
 let menuIconSize = ref(20)
 </script>
 
 <template>
   <n-list hoverable clickable bordered>
-    <n-list-item>
+    <n-list-item @click="router.push({name : 'SettingUserInfo'})">
       <div class="setting-userinfo-item">
         <n-icon :size="menuIconSize" :component="MenuIcon"></n-icon>
         <div class="setting-userinfo-item-title">
@@ -17,7 +19,7 @@ let menuIconSize = ref(20)
         </div>
       </div>
     </n-list-item>
-    <n-list-item>
+    <n-list-item @click="router.push({name : 'SettingUserAvatar'})">
       <div class="setting-userinfo-item">
         <n-icon
             :size="menuIconSize"
@@ -28,19 +30,21 @@ let menuIconSize = ref(20)
         </div>
       </div>
     </n-list-item>
-    <n-list-item>
+    <n-list-item @click=" router.push({name : 'SettingUserSocial'})">
       <div class="setting-userinfo-item">
         <n-icon
             :size="menuIconSize"
             :component="Random"
         ></n-icon>
         <div class="setting-userinfo-item-title">
+
           社交账号
+
         </div>
       </div>
     </n-list-item>
 
-    <n-list-item>
+    <n-list-item @click="router.push({name : 'SettingUserTel'})">
       <div class="setting-userinfo-item">
         <n-icon
             :size="menuIconSize"
@@ -52,7 +56,7 @@ let menuIconSize = ref(20)
       </div>
     </n-list-item>
 
-    <n-list-item>
+    <n-list-item @click="router.push({name : 'SettingUserPassword'})">
       <div class="setting-userinfo-item">
         <n-icon
             :size="menuIconSize"
