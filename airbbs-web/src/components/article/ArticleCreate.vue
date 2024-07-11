@@ -1,14 +1,211 @@
 <script setup lang="ts">
+import { ref } from 'vue'
+import VditorMarkdown from "@/components/markdown/AirMarkdown.vue";
+import Check from "@/icons/Check.vue";
+import { PaperPlane, SaveOutline } from "@vicons/ionicons5";
+import File from "@/icons/File.vue";
+import Title from "@/icons/Title.vue";
 
-import VditorMarkdown from "@/components/markdown/VditorMarkdown.vue";
+let options = ref<IOptions>(
+    {
+      height: '80vh',
+      theme: "classic",
+      mode: "sv",
+      typewriterMode: true,
+      value: "欢迎使用 Ari BBS 管理系统！请发布你的第一篇文章！",
+      toolbar: [
+        "emoji",
+        "headings",
+        "bold",
+        "italic",
+        "strike",
+        "link",
+        "|",
+        "list",
+        "ordered-list",
+        "check",
+        "outdent",
+        "indent",
+        "|",
+        "quote",
+        "line",
+        "code",
+        "inline-code",
+        "insert-before",
+        "insert-after",
+        "|",
+        "upload",
+        "record",
+        "table",
+        "|",
+        "undo",
+        "redo",
+        "|",
+        "fullscreen",
+        "edit-mode",
+        "both",
+        "code-theme",
+        "content-theme",
+        "export",
+        "outline",
+        "preview",
+        "devtools",
+        "info",
+        "help",
+      ],
+      toolbarConfig: {
+        hide: false,
+      },
+      counter: {
+        enable: true,
+      },
+    }
+)
 </script>
 
 <template>
-  <n-card>
-    <VditorMarkdown></VditorMarkdown>
+  <n-card style="width: 80vw;margin: auto">
+    <template #header>
+      <div class="article-post-header">
+        <n-icon :component="Check"></n-icon>
+        <div class="article-post-header-title">文章发布</div>
+      </div>
+    </template>
+    <n-grid :cols="1" y-gap="10px">
+      <n-gi :span="1">
+        <div class="article-title">
+          <n-input placeholder="请输入文章标题">
+            <template #prefix>
+              <n-icon :component="Title"></n-icon>
+            </template>
+          </n-input>
+        </div>
+      </n-gi>
+      <n-gi :span="1">
+        <div class="editor-container">
+          <VditorMarkdown :options></VditorMarkdown>
+        </div>
+      </n-gi>
+
+      <n-gi :span="1" class="article-post-higher-list">
+        <n-collapse default-expanded-names="1" accordion>
+          <n-collapse-item title="高级设置" name="1">
+            <n-form
+                label-placement="left"
+            >
+
+              <n-form-item label="文章标签" path="inputValue">
+
+
+                <n-input placeholder="多个标签以英文逗号隔开">
+
+                </n-input>
+              </n-form-item>
+
+              <n-form-item label="文章分类" path="inputValue">
+
+
+                <n-select placeholder="请选择文章分类"/>
+              </n-form-item>
+
+              <n-form-item label="文章状态" path="inputValue">
+                <n-select placeholder="请选择文章状态">
+
+                </n-select>
+              </n-form-item>
+            </n-form>
+          </n-collapse-item>
+        </n-collapse>
+      </n-gi>
+
+      <n-gi :span="1" class="article-post-action-list">
+        <div class="article-post-action-item">
+          <n-button type="success">
+            <template #icon>
+              <n-icon :component="PaperPlane"></n-icon>
+            </template>
+            发布文章
+          </n-button>
+        </div>
+
+        <div class="article-post-action-item">
+          <n-button type="tertiary">
+            <template #icon>
+              <n-icon :component="SaveOutline"></n-icon>
+            </template>
+            保存草稿
+          </n-button>
+        </div>
+
+        <div class="article-post-markdown-info-wrap">
+          <div class="article-post-markdown-info">
+            <n-icon :component="File"></n-icon>
+            <div class="article-post-markdown-info-title">
+              编辑器使用指南
+            </div>
+          </div>
+        </div>
+      </n-gi>
+      <n-gi :span="1">
+
+      </n-gi>
+      <n-gi :span="1">
+
+      </n-gi>
+    </n-grid>
+
   </n-card>
 </template>
 
 <style scoped>
 
+.article-post-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.article-post-header-title {
+  margin-left: 5px;
+}
+
+.article-post-higher-list {
+  padding: 20px;
+  border-radius: .28571429rem;
+  background-color: #f8f8f9;
+  align-items: center;
+  box-shadow: inset 0 0 0 1px #d3e0e9, 0 0 0 0 transparent;
+}
+
+
+.article-post-action-list {
+  display: flex;
+  height: 70px;
+  border-radius: .28571429rem;
+  background-color: #f8f8f9;
+  align-items: center;
+  box-shadow: inset 0 0 0 1px #d3e0e9, 0 0 0 0 transparent;
+}
+
+
+.article-post-action-item {
+  margin-left: 15px;
+}
+
+.article-post-markdown-info-wrap {
+  margin-left: auto; /* 将最后一个元素推到右侧 */
+  margin-right: 20px;
+}
+
+.article-post-markdown-info {
+  display: flex;
+  align-items: center;
+}
+
+.article-post-markdown-info-title {
+  margin-left: 5px;
+}
+
+.article-title {
+}
 </style>

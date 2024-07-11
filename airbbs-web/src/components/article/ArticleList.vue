@@ -2,7 +2,7 @@
 import { onMounted, ref } from "vue";
 import axios from "@/api/axios";
 
-import PageNum from "@/components/Pagination.vue";
+import PageNum from "@/components/article/Pagination.vue";
 import { useRoute, useRouter } from "vue-router";
 
 const route = useRoute()

@@ -1,42 +1,31 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
-import axios from "@/api/axios"
 import { useRoute } from "vue-router";
-import MarkdownRender from "@/components/MarkdownRender.vue";
+import MarkdownIt from "@/components/markdown/MarkdownIt.vue";
+import { getArticleById } from "@/api/article";
 
 const route = useRoute()
 
-let article = ref("");
+type Article = {
+  title: string
+  content: string
+  author: string
+}
 
-let testMarkdown = ref(
-    "  # 这是一个标题\n" +
-    "\n" +
-    "  这是一些示例内容，用于展示 Markdown 渲染功能。\n" +
-    "\n" +
-    "  - 列表项1\n" +
-    "  - 列表项2\n" +
-    "  - 列表项3\n" +
-    "\n" +
-    "  **加粗文本**\n" +
-    "\n" +
-    "  [链接](https://example.com)\n" +
-    "  `;\n" +
-    "});")
+let article = ref<Article>({title: "", content: "", author: ""});
 
-onMounted(() => {
+onMounted(async () => {
   let articleID = route.params.articleID
   console.log("articleID", articleID)
+  console.log(typeof articleID)
 
-  axios.get("/articles/" + articleID).then((res) => {
-    console.log(res)
-    if (res.status == 200) {
-        article.value = res.data.data;
-        console.log("article: ", article)
-    }
-  })
+  let articleRet = await getArticleById(articleID as string)
+
+  if (articleRet.status == 200) {
+    article.value = articleRet.data.data;
+    console.log("article: ", article)
+  }
 })
-
-
 </script>
 
 
@@ -48,6 +37,7 @@ onMounted(() => {
     }"
   >
     <template #header>
+
       {{ article.title }}
       <n-breadcrumb class="bread-crumbs-nav">
 
@@ -66,12 +56,7 @@ onMounted(() => {
       作者：友人
     </template>
 
-
-    <MarkdownRender
-        :content="testMarkdown"
-    ></MarkdownRender>
-
-<!--    {{ article.content }}-->
+    <MarkdownIt :content="article.content"/>
 
     <template #footer>
       <blockquote style="font-size: 0.9em;">
