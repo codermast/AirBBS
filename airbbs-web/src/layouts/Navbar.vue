@@ -1,18 +1,27 @@
 <script setup lang="ts">
 import {
+  Balloon as BalloonIcon,
+  Chatbox as ChatBoxIcon,
+  CodeSlash as CodeSlashIcon,
+  HelpCircle as HelpCircleIcon,
+  Home as HomeIcon,
+  LogInOutline,
   LogOutOutline as LogoutIcon,
-  Pencil as EditIcon,
-  PersonCircleOutline as UserIcon,
-  Search
+  Notifications as NotificationsIcon,
+  Search,
 } from '@vicons/ionicons5'
 import MarkPen from "@/icons/Edit.vue";
 import type { Component } from 'vue'
 import { h, ref } from "vue"
 import { NIcon, useMessage } from "naive-ui"
 import { useRouter } from "vue-router";
+import UserPlus from "@/icons/UserPlus.vue";
+import Home from "@/icons/Home.vue";
 
 const router = useRouter()
 const message = useMessage()
+
+let isLogin = ref(false)
 
 let notifyColor = ref("#c03f53")
 
@@ -30,27 +39,25 @@ function notifyOver() {
   notifyColor.value = "green"
 }
 
-function notifyLeavef() {
+function notifyLeave() {
   notifyColor.value = "#c03f53"
 }
 
 let userOptions = ref([
   {
-    label: '滨海湾金沙，新加坡',
-    key: 'marina bay sands',
-    disabled: true
+    label: '个人主页',
+    key: "home",
+    icon: renderIcon(HomeIcon)
   },
   {
-    label: '布朗酒店，伦敦',
-    key: "brown's hotel, london"
+    label: '通知中心',
+    key: 'notification',
+    icon: renderIcon(NotificationsIcon)
   },
   {
-    label: '亚特兰蒂斯巴哈马，拿骚',
-    key: 'atlantis nahamas, nassau'
-  },
-  {
-    label: '比佛利山庄酒店，洛杉矶',
-    key: 'the beverly hills hotel, los angeles'
+    label: '退出登录',
+    key: 'logout',
+    icon: renderIcon(LogoutIcon)
   }
 ])
 
@@ -58,18 +65,24 @@ let editOptions = ref([
   {
     label: '新建文章',
     key: 'profile',
-    icon: renderIcon(UserIcon)
+    icon: renderIcon(CodeSlashIcon)
   },
   {
     label: '发起讨论',
     key: 'editProfile',
-    icon: renderIcon(EditIcon)
+    icon: renderIcon(ChatBoxIcon)
   },
   {
-    label: '退出登录',
-    key: 'logout',
-    icon: renderIcon(LogoutIcon)
+    label: '提个问题',
+    key: 'deleteProfile',
+    icon: renderIcon(HelpCircleIcon)
+  },
+  {
+    label: '分享动态',
+    key: 'status',
+    icon: renderIcon(BalloonIcon)
   }
+
 ])
 
 function renderIcon(icon: Component) {
@@ -85,9 +98,17 @@ function handleSelect(key: string | number) {
 }
 
 function logoClick() {
-  router.push({ name : "Index"})
+  router.push({name: "Index"})
 }
 
+
+function goUserRegister() {
+  router.push({name: "Register"})
+}
+
+function goUserLogin() {
+  router.push({name: "Login"})
+}
 </script>
 
 <template>
@@ -96,28 +117,93 @@ function logoClick() {
       <n-gi :span="1">
       </n-gi>
       <n-gi :span="1" class="navbar-brand">
-          <n-image
-              @click="logoClick"
-              style="cursor: pointer;"
-              preview-disabled
-              src="https://cdn.learnku.com//uploads/communities/sNljssWWQoW6J88O9G37.png!/both/44x44"
-          ></n-image>
+        <n-image
+            @click="logoClick"
+            style="cursor: pointer;"
+            preview-disabled
+            src="https://cdn.learnku.com//uploads/communities/sNljssWWQoW6J88O9G37.png!/both/44x44"
+        ></n-image>
       </n-gi>
       <n-gi :span="2" class="navbar-items">
-        <div class="navbar-item"><router-link :to="{ name : 'Index' }">首页</router-link></div>
-        <div class="navbar-item">About</div>
-        <div class="navbar-item">Contact</div>
+        <router-link :to="{ name : 'Index' }">
+          <div class="navbar-item">
+            <n-button
+                :bordered="false"
+            >
+              <template #icon>
+                <n-icon :component="Home"></n-icon>
+              </template>
+              首页
+            </n-button>
+          </div>
+        </router-link>
+
+        <router-link :to="{ name : 'Index' }">
+          <div class="navbar-item">
+            论坛
+          </div>
+        </router-link>
+
+        <router-link :to="{ name : 'Index' }">
+          <div class="navbar-item">
+            动态
+          </div>
+        </router-link>
+        <router-link :to="{ name : 'Index' }">
+          <div class="navbar-item">
+            关于
+          </div>
+        </router-link>
+
       </n-gi>
       <n-gi :span="1" class="navbar-search">
-        <n-input round placeholder="搜索">
+        <n-input round placeholder="全站搜索">
           <template #suffix>
             <n-icon :component="Search"/>
           </template>
         </n-input>
       </n-gi>
 
-      <n-gi :span="1" class="navbar-user">
-        <n-dropdown trigger="hover" :options="editOptions">
+      <!-- 未登录展示 -->
+      <n-gi
+          v-show="!isLogin"
+          :span="1"
+          class="navbar-user"
+      >
+
+
+          <n-button
+              :bordered="false"
+              @click="goUserRegister"
+          >
+            <template #icon>
+              <n-icon :component="UserPlus"></n-icon>
+            </template>
+            注册
+          </n-button>
+
+        <n-button
+            :bordered="false"
+            @click="goUserLogin"
+        >
+          <template #icon>
+            <n-icon :component="LogInOutline"></n-icon>
+          </template>
+          登录
+        </n-button>
+      </n-gi>
+
+      <!--  登录展示  -->
+      <n-gi
+          v-show="isLogin"
+          :span="1"
+          class="navbar-user"
+      >
+        <n-dropdown
+            trigger="hover"
+            :options="editOptions"
+            :show-arrow="true"
+        >
           <div class="navbar-edit">
             <n-icon size="30px" color="#848484">
               <mark-pen/>
@@ -125,13 +211,19 @@ function logoClick() {
           </div>
         </n-dropdown>
 
-        <n-dropdown trigger="hover" :options="userOptions" @select="handleSelect">
+        <n-dropdown
+            trigger="hover"
+            :options="userOptions"
+            @select="handleSelect"
+            :show-arrow="true"
+        >
           <div class="navbar-user-info" @click="userClick">
             <n-badge @mouseover.stop="notifyOver"
-                     @mouseout.stop="notifyLeavef"
+                     @mouseout.stop="notifyLeave"
                      :color="notifyColor"
                      :max="10"
-                     :value="20" @click.stop="notifyClick">
+                     :value="20"
+                     @click.stop="notifyClick">
               <n-avatar
                   @mouseover.stop=""
                   @mouseout.stop=""
@@ -178,16 +270,23 @@ function logoClick() {
   display: flex;
 }
 
+.navbar-items a {
+  text-decoration: none;
+}
+
 .navbar-item {
   display: flex;
   justify-content: center; /* 在主轴上水平居中 */
   align-items: center;
   height: 60px;
   padding: 0 10px;
+  color: #777777;
 }
 
 .navbar-item:hover {
   background-color: #f7f7f7;
+  color: #0d0d0d;
+
 }
 
 .navbar-search {
@@ -200,6 +299,7 @@ function logoClick() {
 .navbar-user {
   display: flex;
   align-items: center;
+  margin-left: 30px;
 }
 
 .navbar-edit {
@@ -240,7 +340,5 @@ function logoClick() {
   align-items: center;
 }
 
-.navbar-notify:hover {
-  background-color: #848484;
-}
+
 </style>

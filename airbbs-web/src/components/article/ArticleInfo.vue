@@ -2,16 +2,30 @@
 import { onMounted, ref } from "vue";
 import axios from "@/api/axios"
 import { useRoute } from "vue-router";
+import MarkdownRender from "@/components/MarkdownRender.vue";
 
 const route = useRoute()
 
 let article = ref("");
 
+let testMarkdown = ref(
+    "  # 这是一个标题\n" +
+    "\n" +
+    "  这是一些示例内容，用于展示 Markdown 渲染功能。\n" +
+    "\n" +
+    "  - 列表项1\n" +
+    "  - 列表项2\n" +
+    "  - 列表项3\n" +
+    "\n" +
+    "  **加粗文本**\n" +
+    "\n" +
+    "  [链接](https://example.com)\n" +
+    "  `;\n" +
+    "});")
+
 onMounted(() => {
   let articleID = route.params.articleID
   console.log("articleID", articleID)
-
-
 
   axios.get("/articles/" + articleID).then((res) => {
     console.log(res)
@@ -21,6 +35,8 @@ onMounted(() => {
     }
   })
 })
+
+
 </script>
 
 
@@ -50,7 +66,12 @@ onMounted(() => {
       作者：友人
     </template>
 
-    {{ article.content }}
+
+    <MarkdownRender
+        :content="testMarkdown"
+    ></MarkdownRender>
+
+<!--    {{ article.content }}-->
 
     <template #footer>
       <blockquote style="font-size: 0.9em;">
