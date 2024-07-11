@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import Sidebar from "@/components/Sidebar.vue";
+import Sidebar from "@/layouts/sidebar/ArticleSidebar.vue";
 </script>
 
 <template>

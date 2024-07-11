@@ -68,8 +68,8 @@ import Golang from "@/icons/Golang.vue";
                 </div>
               </template>
 
-              <n-image-group class="card-image-list">
-                <n-space>
+              <n-image-group >
+                <n-space class="card-image-list">
                   <a href="#">
 
                     <n-image
@@ -140,7 +140,7 @@ import Golang from "@/icons/Golang.vue";
 <style scoped>
 .footer {
   color: #ffffff;
-  padding: 10px 0;
+  padding: 10px;
   background-color: #1b1c1d;
 }
 

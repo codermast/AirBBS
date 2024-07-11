@@ -16,12 +16,12 @@ import { h, ref } from "vue"
 import { NIcon, useMessage } from "naive-ui"
 import { useRouter } from "vue-router";
 import UserPlus from "@/icons/UserPlus.vue";
-import Home from "@/icons/Home.vue";
+import About from "@/icons/AboutOutline.vue";
 
 const router = useRouter()
 const message = useMessage()
 
-let isLogin = ref(false)
+let isLogin = ref(true)
 
 let notifyColor = ref("#c03f53")
 
@@ -97,18 +97,7 @@ function handleSelect(key: string | number) {
   message.info(String(key))
 }
 
-function logoClick() {
-  router.push({name: "Index"})
-}
 
-
-function goUserRegister() {
-  router.push({name: "Register"})
-}
-
-function goUserLogin() {
-  router.push({name: "Login"})
-}
 </script>
 
 <template>
@@ -118,42 +107,42 @@ function goUserLogin() {
       </n-gi>
       <n-gi :span="1" class="navbar-brand">
         <n-image
-            @click="logoClick"
+            @click="router.push({name: 'Index'})"
             style="cursor: pointer;"
             preview-disabled
             src="https://cdn.learnku.com//uploads/communities/sNljssWWQoW6J88O9G37.png!/both/44x44"
         ></n-image>
       </n-gi>
       <n-gi :span="2" class="navbar-items">
-        <router-link :to="{ name : 'Index' }">
-          <div class="navbar-item">
-            <n-button
-                :bordered="false"
-            >
-              <template #icon>
-                <n-icon :component="Home"></n-icon>
-              </template>
-              首页
-            </n-button>
+        <div class="navbar-item" @click="router.push({name : 'Index'})">
+          <n-icon :component="HomeIcon" size="18px"></n-icon>
+          <div class="navbar-item-title">
+            首页
           </div>
-        </router-link>
+        </div>
 
-        <router-link :to="{ name : 'Index' }">
-          <div class="navbar-item">
+        <div class="navbar-item" @click="router.push({name : 'Index'})">
+
+          <n-icon :component="ChatBoxIcon" size="18px"></n-icon>
+          <div class="navbar-item-title">
             论坛
           </div>
-        </router-link>
+        </div>
 
-        <router-link :to="{ name : 'Index' }">
-          <div class="navbar-item">
+        <div class="navbar-item" @click="router.push({name : 'Index'})">
+
+          <n-icon :component="BalloonIcon" size="18px"></n-icon>
+          <div class="navbar-item-title">
             动态
           </div>
-        </router-link>
-        <router-link :to="{ name : 'Index' }">
-          <div class="navbar-item">
+        </div>
+        <div class="navbar-item" @click="router.push({name : 'Index'})">
+
+          <n-icon :component="About" size="18px"></n-icon>
+          <div class="navbar-item-title">
             关于
           </div>
-        </router-link>
+        </div>
 
       </n-gi>
       <n-gi :span="1" class="navbar-search">
@@ -171,20 +160,19 @@ function goUserLogin() {
           class="navbar-user"
       >
 
-
-          <n-button
-              :bordered="false"
-              @click="goUserRegister"
-          >
-            <template #icon>
-              <n-icon :component="UserPlus"></n-icon>
-            </template>
-            注册
-          </n-button>
+        <n-button
+            :bordered="false"
+            @click="router.push({name: 'Register'})"
+        >
+          <template #icon>
+            <n-icon :component="UserPlus"></n-icon>
+          </template>
+          注册
+        </n-button>
 
         <n-button
             :bordered="false"
-            @click="goUserLogin"
+            @click="router.push({name: 'Login'})"
         >
           <template #icon>
             <n-icon :component="LogInOutline"></n-icon>
@@ -281,6 +269,8 @@ function goUserLogin() {
   height: 60px;
   padding: 0 10px;
   color: #777777;
+  cursor: pointer;
+
 }
 
 .navbar-item:hover {
@@ -340,5 +330,7 @@ function goUserLogin() {
   align-items: center;
 }
 
-
+.navbar-item-title {
+  margin-left: 5px;
+}
 </style>
