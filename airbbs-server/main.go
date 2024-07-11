@@ -22,13 +22,6 @@ func main() {
 	//// 使用默认配置的 CORS 中间件，允许所有来源
 	r.Use(cors.Default())
 
-	// 或者自定义 CORS 中间件配置
-	//r.Use(cors.New(cors.Config{
-	//	AllowOrigins: []string{"http://localhost:5173"},
-	//	AllowMethods: []string{"GET", "POST", "PUT", "DELETE"},
-	//	AllowHeaders: []string{"Content-Type", "Authorization"},
-	//}))
-
 	//3. 加载路由配置器
 	router.AirBlogRouterConfig(r)
 
