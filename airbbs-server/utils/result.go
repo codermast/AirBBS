@@ -21,7 +21,7 @@ func Success(msg string, data interface{}) models.Result {
 
 func Error(msg string) models.Result {
 	result := models.Result{
-		Code:    401,
+		Code:    400,
 		Message: msg,
 		Data:    nil,
 	}

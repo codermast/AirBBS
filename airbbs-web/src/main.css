@@ -2,3 +2,13 @@
     padding: 0;
     margin: 0;
 }
+
+.router-link{
+    text-decoration: none;
+    color: #646b6f;
+}
+
+.router-link:hover{
+    text-decoration: underline;
+    color: #3498db;
+}

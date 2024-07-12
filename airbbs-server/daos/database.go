@@ -10,7 +10,7 @@ import (
 
 var DB *gorm.DB
 
-func InitDatabase() {
+func DatabaseInit() {
 	var database = config.GetDatabaseConfig()
 
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local", database.Username, database.Password, database.Host, database.Port, database.DBName)

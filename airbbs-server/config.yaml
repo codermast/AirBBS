@@ -17,3 +17,9 @@ jwt:
   issuer: "air_blog"
   subject : "test"
   expire_hours: 24
+# Redis 配置信息
+redis:
+  host: localhost
+  port: 6379
+  db: 0
+  password:

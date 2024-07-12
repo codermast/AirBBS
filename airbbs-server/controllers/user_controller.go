@@ -6,6 +6,7 @@ import (
 	"codermast.com/airbbs/utils"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"log"
 	"net/http"
 )
 
@@ -37,20 +38,69 @@ func (uc *UserController) GetUserByID(c *gin.Context) {
 func (uc *UserController) CreateUser(c *gin.Context) {
 	var user models.User
 
+	var userRegisterDto models.UserRegisterDto
+
 	// 用户解析
-	if err := c.BindJSON(&user); err != nil {
+	if err := c.BindJSON(&userRegisterDto); err != nil {
 		c.JSON(http.StatusBadRequest, utils.Error(fmt.Sprintf("%v", err)))
 		return
 	}
 
-	// 保存用户信息
-	err := services.CreateUser(&user)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, utils.Error(fmt.Sprintf("%v", err)))
+	// 获取验证码
+	code := userRegisterDto.Code
+
+	if code == "" {
+		c.JSON(http.StatusBadRequest, utils.Error(fmt.Sprintf("验证码为空！")))
 		return
 	}
+
+	user.Username = userRegisterDto.Username
+	user.Password = userRegisterDto.Password
+	user.Mail = userRegisterDto.Mail
+	user.Tel = userRegisterDto.Tel
+	user.Nickname = userRegisterDto.Nickname
+	user.Admin = false
+
+	// 账号或密码为空
+	if (user.Username == "") || (user.Password == "") {
+		c.JSON(http.StatusBadRequest, utils.Error(fmt.Sprintf("username or password is empty")))
+		return
+	}
+
+	// 校验验证码
+	redisCode, err := utils.Get(user.Mail)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, utils.Error(fmt.Sprintf("请先获取验证码")))
+		return
+	}
+
+	if redisCode != code {
+		c.JSON(http.StatusBadRequest, utils.Error(fmt.Sprintf("验证码错误！")))
+		return
+	}
+
+	// 保存用户信息
+	err = services.CreateUser(&user)
+	if err != nil {
+		c.JSON(http.StatusConflict, utils.Error(fmt.Sprintf("%v", err)))
+		return
+	}
+
+	// 此时验证码正确且用户注册成功，则通过校验，删除 Redis 中验证码，减少资源占用
+	err = utils.Del(userRegisterDto.Mail)
+	if err != nil {
+		log.Println("验证码删除失败")
+	}
+
+	var userVO models.UserVO
+	userVO.ID = user.ID
+	userVO.Username = user.Username
+	userVO.Nickname = user.Nickname
+	userVO.Mail = user.Mail
+	userVO.Tel = user.Tel
+
 	// 处理根据用户ID获取用户信息的逻辑
-	c.JSON(http.StatusOK, utils.Success("注册成功！", user))
+	c.JSON(http.StatusOK, utils.Success("注册成功！", userVO))
 }
 
 // UpdateUser 更新指定 userID 的用户信息 PUT /users

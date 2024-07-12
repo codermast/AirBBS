@@ -49,3 +49,9 @@ func GetJWTConfig() *models.JWT {
 	AirBbsSystemConfig() // 确保配置加载完成
 	return &config.JWT
 }
+
+// GetRedisConfig 获取 Redis 配置信息
+func GetRedisConfig() *models.Redis {
+	AirBbsSystemConfig()
+	return &config.Redis
+}

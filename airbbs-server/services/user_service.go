@@ -3,7 +3,9 @@ package services
 import (
 	"codermast.com/airbbs/daos"
 	"codermast.com/airbbs/models"
+	"codermast.com/airbbs/utils"
 	"errors"
+	"golang.org/x/crypto/bcrypt"
 )
 
 // GetAllUsers 查询所有用户
@@ -19,8 +21,22 @@ func GetUserByID(userID string) interface{} {
 
 // CreateUser 创建用户
 func CreateUser(user *models.User) error {
+
+	// 加密密码
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+	if err != nil {
+		return errors.New("Error while hashing password")
+	}
+
+	// 随机昵称
+	randomNickname := utils.RandomNickname(10)
+	user.Nickname = randomNickname
+
+	// 密码加密后存入数据库
+	user.Password = string(hashedPassword)
+
 	// 1. 判断用户名是否重复
-	_, err := daos.GetUserByUserName(user.Username)
+	_, err = daos.GetUserByUserName(user.Username)
 	if err == nil {
 		// 此时用户名已经存在
 		return errors.New("用户名已经存在！")
