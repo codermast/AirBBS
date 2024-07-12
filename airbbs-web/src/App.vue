@@ -13,19 +13,21 @@ const themeOverrides = computed(() => ({
 
 <template>
   <n-config-provider :theme-overrides="themeOverrides">
-    <n-message-provider>
-      <n-grid :cols="1" :y-gap="20" class="container">
-        <n-gi :span="1" class="header">
-          <Navbar></Navbar>
-        </n-gi>
-        <n-gi :span="1" class="main">
-          <router-view ></router-view>
-        </n-gi>
-        <n-gi :span="1">
-          <Footer></Footer>
-        </n-gi>
-      </n-grid>
-    </n-message-provider>
+    <n-loading-bar-provider>
+      <n-message-provider>
+        <n-grid :cols="1" :y-gap="20" class="container">
+          <n-gi :span="1" class="header">
+            <Navbar></Navbar>
+          </n-gi>
+          <n-gi :span="1" class="main">
+            <router-view></router-view>
+          </n-gi>
+          <n-gi :span="1">
+            <Footer></Footer>
+          </n-gi>
+        </n-grid>
+      </n-message-provider>
+    </n-loading-bar-provider>
   </n-config-provider>
 </template>
 
@@ -36,7 +38,7 @@ const themeOverrides = computed(() => ({
   min-height: 100vh;
 }
 
-.main{
+.main {
   flex-grow: 1;
 }
 </style>

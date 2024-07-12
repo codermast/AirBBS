@@ -2,6 +2,7 @@ package daos
 
 import (
 	"codermast.com/airbbs/models"
+	"codermast.com/airbbs/utils"
 	"errors"
 )
 
@@ -72,9 +73,16 @@ func DeleteUserByID(userID string) error {
 }
 
 func UserLogin(user *models.User) error {
-	result := DB.Where("username = ? AND password = ?", user.Username, user.Password).First(user)
+
+	var dbUser models.User
+	result := DB.Where("username = ?", user.Username).First(&dbUser)
+
 	if result.Error != nil || result.RowsAffected == 0 {
-		return errors.New("登录失败")
+		return errors.New("用户名不存在！")
+	}
+
+	if !utils.ComparePassword(dbUser.Password, user.Password) {
+		return errors.New("用户名与密码不匹配！")
 	}
 
 	return nil

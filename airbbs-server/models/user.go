@@ -37,3 +37,8 @@ type UserRegisterDto struct {
 	Admin           bool   `json:"admin"`
 	Code            string `json:"code"`
 }
+
+type UserLoginDto struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+}

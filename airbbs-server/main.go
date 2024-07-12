@@ -7,6 +7,7 @@ import (
 	"codermast.com/airbbs/utils"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"time"
 )
 
 func main() {
@@ -26,8 +27,16 @@ func main() {
 	// 打印每个请求的日志
 	r.Use(gin.Logger())
 
-	// 使用默认配置的 CORS 中间件，允许所有来源
-	r.Use(cors.Default())
+	// 配置 CORS 中间件
+	corsConfig := cors.Config{
+		AllowOrigins:     []string{"*"},
+		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"},
+		AllowHeaders:     []string{"Origin", "Content-Length", "Content-Type", "Authorization"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+		MaxAge:           12 * time.Hour,
+	}
+	r.Use(cors.New(corsConfig))
 
 	//3. 加载路由配置器
 	router.AirBlogRouterConfig(r)

@@ -3,8 +3,50 @@ import User from "@/pages/User.vue";
 import { Glasses, GlassesOutline, LockClosedOutline, LogoGithub, LogoWechat } from '@vicons/ionicons5'
 import LogoQQ from '@/icons/LogoQQ.vue'
 import ArrowRight from "@/icons/ArrowRight.vue";
+import { loginUser } from "@/api/user";
+import { ref } from 'vue'
+import type { UserLoginInfo } from "@/models/user";
+import { useRouter } from "vue-router";
+import { useMessage,useLoadingBar } from "naive-ui"
+import { HeaderAuthTokenName } from "@/config";
 
+const router = useRouter();
+const message = useMessage();
+const loadingBar = useLoadingBar()
 
+let user = ref<UserLoginInfo>({
+  username: '',
+  password: ''
+})
+
+let rules = ref({
+  username: {
+    required: true,
+    message: '请输入用户名',
+    trigger: ['input', 'blur']
+  },
+  password: {
+    required: true,
+    message: '请输入密码',
+    trigger: ['input', 'blur']
+  },
+})
+
+async function login() {
+  loadingBar.start()
+  let response = await loginUser(user.value)
+  console.log(response)
+  if (response.status == 200) {
+    // 登录成功
+    message.success("登录成功！")
+    localStorage.setItem(HeaderAuthTokenName,response.data.data)
+    router.push({name: "Index"})
+    loadingBar.finish()
+  }else{
+    message.error(response.data.message)
+    loadingBar.error()
+  }
+}
 
 </script>
 
@@ -24,13 +66,17 @@ import ArrowRight from "@/icons/ArrowRight.vue";
     </template>
 
     <n-form
+        :rules="rules"
+        :model="user"
         label-placement="left"
         class="login-form"
     >
       <n-grid :cols="1">
         <n-gi :span="1">
-          <n-form-item>
-            <n-input placeholder="邮箱/用户名/手机号">
+          <n-form-item path="username">
+            <n-input
+                v-model:value="user.username"
+                placeholder="邮箱/用户名/手机号">
               <template #prefix>
                 <n-icon :component="User"/>
               </template>
@@ -39,8 +85,9 @@ import ArrowRight from "@/icons/ArrowRight.vue";
         </n-gi>
 
         <n-gi :span="1">
-          <n-form-item>
+          <n-form-item path="password">
             <n-input
+                v-model:value="user.password"
                 type="password"
                 placeholder="密码"
                 show-password-on="click"
@@ -63,6 +110,7 @@ import ArrowRight from "@/icons/ArrowRight.vue";
           <n-grid cols="3">
             <n-gi :span="1">
               <n-button
+                  @click="login"
                   type="success"
                   icon-placement="right"
               >
@@ -105,14 +153,14 @@ import ArrowRight from "@/icons/ArrowRight.vue";
             </n-gi>
 
             <n-gi :span="1">
-                <n-button class="login-third-button">
-                  <template #icon>
-                    <n-icon :component="LogoQQ">
+              <n-button class="login-third-button">
+                <template #icon>
+                  <n-icon :component="LogoQQ">
 
-                    </n-icon>
-                  </template>
-                  QQ登录
-                </n-button>
+                  </n-icon>
+                </template>
+                QQ登录
+              </n-button>
             </n-gi>
 
             <n-gi :span="1">

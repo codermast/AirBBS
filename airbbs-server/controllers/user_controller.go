@@ -136,15 +136,25 @@ func (uc *UserController) DeleteUser(c *gin.Context) {
 	c.JSON(http.StatusOK, utils.SuccessMsg("删除成功！"))
 }
 
-// UserLogin 用户登录
+// UserLogin 用户登录 POST /users/login
 func (uc *UserController) UserLogin(c *gin.Context) {
-	var user models.User
+	var userLoginDto models.UserLoginDto
 
 	// 用户解析
-	if err := c.BindJSON(&user); err != nil {
+	if err := c.BindJSON(&userLoginDto); err != nil {
 		c.JSON(http.StatusBadRequest, utils.Error("用户数据解析失败！"))
 		return
 	}
+
+	if userLoginDto.Username == "" || userLoginDto.Password == "" {
+		c.JSON(http.StatusBadRequest, utils.Error("用户名或账号密码为空！"))
+		return
+	}
+
+	var user models.User
+
+	user.Username = userLoginDto.Username
+	user.Password = userLoginDto.Password
 
 	err := services.UserLogin(&user)
 	if err != nil {
@@ -152,6 +162,7 @@ func (uc *UserController) UserLogin(c *gin.Context) {
 		return
 	}
 
+	// 登录成功则设置 JWT token
 	tokenString, err := utils.GetJwtToken(user.ID)
 
 	if err != nil {
@@ -160,5 +171,5 @@ func (uc *UserController) UserLogin(c *gin.Context) {
 	}
 
 	// 将 Token 返回给客户端
-	c.JSON(http.StatusBadRequest, utils.Success("登录成功", tokenString))
+	c.JSON(http.StatusOK, utils.Success("登录成功", tokenString))
 }

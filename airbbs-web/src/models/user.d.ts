@@ -1,4 +1,4 @@
-export type UserInfo = {
+export type UserRegisterInfo = {
 	id: string
 	username: string
 	password: string
@@ -7,4 +7,9 @@ export type UserInfo = {
 	mail: string
 	tel: string
 	code: string
+}
+
+export type UserLoginInfo = {
+	username : string
+	password : string
 }
