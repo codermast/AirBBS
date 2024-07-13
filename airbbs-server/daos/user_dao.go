@@ -14,15 +14,29 @@ func GetAllUsers() []models.User {
 }
 
 // GetUserByID 根据 ID 查询指定用户信息
-func GetUserByID(userID string) interface{} {
+func GetUserByID(userID string) (models.UserVO, error) {
 	var user models.User
 	// 根据 ID 查询用户
 	result := DB.First(&user, userID)
 
 	if result != nil && result.RowsAffected == 0 {
-		return nil
+		return models.UserVO{}, errors.New("用户不存在！")
 	}
-	return user
+
+	// 拼接 UserVo
+	var userVo models.UserVO
+
+	userVo.ID = user.ID
+	userVo.Username = user.Username
+	userVo.Nickname = user.Nickname
+	userVo.Mail = user.Mail
+	userVo.Github = user.Github
+	userVo.Tel = user.Tel
+	userVo.Admin = user.Admin
+	userVo.Introduce = user.Introduce
+	userVo.Sex = user.Sex
+
+	return userVo, nil
 }
 
 // CreateUser 保存用户
@@ -47,10 +61,10 @@ func GetUserByUserName(username string) (models.User, error) {
 
 // UpdateUser 更新用户
 func UpdateUser(user *models.User) error {
-	userRet := GetUserByID(user.ID)
+	_, err := GetUserByID(user.ID)
 
 	// 用户不存在
-	if userRet == nil {
+	if err != nil {
 		return errors.New("用户不存在")
 	}
 	// 更新操作

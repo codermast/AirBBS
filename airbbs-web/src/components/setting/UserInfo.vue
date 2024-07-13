@@ -1,17 +1,49 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import Edit from "@/icons/Edit.vue";
+import { getUserById } from "@/api/user"
+
+import { useStatusStore } from "@/stores/statusStore";
+import { useMessage } from "naive-ui";
+
+const statusStore = useStatusStore();
+const message = useMessage()
+
+let userInfo = ref({
+  id: "",
+  admin: false,
+  github: "",
+  introduce: "",
+  mail: "",
+  nickname: "",
+  sex: false,
+  tel: "",
+  username: ""
+})
 
 let sexOptions = ref([
   {
     label: '男',
-    value: 'men'
+    value: true
   },
   {
     label: '女',
-    value: 'women'
+    value: false
   }
 ])
+
+onMounted(async () => {
+  // 获取用户信息
+  let response = await getUserById(statusStore.userLoginId)
+
+  if (response.status == 200) {
+    message.success("查询成功！")
+    console.log(response)
+    userInfo.value = response.data.data
+  } else {
+    message.error("查询失败！")
+  }
+})
 </script>
 
 <template>
@@ -26,6 +58,7 @@ let sexOptions = ref([
     </template>
 
     <n-form
+        :model="userInfo"
         label-placement="left"
         class="edit-userinfo-form"
     >
@@ -38,7 +71,10 @@ let sexOptions = ref([
                   label="用户名"
                   path="inputValue"
               >
-                <n-input placeholder="username"/>
+                <n-input
+                    v-model:value="userInfo.username"
+                    placeholder="username"
+                />
               </n-form-item>
             </n-gi>
 
@@ -55,7 +91,9 @@ let sexOptions = ref([
                   label="昵称"
                   path="inputValue"
               >
-                <n-input placeholder="nickname"/>
+                <n-input
+                    v-model:value="userInfo.nickname"
+                    placeholder="nickname"/>
               </n-form-item>
             </n-gi>
 
@@ -72,7 +110,9 @@ let sexOptions = ref([
                   label="性别"
                   path="inputValue"
               >
-                <n-select :options="sexOptions"/>
+                <n-select
+                    v-model:value="userInfo.sex"
+                    :options="sexOptions"/>
               </n-form-item>
             </n-gi>
 
@@ -89,7 +129,9 @@ let sexOptions = ref([
                   label="Github"
                   path="inputValue"
               >
-                <n-input placeholder="Github Username"/>
+                <n-input
+                    v-model:value="userInfo.github"
+                    placeholder="Github Username"/>
               </n-form-item>
             </n-gi>
 
@@ -107,7 +149,9 @@ let sexOptions = ref([
                   label="邮箱"
                   path="inputValue"
               >
-                <n-input placeholder="Email"/>
+                <n-input
+                    v-model.value="userInfo.mail"
+                    placeholder="Email"/>
               </n-form-item>
             </n-gi>
 
@@ -125,6 +169,7 @@ let sexOptions = ref([
                   path="inputValue"
               >
                 <n-input
+                    v-model:value="userInfo.introduce"
                     type="textarea"
                     placeholder="Introduce Yourself"
                 />
@@ -146,7 +191,8 @@ let sexOptions = ref([
 
             <n-button
                 class="action-button-item"
-            >重置</n-button>
+            >重置
+            </n-button>
           </div>
         </n-gi>
       </n-grid>
@@ -172,7 +218,7 @@ let sexOptions = ref([
 }
 
 
-.action-button-item{
+.action-button-item {
   margin-left: 10px;
 }
 </style>

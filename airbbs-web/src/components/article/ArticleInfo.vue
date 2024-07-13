@@ -56,8 +56,9 @@ onMounted(async () => {
       作者：友人
     </template>
 
-    <MarkdownIt :content="article.content"/>
-
+    <div class="article-info-content">
+      <MarkdownIt :content="article.content"/>
+    </div>
     <template #footer>
       <blockquote style="font-size: 0.9em;">
         本作品采用<a href="https://learnku.com/docs/guide/cc4.0/6589">《CC 协议》</a>，转载必须注明作者和本文链接
@@ -73,6 +74,10 @@ onMounted(async () => {
 .bread-crumbs-nav {
   display: flex;
   height: 30px;
+}
+
+.article-info-content {
+  margin: 0 20px;
 }
 
 </style>

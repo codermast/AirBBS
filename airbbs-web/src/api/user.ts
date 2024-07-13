@@ -7,7 +7,7 @@ import type { UserLoginInfo, UserRegisterInfo } from "@/models/user";
 const BASE_URL = 'users'
 
 // GET /users/:uid
-export const getUser = (userId : string) => {
+export const getUserById = (userId : string) => {
 	return axios.get(`${BASE_URL}/${userId}`);
 };
 

@@ -1,6 +1,23 @@
 <script setup lang="ts">
 
 import Sidebar from "@/layouts/sidebar/ArticleSidebar.vue";
+
+import emitter from '@/utils/emitter'
+import { useLoadingBar } from "naive-ui";
+
+const loadingBar = useLoadingBar();
+
+
+// 绑定事件
+emitter.on('loadingBarStart', () => {
+  loadingBar.start();
+})
+
+// 绑定事件
+emitter.on('loadingBarFinish', () => {
+  loadingBar.finish();
+})
+
 </script>
 
 <template>
@@ -23,7 +40,7 @@ import Sidebar from "@/layouts/sidebar/ArticleSidebar.vue";
 
 <style scoped>
 
-.article-container{
+.article-container {
 }
 
 </style>

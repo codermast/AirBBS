@@ -29,9 +29,13 @@ func (uc *UserController) GetUserByID(c *gin.Context) {
 	// 获取路径参数
 	userID := c.Param("uid")
 
-	user := services.GetUserByID(userID)
+	userVo, err := services.GetUserByID(userID)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, utils.Error(fmt.Sprintf("%v", err)))
+	}
 	// 处理根据用户ID获取用户信息的逻辑
-	c.JSON(http.StatusOK, utils.SuccessData(user))
+	c.JSON(http.StatusOK, utils.SuccessData(userVo))
 }
 
 // CreateUser 创建用户 POST /users

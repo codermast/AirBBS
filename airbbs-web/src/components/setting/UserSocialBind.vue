@@ -8,7 +8,11 @@ import Random from "@/icons/Random.vue";
 import Check from "@/icons/Check.vue";
 import Times from "@/icons/Times.vue";
 import ArrowRight from "@/icons/ArrowRight.vue";
-import LogoQQ from "@/icons/LogoQQ.vue";
+import WeChatGZH from "@/icons/WeChatGZH.vue";
+import QQ from "@/icons/QQ.vue";
+import FeiShu from "@/icons/FeiShu.vue";
+import DingDing from "@/icons/DingDing.vue";
+
 
 let columns = ref([
   {
@@ -24,7 +28,6 @@ let columns = ref([
     title: '状态',
     key: 'status',
     render(row: Social) {
-
 
       return h('div', {style: 'display: flex;align-items: center;'},
           [
@@ -71,6 +74,13 @@ let data = ref<Social[]>([
     removeUrl: "string",
   },
   {
+    threePart: "微信公众号",
+    status: true,
+    icon: WeChatGZH,
+    bindUrl: "string",
+    removeUrl: "string",
+  },
+  {
     threePart: "Github",
     status: true,
     icon: LogoGithub,
@@ -80,7 +90,21 @@ let data = ref<Social[]>([
   {
     threePart: "QQ",
     status: false,
-    icon: LogoQQ,
+    icon: QQ,
+    bindUrl: "string",
+    removeUrl: "string",
+  },
+  {
+    threePart: "飞书",
+    status: true,
+    icon: FeiShu,
+    bindUrl: "string",
+    removeUrl: "string",
+  },
+  {
+    threePart: "钉钉",
+    status: true,
+    icon: DingDing,
     bindUrl: "string",
     removeUrl: "string",
   },

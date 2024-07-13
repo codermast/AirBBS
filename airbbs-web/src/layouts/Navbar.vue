@@ -12,16 +12,19 @@ import {
 } from '@vicons/ionicons5'
 import MarkPen from "@/icons/Edit.vue";
 import type { Component } from 'vue'
-import { h, ref } from "vue"
-import { NIcon, useMessage } from "naive-ui"
+import { computed, h, ref } from "vue";
+import { NIcon, useLoadingBar, useMessage } from "naive-ui"
 import { useRouter } from "vue-router";
 import UserPlus from "@/icons/UserPlus.vue";
 import About from "@/icons/AboutOutline.vue";
+import { useStatusStore } from "@/stores/statusStore";
 
 const router = useRouter()
 const message = useMessage()
+const loadingBar = useLoadingBar();
+const statusStore = useStatusStore()
 
-let isLogin = ref(true)
+let isLogin = computed(() => statusStore.userLoginStatus);
 
 let notifyColor = ref("#c03f53")
 
@@ -47,7 +50,12 @@ let userOptions = ref([
   {
     label: '个人主页',
     key: "home",
-    icon: renderIcon(HomeIcon)
+    icon: renderIcon(HomeIcon),
+    props: {
+      onClick: () => {
+        router.push({ name : "SettingUserInfo"})
+      }
+    }
   },
   {
     label: '通知中心',
@@ -57,7 +65,14 @@ let userOptions = ref([
   {
     label: '退出登录',
     key: 'logout',
-    icon: renderIcon(LogoutIcon)
+    icon: renderIcon(LogoutIcon),
+    props: {
+      onClick: () => {
+        statusStore.userLoginStatus = false
+        message.success('退出成功!')
+        router.push({ name : "Index" })
+      }
+    }
   }
 ])
 
@@ -65,7 +80,12 @@ let editOptions = ref([
   {
     label: '新建文章',
     key: 'profile',
-    icon: renderIcon(CodeSlashIcon)
+    icon: renderIcon(CodeSlashIcon),
+    props: {
+      onClick: () => {
+        router.push({ name : "ArticleCreate" })
+      }
+    }
   },
   {
     label: '发起讨论',
@@ -91,10 +111,6 @@ function renderIcon(icon: Component) {
       default: () => h(icon)
     })
   }
-}
-
-function handleSelect(key: string | number) {
-  message.info(String(key))
 }
 
 
@@ -155,7 +171,7 @@ function handleSelect(key: string | number) {
 
       <!-- 未登录展示 -->
       <n-gi
-          v-show="!isLogin"
+          v-if="!isLogin"
           :span="1"
           class="navbar-user"
       >
@@ -183,7 +199,7 @@ function handleSelect(key: string | number) {
 
       <!--  登录展示  -->
       <n-gi
-          v-show="isLogin"
+          v-if="isLogin"
           :span="1"
           class="navbar-user"
       >
@@ -202,7 +218,6 @@ function handleSelect(key: string | number) {
         <n-dropdown
             trigger="hover"
             :options="userOptions"
-            @select="handleSelect"
             :show-arrow="true"
         >
           <div class="navbar-user-info" @click="userClick">

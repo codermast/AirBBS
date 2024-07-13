@@ -14,7 +14,7 @@ func GetAllUsers() []models.User {
 }
 
 // GetUserByID 根据ID获取指定用户
-func GetUserByID(userID string) interface{} {
+func GetUserByID(userID string) (models.UserVO, error) {
 	return daos.GetUserByID(userID)
 }
 

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import User from "@/pages/User.vue";
 import { Glasses, GlassesOutline, LockClosedOutline, LogoGithub, LogoWechat } from '@vicons/ionicons5'
-import LogoQQ from '@/icons/LogoQQ.vue'
+import LogoQQ from '@/icons/QQ.vue'
 import ArrowRight from "@/icons/ArrowRight.vue";
 import { loginUser } from "@/api/user";
 import { ref } from 'vue'
@@ -9,7 +9,9 @@ import type { UserLoginInfo } from "@/models/user";
 import { useRouter } from "vue-router";
 import { useMessage,useLoadingBar } from "naive-ui"
 import { HeaderAuthTokenName } from "@/config";
+import { useStatusStore } from "@/stores/statusStore";
 
+const statusStore = useStatusStore()
 const router = useRouter();
 const message = useMessage();
 const loadingBar = useLoadingBar()
@@ -38,9 +40,17 @@ async function login() {
   console.log(response)
   if (response.status == 200) {
     // 登录成功
-    message.success("登录成功！")
     localStorage.setItem(HeaderAuthTokenName,response.data.data)
+
+    // 更新登录状态
+    statusStore.userLoginStatus = true
+    // statusStore.userLoginId =
+
+    message.success("登录成功！")
+
+    // 路由跳转
     router.push({name: "Index"})
+
     loadingBar.finish()
   }else{
     message.error(response.data.message)
@@ -127,7 +137,12 @@ async function login() {
 
             <n-gi :span="1">
               <div class="login-tip-info">
-                忘记密码? or 注册
+                <router-link :to="{ name : 'Index' }" class="router-link">忘记密码</router-link>
+
+                ? or
+
+                <router-link :to="{ name : 'Register' }" class="router-link">注册</router-link>
+
               </div>
             </n-gi>
           </n-grid>

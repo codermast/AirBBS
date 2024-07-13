@@ -1,14 +1,20 @@
 <script lang="ts" setup>
 import Navbar from "@/layouts/Navbar.vue";
 import Footer from "@/layouts/Footer.vue";
+import { useLoadingBar } from "naive-ui";
 
 import { computed } from 'vue';
+
 
 const themeOverrides = computed(() => ({
   common: {
     primaryColorHover: '#3498db', // 这里设置你想要的 hover 颜色
   }
 }));
+
+
+
+
 </script>
 
 <template>

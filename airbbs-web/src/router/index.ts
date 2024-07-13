@@ -8,19 +8,19 @@ import Register from "@/pages/Register.vue";
 import UserInfo from "@/components/setting/UserInfo.vue";
 import UserAvatar from "@/components/setting/UserAvatar.vue";
 import UserSocialBind from "@/components/setting/UserSocialBind.vue";
-import { Create } from "@vicons/ionicons5";
 import ArticleCreate from "@/components/article/ArticleCreate.vue";
+import emitter from "@/utils/emitter"
 
 const routes = [
 	{
 		path: '/',
 		name: 'Home',
 		component: Home,
-		children : [
+		children: [
 			{
-				path : "/",
-				name : "Index",
-				component : ArticleList
+				path: "/",
+				name: "Index",
+				component: ArticleList
 			},
 		]
 	},
@@ -28,11 +28,11 @@ const routes = [
 		path: '/articles',
 		name: 'ArticleInfo',
 		component: Home,
-		children:[
+		children: [
 			{
-				path : ":articleID",
-				name : "ArticleInfo",
-				component : ArticleInfo
+				path: ":articleID",
+				name: "ArticleInfo",
+				component: ArticleInfo
 			},
 
 		]
@@ -43,29 +43,29 @@ const routes = [
 		component: ArticleCreate
 	},
 	{
-		path : "/setting",
+		path: "/setting",
 		name: 'Setting',
-		component : Setting,
-		redirect: { name: 'SettingUserInfo' },
-		children : [
+		component: Setting,
+		redirect: {name: 'SettingUserInfo'},
+		children: [
 			{
-				path : "user",
-				name:"SettingUserInfo",
-				children : [
+				path: "user",
+				name: "SettingUserInfo",
+				children: [
 					{
-						path :"info",
-						name : "SettingUserInfo",
-						component : UserInfo
+						path: "info",
+						name: "SettingUserInfo",
+						component: UserInfo
 					},
 					{
-						path :"avatar",
-						name : "SettingUserAvatar",
-						component : UserAvatar
+						path: "avatar",
+						name: "SettingUserAvatar",
+						component: UserAvatar
 					},
 					{
-						path :"social",
-						name : "SettingUserSocial",
-						component : UserSocialBind
+						path: "social",
+						name: "SettingUserSocial",
+						component: UserSocialBind
 					},
 				]
 			},
@@ -73,15 +73,15 @@ const routes = [
 	},
 
 	{
-		path : "/login",
+		path: "/login",
 		name: 'Login',
-		component : Login
+		component: Login
 	},
 
 	{
-		path : "/register",
+		path: "/register",
 		name: 'Register',
-		component : Register
+		component: Register
 	},
 
 ];
@@ -89,6 +89,16 @@ const routes = [
 const router = createRouter({
 	history: createWebHistory(),
 	routes
+});
+
+router.beforeEach((to, from) => {
+	emitter.emit("loadingBarStart")
+	return true
+})
+
+router.afterEach((to, from) => {
+	emitter.emit("loadingBarFinish")
+
 });
 
 export default router;
