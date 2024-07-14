@@ -33,6 +33,11 @@ type UserVO struct {
 	Sex       bool   `gorm:"default:false" json:"sex"`
 }
 
+// TableName 返回 UserVO 结构体对应的表名
+func (UserVO) TableName() string {
+	return "users"
+}
+
 type UserRegisterDto struct {
 	ID              string `gorm:"primaryKey;autoIncrement" json:"id"`
 	Username        string `json:"username"`

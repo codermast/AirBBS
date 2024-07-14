@@ -10,6 +10,17 @@ export type UserRegisterInfo = {
 }
 
 export type UserLoginInfo = {
-	username : string
-	password : string
+	username: string
+	password: string
+}
+
+export type UserQueryInfo = {
+	id: string
+	username: string
+	nickname: string
+	mail: string
+	tel: string
+	github: string
+	introduce: string
+	sex: boolean | string
 }

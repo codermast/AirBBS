@@ -41,8 +41,8 @@ func CreateUser(user *models.User) error {
 }
 
 // UpdateUser 更新用户
-func UpdateUser(user *models.User) error {
-	return daos.UpdateUser(user)
+func UpdateUser(userVo *models.UserVO) error {
+	return daos.UpdateUser(userVo)
 }
 
 // DeleteUserByID 根据 ID 删除用户

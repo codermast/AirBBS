@@ -59,20 +59,21 @@ func GetUserByUserName(username string) (models.User, error) {
 	return userQuery, nil
 }
 
-// UpdateUser 更新用户
-func UpdateUser(user *models.User) error {
-	_, err := GetUserByID(user.ID)
+// UpdateUser 更新用户信息
+func UpdateUser(userVo *models.UserVO) error {
+	_, err := GetUserByID(userVo.ID)
 
 	// 用户不存在
 	if err != nil {
 		return errors.New("用户不存在")
 	}
+
 	// 更新操作
-	result := DB.Save(user)
+	result := DB.Save(userVo)
 
 	// 更新失败
-	if !(result.Error == nil && result.RowsAffected == 1) {
-		return errors.New("更新失败")
+	if result.Error != nil {
+		return errors.New("更新失败！")
 	}
 	return result.Error
 }

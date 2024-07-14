@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"codermast.com/airbbs/constant"
 	"codermast.com/airbbs/models"
 	"codermast.com/airbbs/services"
 	"codermast.com/airbbs/utils"
@@ -109,15 +110,21 @@ func (uc *UserController) CreateUser(c *gin.Context) {
 
 // UpdateUser 更新指定 userID 的用户信息 PUT /users
 func (uc *UserController) UpdateUser(c *gin.Context) {
-	var user models.User
+	var userVo models.UserVO
 
 	// 用户解析
-	if err := c.BindJSON(&user); err != nil {
+	if err := c.BindJSON(&userVo); err != nil {
 		c.JSON(http.StatusBadRequest, utils.Error("用户数据解析失败！"))
 		return
 	}
 
-	err := services.UpdateUser(&user)
+	// 判断 JWT 中 UserID 和 UserVo 中是否匹配
+	if c.GetString(constant.USERID) == userVo.ID {
+		c.JSON(http.StatusBadRequest, utils.Error("用户ID不匹配！"))
+		return
+	}
+
+	err := services.UpdateUser(&userVo)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, utils.Error(fmt.Sprintf("%v", err)))
 		return

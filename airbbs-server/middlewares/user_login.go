@@ -2,6 +2,7 @@ package middlewares
 
 import (
 	"codermast.com/airbbs/config"
+	"codermast.com/airbbs/constant"
 	"codermast.com/airbbs/models"
 	"codermast.com/airbbs/utils"
 	"github.com/gin-gonic/gin"
@@ -59,7 +60,7 @@ func UserLoginAuthMiddleware() gin.HandlerFunc {
 			c.JSON(http.StatusUnauthorized, utils.Error("JWT token is invalid"))
 			c.Abort()
 		} else {
-			c.Set("userID", claims.UserID)
+			c.Set(constant.USERID, claims.UserID)
 			c.Next()
 		}
 	}

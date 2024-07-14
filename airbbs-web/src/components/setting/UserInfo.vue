@@ -1,25 +1,26 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import Edit from "@/icons/Edit.vue";
-import { getUserById } from "@/api/user"
+import { getUserById, updateUserInfo } from "@/api/user"
 
 import { useStatusStore } from "@/stores/statusStore";
 import { useMessage } from "naive-ui";
+import type { UserQueryInfo } from "@/models/user";
 
 const statusStore = useStatusStore();
 const message = useMessage()
 
-let userInfo = ref({
+let userInfo = ref<UserQueryInfo>({
   id: "",
-  admin: false,
   github: "",
   introduce: "",
   mail: "",
   nickname: "",
-  sex: "male",
+  sex: "",
   tel: "",
   username: ""
 })
+
 
 let sexOptions = ref([
   {
@@ -32,6 +33,19 @@ let sexOptions = ref([
   }
 ])
 
+// 初始数据
+let initialUserInfo = ref<UserQueryInfo>({
+  id: "",
+  github: "",
+  introduce: "",
+  mail: "",
+  nickname: "",
+  sex: "",
+  tel: "",
+  username: ""
+})
+
+
 onMounted(async () => {
   // 获取用户信息
   let response = await getUserById(statusStore.userLoginId)
@@ -43,13 +57,38 @@ onMounted(async () => {
 
     if (response.data.data.sex) {
       userInfo.value.sex = "male"
-    }else{
+    } else {
       userInfo.value.sex = "female"
     }
+
+    // 保存初始数据
+    initialUserInfo = ref<UserQueryInfo>({ ...userInfo.value })
   } else {
     message.error("查询失败！")
   }
 })
+
+// 保存用户信息
+async function saveUserInfo() {
+  // 转换用户信息状态
+  const submitUserInfo = {...userInfo.value, sex: userInfo.value.sex === "male"}
+  console.log("123", submitUserInfo)
+  // 保存数据
+  let response = await updateUserInfo(submitUserInfo)
+  console.log(response)
+  if (response.status == 200) {
+    message.success("更新成功！")
+  } else {
+    8
+    message.error(response.data.message)
+  }
+}
+
+// 重置用户信息
+function resetUserInfo() {
+  userInfo.value = initialUserInfo.value
+  message.info("重置成功！")
+}
 </script>
 
 <template>
@@ -118,7 +157,8 @@ onMounted(async () => {
               >
                 <n-select
                     v-model:value="userInfo.sex"
-                    :options="sexOptions"/>
+                    :options="sexOptions"
+                />
               </n-form-item>
             </n-gi>
 
@@ -190,6 +230,7 @@ onMounted(async () => {
         <n-gi :span="1">
           <div class="action-button-list">
             <n-button
+                @click="saveUserInfo"
                 class="action-button-item"
                 type="primary"
             >保存修改
@@ -197,6 +238,7 @@ onMounted(async () => {
 
             <n-button
                 class="action-button-item"
+                @click="resetUserInfo"
             >重置
             </n-button>
           </div>
