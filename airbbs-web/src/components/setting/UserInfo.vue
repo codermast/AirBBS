@@ -16,7 +16,7 @@ let userInfo = ref({
   introduce: "",
   mail: "",
   nickname: "",
-  sex: false,
+  sex: "male",
   tel: "",
   username: ""
 })
@@ -24,11 +24,11 @@ let userInfo = ref({
 let sexOptions = ref([
   {
     label: '男',
-    value: true
+    value: "male"
   },
   {
     label: '女',
-    value: false
+    value: "female"
   }
 ])
 
@@ -40,6 +40,12 @@ onMounted(async () => {
     message.success("查询成功！")
     console.log(response)
     userInfo.value = response.data.data
+
+    if (response.data.data.sex) {
+      userInfo.value.sex = "male"
+    }else{
+      userInfo.value.sex = "female"
+    }
   } else {
     message.error("查询失败！")
   }
@@ -150,7 +156,7 @@ onMounted(async () => {
                   path="inputValue"
               >
                 <n-input
-                    v-model.value="userInfo.mail"
+                    v-model:value="userInfo.mail"
                     placeholder="Email"/>
               </n-form-item>
             </n-gi>
