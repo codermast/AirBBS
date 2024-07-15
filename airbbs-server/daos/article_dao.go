@@ -17,12 +17,20 @@ func CreateArticle(article *models.Article) error {
 }
 
 // GetArticle 获取所有文章
-func GetArticle() (*[]models.Article, error) {
+func GetArticle(status int) (*[]models.Article, error) {
 	var articles []models.Article
-	result := DB.Find(&articles)
 
-	if result.Error != nil {
-		return nil, result.Error
+	if status == -1 {
+		result := DB.Order("id desc").Find(&articles)
+		if result.Error != nil {
+			return nil, result.Error
+		}
+
+	} else {
+		result := DB.Order("id desc").Where("status = ?", status).Find(&articles)
+		if result.Error != nil {
+			return nil, result.Error
+		}
 	}
 
 	return &articles, nil
@@ -71,4 +79,16 @@ func UpdateArticleByID(article *models.Article) (*models.Article, error) {
 	}
 
 	return article, nil
+}
+
+// UpdateArticleListStatusById 根据 ID 批量修改文章状态
+func UpdateArticleListStatusById(ids []string, status int) error {
+	for _, id := range ids {
+		result := DB.Table("articles").Where("id = ?", id).Update("status", status)
+		if result.Error != nil {
+			return result.Error
+		}
+	}
+
+	return nil
 }

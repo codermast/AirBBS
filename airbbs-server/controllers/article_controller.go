@@ -39,9 +39,21 @@ func (ac *ArticleController) CreateArticle(c *gin.Context) {
 	c.JSON(http.StatusOK, utils.Success("发布成功！", article))
 }
 
-// GetArticle 获取所有文章 GET /article
-func (ac *ArticleController) GetArticle(c *gin.Context) {
-	article, err := services.GetArticle()
+// GetArticleAllList 获取所有文章 GET /articles/all
+func (ac *ArticleController) GetArticleAllList(c *gin.Context) {
+
+	article, err := services.GetArticle(-1)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, utils.Error(fmt.Sprintf("%v", err)))
+		return
+	}
+
+	c.JSON(http.StatusOK, utils.Success("查询成功", article))
+}
+
+// GetArticlePublishList 获取所有文章 GET /articles/publish
+func (ac *ArticleController) GetArticlePublishList(c *gin.Context) {
+	article, err := services.GetArticle(1)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, utils.Error(fmt.Sprintf("%v", err)))
 		return
@@ -100,4 +112,21 @@ func (ac *ArticleController) UpdateArticleByID(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, utils.Success("更新成功", updateArticle))
+}
+
+// UpdateArticleListStatusById 根据 ID 批量修改文章状态
+func (ac *ArticleController) UpdateArticleListStatusById(c *gin.Context) {
+	var req models.ArticleUpdateStatusRequest
+	if err := c.BindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, utils.Error(fmt.Sprintf("%v", err)))
+		return
+	}
+
+	err := services.UpdateArticleListStatusById(req.IDs, req.Status)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, utils.Error(fmt.Sprintf("%v", err)))
+		return
+	}
+
+	c.JSON(http.StatusOK, utils.SuccessMsg("更新成功！"))
 }

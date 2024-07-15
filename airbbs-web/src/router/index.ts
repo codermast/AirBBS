@@ -11,6 +11,7 @@ import UserSocialBind from "@/components/setting/UserSocialBind.vue";
 import ArticleCreate from "@/components/article/ArticleCreate.vue";
 import emitter from "@/utils/emitter"
 import ArticleModify from '@/components/article/ArticleModify.vue';
+import ArticleCenter from '@/components/article/ArticleCenter.vue';
 
 const routes = [
 	{
@@ -27,7 +28,6 @@ const routes = [
 	},
 	{
 		path: '/articles',
-		name: 'ArticleInfo',
 		component: Home,
 		children: [
 			{
@@ -47,6 +47,11 @@ const routes = [
 		path: "/articles/modify",
 		name: 'ArticleModify',
 		component: ArticleModify
+	},
+	{
+		path: "/articles/center",
+		name: 'ArticleCenter',
+		component: ArticleCenter
 	},
 	{
 		path: "/setting",

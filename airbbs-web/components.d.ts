@@ -8,10 +8,13 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     AirMarkdown: typeof import('./src/components/markdown/AirMarkdown.vue')['default']
+    ArticleCenter: typeof import('./src/components/article/ArticleCenter.vue')['default']
     ArticleCreate: typeof import('./src/components/article/ArticleCreate.vue')['default']
     ArticleInfo: typeof import('./src/components/article/ArticleInfo.vue')['default']
     ArticleList: typeof import('./src/components/article/ArticleList.vue')['default']
+    ArticleManageList: typeof import('./src/components/article/ArticleManageList.vue')['default']
     ArticleModify: typeof import('./src/components/article/ArticleModify.vue')['default']
+    ArticlePreviewList: typeof import('./src/components/article/ArticlePreviewList.vue')['default']
     ArticleSidebar: typeof import('./src/components/Sidebar/ArticleSidebar.vue')['default']
     Create: typeof import('./src/components/article/Create.vue')['default']
     Footer: typeof import('./src/components/Footer.vue')['default']
@@ -79,6 +82,7 @@ declare module 'vue' {
     Sidbar: typeof import('./src/components/Sidbar.vue')['default']
     Sidebar: typeof import('./src/components/Sidebar/Sidebar.vue')['default']
     SocialBind: typeof import('./src/components/setting/SocialBind.vue')['default']
+    TimeNow: typeof import('./src/components/TimeNow.vue')['default']
     UserAvatar: typeof import('./src/components/setting/UserAvatar.vue')['default']
     UserInfo: typeof import('./src/components/setting/UserInfo.vue')['default']
     UserInfoSidebar: typeof import('./src/components/Sidebar/UserInfoSidebar.vue')['default']

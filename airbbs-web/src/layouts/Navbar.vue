@@ -13,15 +13,15 @@ import {
 import MarkPen from "@/icons/Edit.vue";
 import type { Component } from 'vue'
 import { computed, h, ref } from "vue";
-import { NIcon, useLoadingBar, useMessage } from "naive-ui"
+import { NIcon, useMessage } from "naive-ui"
 import { useRouter } from "vue-router";
 import UserPlus from "@/icons/UserPlus.vue";
 import About from "@/icons/AboutOutline.vue";
 import { useStatusStore } from "@/stores/statusStore";
+import Hot from "@/icons/Hot.vue";
 
 const router = useRouter()
 const message = useMessage()
-const loadingBar = useLoadingBar();
 const statusStore = useStatusStore()
 
 let isLogin = computed(() => statusStore.userLoginStatus);
@@ -53,7 +53,17 @@ let userOptions = ref([
     icon: renderIcon(HomeIcon),
     props: {
       onClick: () => {
-        router.push({ name : "SettingUserInfo"})
+        router.push({name: "SettingUserInfo"})
+      }
+    }
+  },
+  {
+    label: '内容中心',
+    key: 'content',
+    icon: renderIcon(Hot),
+    props: {
+      onClick: () => {
+        router.push({name: "ArticleCenter"})
       }
     }
   },
@@ -70,7 +80,7 @@ let userOptions = ref([
       onClick: () => {
         statusStore.userLoginStatus = false
         message.success('退出成功!')
-        router.push({ name : "Index" })
+        router.push({name: "Index"})
       }
     }
   }
@@ -83,7 +93,7 @@ let editOptions = ref([
     icon: renderIcon(CodeSlashIcon),
     props: {
       onClick: () => {
-        router.push({ name : "ArticleCreate" })
+        router.push({name: "ArticleCreate"})
       }
     }
   },

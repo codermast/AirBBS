@@ -1,32 +1,28 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
-import axios from "@/api/axios";
 
 import PageNum from "@/components/article/Pagination.vue";
-import { useRoute, useRouter } from "vue-router";
-import { MdPreview } from "md-editor-v3";
+import { useRouter } from "vue-router";
+import { getArticlePublicList } from "@/api/article";
 
-const route = useRoute()
 const router = useRouter()
 
 let articleList = ref();
 
-onMounted(() => {
+onMounted(async () => {
 
-  axios.get("/articles/").then((res) => {
-    console.log(res)
-    if (res.status == 200) {
-      articleList.value = res.data.data;
-      console.log("articleList: ", articleList)
-    }
-  })
+  let response = await getArticlePublicList()
+
+  if (response.status == 200) {
+    articleList.value = response.data.data;
+    console.log("articleList: ", articleList)
+  }
 })
-
 
 // 文章被点击
 function articleClick(articleID: any) {
   // 跳转到指定文章详情
-  router.push(`/articles/${articleID}`);
+  router.push(`/articles/${ articleID }`);
 }
 
 </script>
@@ -44,8 +40,8 @@ function articleClick(articleID: any) {
 
 
             <n-ellipsis :line-clamp="5" style="text-indent: 2em" :tooltip="false">
-              {{ article.content}}
-              </n-ellipsis>
+              {{ article.content }}
+            </n-ellipsis>
           </n-card>
         </n-gi>
       </n-grid>

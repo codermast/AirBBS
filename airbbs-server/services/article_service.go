@@ -16,8 +16,8 @@ func CreateArticle(article *models.Article) error {
 }
 
 // GetArticle 获取所有文章
-func GetArticle() (*[]models.Article, error) {
-	article, err := daos.GetArticle()
+func GetArticle(status int) (*[]models.Article, error) {
+	article, err := daos.GetArticle(status)
 	return article, err
 }
 
@@ -34,4 +34,9 @@ func GetArticleByID(articleID string) (*models.Article, error) {
 // UpdateArticleByID 根据 ID 更新指定文章
 func UpdateArticleByID(article *models.Article) (*models.Article, error) {
 	return daos.UpdateArticleByID(article)
+}
+
+// UpdateArticleListStatusById 根据 ID 批量修改文章状态
+func UpdateArticleListStatusById(ids []string, status int) error {
+	return daos.UpdateArticleListStatusById(ids, status)
 }

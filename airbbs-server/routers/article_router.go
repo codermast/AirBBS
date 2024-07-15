@@ -15,11 +15,14 @@ func SetupArticleRoutes(r *gin.Engine) {
 	articleRoute := r.Group("/articles")
 
 	articleRoute.Use(middlewares.UserLoginAuthMiddleware())
+
 	{
 		articleRoute.POST("/", articleController.CreateArticle)
-		articleRoute.GET("/", articleController.GetArticle)
+		articleRoute.GET("/all", articleController.GetArticleAllList)
+		articleRoute.GET("/publish", articleController.GetArticlePublishList)
 		articleRoute.DELETE("/:aid", articleController.DeleteArticleByID)
-		articleRoute.PUT("/", articleController.UpdateArticleByID)
+		articleRoute.PUT("/:aid", articleController.UpdateArticleByID)
 		articleRoute.GET("/:aid", articleController.GetArticleByID)
+		articleRoute.PUT("/", articleController.UpdateArticleListStatusById)
 	}
 }

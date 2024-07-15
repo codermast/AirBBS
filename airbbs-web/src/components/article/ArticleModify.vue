@@ -4,12 +4,13 @@ import { PaperPlane, SaveOutline } from "@vicons/ionicons5";
 import File from "@/icons/File.vue";
 import Title from "@/icons/Title.vue";
 import MdEditor from "@/components/markdown/MdEditor.vue";
-import { createArticle, getArticleById } from "@/api/article";
+import { createArticle, getArticleById, updateArticle } from "@/api/article";
 import type { Article } from "@/models/article";
 import { useMessage } from "naive-ui"
 import Edit from "@/icons/Edit.vue";
 import { useRoute } from "vue-router"
 import { useRouter } from "vue-router"
+import { articleTypeOptions } from "@/utils/options";
 const message = useMessage()
 const route = useRoute()
 const router = useRouter()
@@ -18,22 +19,22 @@ let article = ref<Article>({
   id: "",
   title: "",
   content: "Hello Air BBS!",
+  status:1,
   author: ""
 })
 
 onMounted(async () => {
 
-  let aid = route.query.aid
-  console.log("aid", aid)
+  let id = route.query.id
 
-  if (aid === "" || aid === null || aid === undefined) {
+  if (id === "" || id === null || id === undefined) {
       message.error("Url 异常！")
       router.push({ name : "Index"})
     return
   }
 
 
-  let response = await getArticleById(aid as string);
+  let response = await getArticleById(id as string);
 
   if (response.status == 200) {
     article.value = response.data.data
@@ -42,17 +43,31 @@ onMounted(async () => {
   }
 })
 
-async function saveContent() {
+// 文章修改
+async function saveArticle() {
   // 在这里可以将 Markdown 内容保存到数据库或进行其他操作
-  let response = await createArticle(article.value);
+  let response = await updateArticle(article.value);
 
   if (response.status == 200) {
-    message.success("发布成功！")
+    message.success("保存成功！")
   }else{
     message.error(response.data.message)
   }
 }
 
+// 保存草稿
+async function saveDraft() {
+  // 先置为草稿状态
+  article.value.status = 0
+  // 在这里可以将 Markdown 内容保存到数据库或进行其他操作
+  let response = await updateArticle(article.value);
+
+  if (response.status == 200) {
+    message.success("保存成功！")
+  } else {
+    message.error(response.data.message)
+  }
+}
 </script>
 
 <template>
@@ -99,12 +114,16 @@ async function saveContent() {
 
               <n-form-item label="文章分类" path="inputValue">
 
-
-                <n-select placeholder="请选择文章分类"/>
+                <n-select
+                    placeholder="请选择文章分类"
+                />
               </n-form-item>
 
               <n-form-item label="文章状态" path="inputValue">
-                <n-select placeholder="请选择文章状态">
+                <n-select
+                    v-model:value="article.status"
+                    :options="articleTypeOptions"
+                    placeholder="请选择文章状态">
 
                 </n-select>
               </n-form-item>
@@ -117,17 +136,20 @@ async function saveContent() {
         <div class="article-post-action-item">
           <n-button
               type="success"
-              @click="saveContent"
+              @click="saveArticle"
           >
             <template #icon>
               <n-icon :component="PaperPlane"></n-icon>
             </template>
-            发布文章
+            文章保存
           </n-button>
         </div>
 
         <div class="article-post-action-item">
-          <n-button type="tertiary">
+          <n-button
+              @click="saveDraft"
+              type="tertiary"
+          >
             <template #icon>
               <n-icon :component="SaveOutline"></n-icon>
             </template>

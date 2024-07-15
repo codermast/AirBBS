@@ -3,14 +3,42 @@ import type { Article } from "@/models/article";
 
 const BASE_URL: string = "articles"
 
+// GET /articles/all 获取所有文章
+export const getArticleAllList = () => {
+	return axios.get(`${ BASE_URL }/all`);
+};
 
-// GET /article/:aid
+// GET /articles/publish 获取公开文章
+export const getArticlePublicList = () => {
+	return axios.get(`${ BASE_URL }/publish`);
+};
+
+
+
+// GET /articles/:aid
 export const getArticleById = (articleId: string) => {
 	return axios.get(`${ BASE_URL }/${ articleId }`);
 };
 
-
-// POST /article/
+// POST /articles/
 export const createArticle = (article: Article) => {
 	return axios.post(`${ BASE_URL }/`, article);
+}
+
+// DELETE /articles/:id
+export const deleteArticle = (articleId: string) => {
+	return axios.delete(`${ BASE_URL }/${ articleId }`)
+}
+
+// PUT /articles/:id
+export const updateArticle = (article: Article) => {
+	return axios.put(`${ BASE_URL }/${ article.id }`, article)
+}
+
+// PUT /articles/
+export const updateArticleListStatus = (articleIdList: string[], status: number) => {
+	return axios.put(`${ BASE_URL }/`, {
+		ids: articleIdList,
+		status: status
+	})
 }
