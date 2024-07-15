@@ -8,7 +8,6 @@ import Random from "@/icons/Random.vue";
 import Check from "@/icons/Check.vue";
 import Times from "@/icons/Times.vue";
 import ArrowRight from "@/icons/ArrowRight.vue";
-import WeChatGZH from "@/icons/WeChatGZH.vue";
 import QQ from "@/icons/QQ.vue";
 import FeiShu from "@/icons/FeiShu.vue";
 import DingDing from "@/icons/DingDing.vue";
@@ -50,7 +49,7 @@ let columns = ref([
                 [h("a", {
                   href: row.status ? row.bindUrl : row.removeUrl,
                   target: "_blank",
-                  style : "color : black;text-decoration : none"
+                  style: "color : black;text-decoration : none"
                 }, row.status ? "解除绑定" : "前往绑定")],
             )
           ]);
@@ -70,13 +69,6 @@ let data = ref<Social[]>([
     threePart: "微信",
     status: true,
     icon: LogoWechat,
-    bindUrl: "string",
-    removeUrl: "string",
-  },
-  {
-    threePart: "微信公众号",
-    status: true,
-    icon: WeChatGZH,
     bindUrl: "string",
     removeUrl: "string",
   },
@@ -137,9 +129,9 @@ let data = ref<Social[]>([
 
         <n-gi :span="1">
           <n-data-table
+              :single-line="false"
               :columns="columns"
               :data="data"
-              :bordered="false"
           />
 
         </n-gi>

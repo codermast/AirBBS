@@ -4,6 +4,7 @@ import axios from "@/api/axios";
 
 import PageNum from "@/components/article/Pagination.vue";
 import { useRoute, useRouter } from "vue-router";
+import { MdPreview } from "md-editor-v3";
 
 const route = useRoute()
 const router = useRouter()

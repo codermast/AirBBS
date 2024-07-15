@@ -36,7 +36,7 @@ func (ac *ArticleController) CreateArticle(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, utils.Success("发布成功", article))
+	c.JSON(http.StatusOK, utils.Success("发布成功！", article))
 }
 
 // GetArticle 获取所有文章 GET /article

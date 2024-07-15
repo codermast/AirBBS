@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
-import MarkdownIt from "@/components/markdown/MarkdownIt.vue";
 import { getArticleById } from "@/api/article";
+import { MdPreview } from "md-editor-v3";
 
 const route = useRoute()
 
@@ -12,8 +12,11 @@ type Article = {
   author: string
 }
 
-let article = ref<Article>({title: "", content: "", author: ""});
+let loading = ref(true);
 
+
+let article = ref<Article>({title: "", content: "", author: ""});
+let articleUrl = ref(window.location.href);
 onMounted(async () => {
   let articleID = route.params.articleID
   console.log("articleID", articleID)
@@ -24,10 +27,11 @@ onMounted(async () => {
   if (articleRet.status == 200) {
     article.value = articleRet.data.data;
     console.log("article: ", article)
+    loading.value = false
   }
 })
-</script>
 
+</script>
 
 <template>
   <n-card
@@ -37,32 +41,49 @@ onMounted(async () => {
     }"
   >
     <template #header>
+      <n-skeleton v-if="loading" text width="60%"/>
+      <div v-else>
 
-      {{ article.title }}
-      <n-breadcrumb class="bread-crumbs-nav">
+        <h1>{{ article.title }}</h1>
+        <n-breadcrumb class="bread-crumbs-nav">
 
-        <n-breadcrumb-item>
-          Friend
-        </n-breadcrumb-item>
-        <n-breadcrumb-item>95</n-breadcrumb-item>
-        <n-breadcrumb-item>2 周前</n-breadcrumb-item>
-        <n-breadcrumb-item>1 分钟前</n-breadcrumb-item>
-      </n-breadcrumb>
+          <n-breadcrumb-item>
+            Friend
+          </n-breadcrumb-item>
+          <n-breadcrumb-item>95</n-breadcrumb-item>
+          <n-breadcrumb-item>2 周前</n-breadcrumb-item>
+          <n-breadcrumb-item>1 分钟前</n-breadcrumb-item>
+        </n-breadcrumb>
+      </div>
 
     </template>
-
 
     <template #header-extra>
-      作者：友人
+      <n-skeleton v-if="loading" text :repeat="6"/>
+
+      <div v-else>
+        作者：友人
+      </div>
     </template>
 
-    <div class="article-info-content">
-      <MarkdownIt :content="article.content"/>
+    <n-skeleton v-if="loading" text :repeat="6"/>
+
+    <div class="article-info-content" v-else>
+      <MdPreview
+          v-model="article.content"
+          preview-theme="github"
+          :code-foldable="false"
+          :show-code-row-number="false"
+      ></MdPreview>
     </div>
     <template #footer>
-      <blockquote style="font-size: 0.9em;">
-        本作品采用<a href="https://learnku.com/docs/guide/cc4.0/6589">《CC 协议》</a>，转载必须注明作者和本文链接
-      </blockquote>
+      <n-skeleton v-if="loading" text width="60%"/>
+
+      <div style="font-size: 0.9em;" v-else>
+        <li>本文地址：<a href="{{ articleUrl }}">{{ articleUrl }}</a></li>
+        <li>转载必须注明作者和本文链接</li>
+      </div>
+
     </template>
 
   </n-card>

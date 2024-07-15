@@ -9,7 +9,7 @@ import (
 // CreateArticle 文章发布
 func CreateArticle(article *models.Article) error {
 	if article.Title == "" {
-		return errors.New("article title can not be empty")
+		return errors.New("文章标题不能为空！")
 	}
 
 	return daos.CreateArticle(article)

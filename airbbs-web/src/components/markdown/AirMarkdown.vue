@@ -10,15 +10,27 @@ const props = defineProps<{
   options: IOptions;
 }>();
 
+// 声明事件
+const emit = defineEmits(['vditorInstance']);
+
 onMounted(() => {
-  vditor.value = new Vditor('vditor',
-    props.options,
-  );
+  // 创建 Vditor 实例，传入 options 对象
+  vditor.value = new Vditor('vditor', props.options);
+  emit("vditorInstance", vditor.value);
 });
+
+function test() {
+  console.log('HTML :', vditor.value?.getHTML());
+  console.log('Value :', vditor.value?.getValue());
+}
+
 </script>
 
 <template>
+
   <div id="vditor"/>
+
+  <button @click="test">test</button>
 </template>
 
 <style scoped>

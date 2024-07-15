@@ -20,6 +20,7 @@
     "markdown-it-emoji": "^3.0.0",
     "markdown-it-highlightjs": "^4.1.0",
     "marked": "^13.0.2",
+    "md-editor-v3": "^4.17.3",
     "mitt": "^3.0.1",
     "naive-ui": "^2.38.2",
     "pinia": "^2.1.7",

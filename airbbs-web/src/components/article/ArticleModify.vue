@@ -1,21 +1,45 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import Check from "@/icons/Check.vue";
+import { onMounted, ref } from 'vue'
 import { PaperPlane, SaveOutline } from "@vicons/ionicons5";
 import File from "@/icons/File.vue";
 import Title from "@/icons/Title.vue";
 import MdEditor from "@/components/markdown/MdEditor.vue";
-import { createArticle } from "@/api/article";
+import { createArticle, getArticleById } from "@/api/article";
 import type { Article } from "@/models/article";
 import { useMessage } from "naive-ui"
-
+import Edit from "@/icons/Edit.vue";
+import { useRoute } from "vue-router"
+import { useRouter } from "vue-router"
 const message = useMessage()
+const route = useRoute()
+const router = useRouter()
 
 let article = ref<Article>({
   id: "",
   title: "",
   content: "Hello Air BBS!",
   author: ""
+})
+
+onMounted(async () => {
+
+  let aid = route.query.aid
+  console.log("aid", aid)
+
+  if (aid === "" || aid === null || aid === undefined) {
+      message.error("Url 异常！")
+      router.push({ name : "Index"})
+    return
+  }
+
+
+  let response = await getArticleById(aid as string);
+
+  if (response.status == 200) {
+    article.value = response.data.data
+  }else{
+    message.error(response.data.message)
+  }
 })
 
 async function saveContent() {
@@ -35,8 +59,8 @@ async function saveContent() {
   <n-card style="width: 80vw;margin: auto">
     <template #header>
       <div class="article-post-header">
-        <n-icon :component="Check"></n-icon>
-        <div class="article-post-header-title">文章发布</div>
+        <n-icon :component="Edit"></n-icon>
+        <div class="article-post-header-title">文章修改</div>
       </div>
     </template>
     <n-grid :cols="1" y-gap="10px">

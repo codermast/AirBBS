@@ -51,7 +51,7 @@ onMounted(async () => {
   let response = await getUserById(statusStore.userLoginId)
 
   if (response.status == 200) {
-    message.success("查询成功！")
+    // message.success("查询成功！")
     console.log(response)
     userInfo.value = response.data.data
 
@@ -64,7 +64,7 @@ onMounted(async () => {
     // 保存初始数据
     initialUserInfo = ref<UserQueryInfo>({ ...userInfo.value })
   } else {
-    message.error("查询失败！")
+    message.error("用户信息获取失败！")
   }
 })
 

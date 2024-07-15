@@ -10,6 +10,7 @@ import UserAvatar from "@/components/setting/UserAvatar.vue";
 import UserSocialBind from "@/components/setting/UserSocialBind.vue";
 import ArticleCreate from "@/components/article/ArticleCreate.vue";
 import emitter from "@/utils/emitter"
+import ArticleModify from '@/components/article/ArticleModify.vue';
 
 const routes = [
 	{
@@ -41,6 +42,11 @@ const routes = [
 		path: '/articles/create',
 		name: 'ArticleCreate',
 		component: ArticleCreate
+	},
+	{
+		path: "/articles/modify",
+		name: 'ArticleModify',
+		component: ArticleModify
 	},
 	{
 		path: "/setting",
