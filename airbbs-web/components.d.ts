@@ -7,7 +7,6 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
-    AirMarkdown: typeof import('./src/components/markdown/AirMarkdown.vue')['default']
     ArticleCenter: typeof import('./src/components/article/ArticleCenter.vue')['default']
     ArticleCreate: typeof import('./src/components/article/ArticleCreate.vue')['default']
     ArticleInfo: typeof import('./src/components/article/ArticleInfo.vue')['default']
@@ -79,7 +78,6 @@ declare module 'vue' {
     Pagination: typeof import('./src/components/article/Pagination.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
-    Sidbar: typeof import('./src/components/Sidbar.vue')['default']
     Sidebar: typeof import('./src/components/Sidebar/Sidebar.vue')['default']
     SocialBind: typeof import('./src/components/setting/SocialBind.vue')['default']
     TimeNow: typeof import('./src/components/TimeNow.vue')['default']

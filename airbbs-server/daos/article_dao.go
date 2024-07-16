@@ -22,13 +22,13 @@ func GetArticle(status int) (*[]models.Article, error) {
 	var articles []models.Article
 
 	if status == -1 {
-		result := DB.Order("id desc").Find(&articles)
+		result := DB.Table("articles").Order("id desc").Find(&articles)
 		if result.Error != nil {
 			return nil, result.Error
 		}
 
 	} else {
-		result := DB.Order("id desc").Where("status = ?", status).Find(&articles)
+		result := DB.Table("articles").Order("id desc").Where("status = ?", status).Find(&articles)
 		if result.Error != nil {
 			return nil, result.Error
 		}

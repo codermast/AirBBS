@@ -1,17 +1,16 @@
 <script setup lang="ts">
-import { onMounted, ref, watch } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import { useRouter } from "vue-router";
 import { getArticleListPage } from "@/api/article";
 import type { ArticleListPage, ArticlePageRequest } from "@/models/article";
 import { useMessage } from "naive-ui";
+import Hot from "@/icons/Hot.vue";
+import MarkdownIt from "@/components/markdown/MarkdownIt.vue";
 
 const router = useRouter()
 const message = useMessage()
 
 let articleListPage = ref<ArticleListPage>();
-
-// 文章数量
-let articleCount = ref(0);
 
 let articlePageRequest = ref<ArticlePageRequest>({
   pageNumber: 1,
@@ -53,6 +52,47 @@ watch(() => articlePageRequest.value.pageSize, (newValue) => {
   console.log(`count 变为 ${ newValue }`);
 })
 
+// 获取 Markdown 中的第一张图片
+function getFirstImageUrl(markdownText: string): string {
+  // 匹配 Markdown 图片链接的正则表达式
+  const regex = /!\[(.*?)\]\((.*?)\)/g;
+
+  // 使用正则表达式匹配第一个图片链接
+  const match = regex.exec(markdownText);
+
+  if (match && match.length >= 3) {
+    return match[2]; // 返回图片的 URL
+  }
+
+  return "https://bing.img.run/rand_1366x768.php?" + Math.random(); // 没有匹配到图片链接
+}
+
+// 去除 Markdown 中的所有图片
+function cleanMarkdownText(markdownText: string): string {
+  // Regular expression to match Markdown image syntax ![alt](url)
+  const imageRegex = /!\[.*?\]\(.*?\)/g;
+
+  // Regular expression to match Markdown headers (lines starting with #)
+  const headerRegex = /^#+\s*/gm;
+
+  // Replace all images with an empty string
+  let result = markdownText.replace(imageRegex, '');
+
+  // Replace all headers with an empty string, keeping only text
+  result = result.replace(headerRegex, '');
+
+  // Remove all newline characters and trim whitespace
+  result = result.replace(/\n/g, '').trim();
+
+  return result;
+}
+
+
+
+// 创建带参数的计算属性工厂函数
+function useAbstractArticle(markdownText: string) {
+  return computed(() => cleanMarkdownText(markdownText));
+}
 
 </script>
 
@@ -65,12 +105,30 @@ watch(() => articlePageRequest.value.pageSize, (newValue) => {
               class="articleInfo"
               hoverable
               @click="articleClick(article.id)"
-              :title="article.title">
+          >
+            <template #header>
+              <div class="article-header">
+                <n-icon :component="Hot"></n-icon>
+                <div class="article-header-title">{{ article.title }}</div>
+              </div>
+            </template>
 
+            <template #default>
+              <n-grid cols="4" x-gap="10px">
 
-            <n-ellipsis :line-clamp="5" style="text-indent: 2em" :tooltip="false">
-              {{ article.content }}
-            </n-ellipsis>
+                <n-gi :span="1">
+                  <n-image width="100%" :src="getFirstImageUrl(article.content)"></n-image>
+                </n-gi>
+
+                <n-gi :span="3">
+                  <n-ellipsis :line-clamp="4" style="text-indent: 2em" :tooltip="false">
+
+                    <MarkdownIt :content="cleanMarkdownText(article.content)" ></MarkdownIt>
+                  </n-ellipsis>
+                </n-gi>
+              </n-grid>
+
+            </template>
           </n-card>
         </n-gi>
       </n-grid>
@@ -83,9 +141,6 @@ watch(() => articlePageRequest.value.pageSize, (newValue) => {
           :page-count="articleListPage?.pageCount"
           show-size-picker
       />
-
-      <!--          show-quick-jumper-->
-      <!--          -->
     </n-gi>
   </n-grid>
 </template>
@@ -99,6 +154,16 @@ watch(() => articlePageRequest.value.pageSize, (newValue) => {
 
 .articleInfo:not(:first-child) {
   margin-top: 20px;
+}
+
+.article-header {
+  display: flex;
+  justify-content: left;
+  align-items: center;
+}
+
+.article-header-title {
+  margin-left: 5px;
 }
 
 </style>
