@@ -12,6 +12,9 @@ import ArticleCreate from "@/components/article/ArticleCreate.vue";
 import emitter from "@/utils/emitter"
 import ArticleModify from '@/components/article/ArticleModify.vue';
 import ArticleCenter from '@/components/article/ArticleCenter.vue';
+import ResetPassword from "@/pages/ResetPassword.vue";
+import UserResetPassword from "@/components/setting/UserResetPassword.vue";
+import UserTelBind from "@/components/setting/UserTelBind.vue";
 
 const routes = [
 	{
@@ -78,6 +81,16 @@ const routes = [
 						name: "SettingUserSocial",
 						component: UserSocialBind
 					},
+					{
+						path: "tel",
+						name: "SettingUserTelBind",
+						component: UserTelBind
+					},
+					{
+						path: "password",
+						name: "SettingUserPassword",
+						component: UserResetPassword
+					},
 				]
 			},
 		]
@@ -88,7 +101,11 @@ const routes = [
 		name: 'Login',
 		component: Login
 	},
-
+	{
+		path: "/password/reset",
+		name: 'ResetPassword',
+		component: ResetPassword
+	},
 	{
 		path: "/register",
 		name: 'Register',

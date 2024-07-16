@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import User from "@/pages/User.vue";
+import User from "@/icons/User.vue";
 import { Glasses, GlassesOutline, LockClosedOutline, LogoGithub, LogoWechat } from '@vicons/ionicons5'
 import LogoQQ from '@/icons/QQ.vue'
 import ArrowRight from "@/icons/ArrowRight.vue";
@@ -37,14 +37,13 @@ let rules = ref({
 async function login() {
   loadingBar.start()
   let response = await loginUser(user.value)
-  console.log(response)
+  console.log("loginResponse",response)
   if (response.status == 200) {
-    // 登录成功
-    localStorage.setItem(HeaderAuthTokenName,response.data.data)
 
-    // 更新登录状态
+    // 登录成功，更新登录信息
+    statusStore.JWTToken = response.data.data.token
     statusStore.userLoginStatus = true
-    // statusStore.userLoginId =
+    statusStore.userLoginId = response.data.data.user_id
 
     message.success("登录成功！")
 
@@ -137,7 +136,7 @@ async function login() {
 
             <n-gi :span="1">
               <div class="login-tip-info">
-                <router-link :to="{ name : 'Index' }" class="router-link">忘记密码</router-link>
+                <router-link :to="{ name : 'ResetPassword' }" class="router-link">忘记密码</router-link>
 
                 ? or
 

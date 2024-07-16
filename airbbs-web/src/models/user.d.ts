@@ -9,6 +9,12 @@ export type UserRegisterInfo = {
 	code: string
 }
 
+export type UserResetPasswordInfo = {
+	account: string
+	password: string
+	code: string
+}
+
 export type UserLoginInfo = {
 	username: string
 	password: string

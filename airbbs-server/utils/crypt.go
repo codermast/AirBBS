@@ -11,7 +11,8 @@ func EncryptPassword(password string) string {
 }
 
 // ComparePassword 验证密码
-func ComparePassword(password1 string, password2 string) bool {
-	err := bcrypt.CompareHashAndPassword([]byte(password1), []byte(password2))
+// newPassword 是明文密码，oldPassword 是加密后的密码
+func ComparePassword(newPassword string, oldPassword string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(newPassword), []byte(oldPassword))
 	return err == nil
 }

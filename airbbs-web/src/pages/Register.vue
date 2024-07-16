@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import User from "@/pages/User.vue";
+import User from "@/icons/User.vue";
 import { ref } from "vue";
 import { Glasses, GlassesOutline, Key, LockClosedOutline, Mail } from '@vicons/ionicons5'
 import ArrowRight from "@/icons/ArrowRight.vue";
 import { registerUser } from "@/api/user";
 import type { FormInst, FormItemRule } from 'naive-ui'
 import { useMessage } from "naive-ui"
-import { sendAuthCode } from "@/api/auth";
+import { sendRegisterAuthCode } from "@/api/auth";
 
 const message = useMessage()
 const formRef = ref<FormInst | null>(null)
@@ -96,7 +96,7 @@ async function sendAuthCodeToMail(event: Event) {
     return
   }
 
-  let response = await sendAuthCode(user.value.mail)
+  let response = await sendRegisterAuthCode(user.value.mail)
   if (response.status === 200) {
     message.success(response.data.message)
   } else {

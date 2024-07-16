@@ -37,13 +37,20 @@ func UserLoginAuthMiddleware() gin.HandlerFunc {
 
 		header := c.GetHeader(config.GetJWTConfig().Header)
 
-		if header == "" {
+		if header == "" || !strings.HasPrefix(header, "Bearer") {
 			c.JSON(http.StatusUnauthorized, utils.Error("Authorization header is required"))
 			c.Abort()
 			return
 		}
 
 		parts := strings.Split(header, " ")
+
+		if len(parts) != 2 {
+			c.JSON(http.StatusUnauthorized, utils.Error("Authorization header is required"))
+			c.Abort()
+			return
+		}
+
 		jwtToken := parts[1]
 
 		// 检查 Authorization 头部格式，应为 "Bearer {token}"

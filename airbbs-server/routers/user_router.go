@@ -20,5 +20,6 @@ func SetupUserRoutes(r *gin.Engine) {
 		userGroup.PUT("/", userController.UpdateUser)
 		userGroup.DELETE("/:uid", userController.DeleteUser)
 		userGroup.POST("/login", userController.UserLogin)
+		userGroup.POST("/password/reset", userController.ResetUserPassword)
 	}
 }

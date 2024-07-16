@@ -44,7 +44,7 @@ let menuIconSize = ref(20)
       </div>
     </n-list-item>
 
-    <n-list-item @click="router.push({name : 'SettingUserTel'})">
+    <n-list-item @click="router.push({name : 'SettingUserTelBind'})">
       <div class="setting-userinfo-item">
         <n-icon
             :size="menuIconSize"

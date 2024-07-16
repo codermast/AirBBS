@@ -58,6 +58,7 @@ declare module 'vue' {
     NMessageProvider: typeof import('naive-ui')['NMessageProvider']
     NP: typeof import('naive-ui')['NP']
     NPagination: typeof import('naive-ui')['NPagination']
+    NPopover: typeof import('naive-ui')['NPopover']
     NRadio: typeof import('naive-ui')['NRadio']
     NRadioButton: typeof import('naive-ui')['NRadioButton']
     NRadioGroup: typeof import('naive-ui')['NRadioGroup']
@@ -65,6 +66,8 @@ declare module 'vue' {
     NSkeleton: typeof import('naive-ui')['NSkeleton']
     NSlider: typeof import('naive-ui')['NSlider']
     NSpace: typeof import('naive-ui')['NSpace']
+    NStep: typeof import('naive-ui')['NStep']
+    NSteps: typeof import('naive-ui')['NSteps']
     NSwitch: typeof import('naive-ui')['NSwitch']
     NTag: typeof import('naive-ui')['NTag']
     NText: typeof import('naive-ui')['NText']
@@ -84,7 +87,9 @@ declare module 'vue' {
     UserAvatar: typeof import('./src/components/setting/UserAvatar.vue')['default']
     UserInfo: typeof import('./src/components/setting/UserInfo.vue')['default']
     UserInfoSidebar: typeof import('./src/components/Sidebar/UserInfoSidebar.vue')['default']
+    UserResetPassword: typeof import('./src/components/setting/UserResetPassword.vue')['default']
     UserSocialBind: typeof import('./src/components/setting/UserSocialBind.vue')['default']
+    UserTelBind: typeof import('./src/components/setting/UserTelBind.vue')['default']
     VditorMarkdown: typeof import('./src/components/markdown/VditorMarkdown.vue')['default']
   }
 }

@@ -1,7 +1,7 @@
 // 用户模块 api
 
 import axios from "@/api/axios";
-import type { UserLoginInfo, UserQueryInfo, UserRegisterInfo } from "@/models/user";
+import type { UserLoginInfo, UserQueryInfo, UserRegisterInfo, UserResetPasswordInfo } from "@/models/user";
 
 // 这里的后缀必须加 / 否则重定向后，响应头会丢失
 const BASE_URL = 'users'
@@ -29,4 +29,9 @@ export const loginUser = (user : UserLoginInfo) => {
 // PUT 更新用户基本信息 /users/ 根据传进来的 userId 来更新
 export const updateUserInfo = (user : UserQueryInfo) => {
 	return axios.put(`${BASE_URL}/`, user)
+}
+
+// POST 重置用户密码 /users/password/reset
+export const resetUserPassword = (userResetPasswordInfo : UserResetPasswordInfo) => {
+	return axios.post(`${BASE_URL}/password/reset`, userResetPasswordInfo)
 }

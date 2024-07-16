@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"codermast.com/airbbs/constant"
+	"codermast.com/airbbs/daos"
 	"codermast.com/airbbs/models"
 	"codermast.com/airbbs/services"
 	"codermast.com/airbbs/utils"
@@ -73,7 +74,7 @@ func (uc *UserController) CreateUser(c *gin.Context) {
 	}
 
 	// 校验验证码
-	redisCode, err := utils.Get(user.Mail)
+	redisCode, err := utils.Get(fmt.Sprintf("%s:%s", "register", user.Mail))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, utils.Error(fmt.Sprintf("请先获取验证码")))
 		return
@@ -114,7 +115,7 @@ func (uc *UserController) UpdateUser(c *gin.Context) {
 
 	// 用户解析
 	if err := c.BindJSON(&userVo); err != nil {
-		c.JSON(http.StatusBadRequest, utils.Error("用户数据解析失败！"))
+		c.JSON(http.StatusBadRequest, utils.Error("数据格式错误！"))
 		return
 	}
 
@@ -181,6 +182,65 @@ func (uc *UserController) UserLogin(c *gin.Context) {
 		return
 	}
 
+	response := &models.UserLoginResponse{
+		Token:  tokenString,
+		UserId: user.ID,
+	}
+
 	// 将 Token 返回给客户端
-	c.JSON(http.StatusOK, utils.Success("登录成功", tokenString))
+	c.JSON(http.StatusOK, utils.Success("登录成功", response))
+}
+
+// ResetUserPassword 重置用户密码 /users/password/reset
+func (uc *UserController) ResetUserPassword(c *gin.Context) {
+	var userResetPasswordDto models.UserResetPasswordDto
+
+	// 用户解析
+	if err := c.BindJSON(&userResetPasswordDto); err != nil {
+		c.JSON(http.StatusBadRequest, utils.Error("数据格式错误！"))
+		return
+	}
+
+	account := userResetPasswordDto.Account
+	password := userResetPasswordDto.Password
+	code := userResetPasswordDto.Code
+
+	// 账户为空返回
+	if account == "" {
+		c.JSON(http.StatusConflict, utils.Error("账户不能为空！"))
+		return
+	}
+
+	// 根据账户获取邮箱账号
+	mail, err := daos.GetMailByAccount(account)
+
+	if err != nil {
+		c.JSON(http.StatusConflict, utils.Error(fmt.Sprintf("%v", err)))
+		return
+	}
+
+	// 获取验证码
+	redisCode, err := utils.Get(fmt.Sprintf("%s:%s", "reset", mail))
+
+	if err != nil {
+		c.JSON(http.StatusConflict, utils.Error("请先发送验证码！"))
+		return
+	}
+
+	// 判断验证码是否正确
+	if redisCode != code {
+		c.JSON(http.StatusConflict, utils.Error("验证码错误！"))
+		return
+	}
+
+	// 此时验证码匹配成功，开始更新密码
+
+	err = services.ResetUserPassword(account, password)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, utils.Error(fmt.Sprintf("%v", err)))
+		return
+	}
+
+	c.JSON(http.StatusOK, utils.SuccessMsg("重置成功！"))
 }

@@ -88,15 +88,15 @@ func DeleteUserByID(userID string) error {
 }
 
 func UserLogin(user *models.User) error {
+	oldPassword := user.Password
 
-	var dbUser models.User
-	result := DB.Where("username = ?", user.Username).First(&dbUser)
+	result := DB.Where("username = ?", user.Username).First(&user)
 
 	if result.Error != nil || result.RowsAffected == 0 {
 		return errors.New("用户名不存在！")
 	}
 
-	if !utils.ComparePassword(dbUser.Password, user.Password) {
+	if !utils.ComparePassword(user.Password, oldPassword) {
 		return errors.New("用户名与密码不匹配！")
 	}
 
@@ -115,4 +115,21 @@ func IsAdminByUserId(userId string) error {
 		return nil
 	}
 	return errors.New("权限不足！")
+}
+
+func GetMailByAccount(account string) (string, error) {
+	var user models.User
+	result := DB.First(&user, account)
+
+	if result.Error != nil || result.RowsAffected == 0 {
+		return "", errors.New("用户不存在！")
+	}
+
+	return user.Mail, nil
+}
+
+func ResetUserPassword(mail string, password string) error {
+	result := DB.Table("users").Where("mail = ?", mail).Update("password", password)
+
+	return result.Error
 }

@@ -62,7 +62,7 @@ onMounted(async () => {
       <n-skeleton v-if="loading" text :repeat="6"/>
 
       <div v-else>
-        作者：友人
+        作者：{{ article.author }}
       </div>
     </template>
 

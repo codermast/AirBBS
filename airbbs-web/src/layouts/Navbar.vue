@@ -78,6 +78,9 @@ let userOptions = ref([
     icon: renderIcon(LogoutIcon),
     props: {
       onClick: () => {
+        // 执行退出操作，清空登录记录信息
+        statusStore.JWTToken = ""
+        statusStore.userLoginId = "-1"
         statusStore.userLoginStatus = false
         message.success('退出成功!')
         router.push({name: "Index"})

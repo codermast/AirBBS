@@ -54,3 +54,14 @@ type UserLoginDto struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
 }
+
+type UserResetPasswordDto struct {
+	Account  string `json:"account"`
+	Password string `json:"password"`
+	Code     string `json:"code"`
+}
+
+type UserLoginResponse struct {
+	UserId string `json:"user_id"`
+	Token  string `json:"token"`
+}

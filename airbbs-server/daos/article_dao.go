@@ -33,17 +33,8 @@ func GetArticle(status int) (*[]models.Article, error) {
 		}
 	}
 
-	// 根据 作者 id 获取名称
-	for i := range articles {
-		var author models.Author
-		DB.Table("users").Where("id = ?", articles[i].Author).First(&author)
-
-		if author.Nickname != "" {
-			articles[i].Author = author.Nickname
-		} else {
-			articles[i].Author = author.Username
-		}
-	}
+	// 根据作者id获取作者名称
+	getAuthorNameListByIds(articles)
 
 	return &articles, nil
 }
@@ -67,6 +58,9 @@ func GetArticleByID(articleID string) (*models.Article, error) {
 	if result.Error != nil || result.RowsAffected == 0 {
 		return nil, result.Error
 	}
+
+	// 根据作者id获取作者名称
+	getAuthorNameById(&article)
 	return &article, nil
 }
 
@@ -132,4 +126,30 @@ func GetArticleListPage(articleListPageRequest *models.ArticleListPageRequest) (
 	articleListPage.PageCount = int(math.Ceil(float64(int(totalCount) / pageSize)))
 
 	return articleListPage, nil
+}
+
+// 根据 作者 id 获取名称
+func getAuthorNameListByIds(articles []models.Article) {
+	for i := range articles {
+		var author models.Author
+		DB.Table("users").Where("id = ?", articles[i].Author).First(&author)
+
+		if author.Nickname != "" {
+			articles[i].Author = author.Nickname
+		} else {
+			articles[i].Author = author.Username
+		}
+	}
+}
+
+// 根据 作者 id 获取名称
+func getAuthorNameById(article *models.Article) {
+	var author models.Author
+	DB.Table("users").Where("id = ?", article.Author).First(&author)
+
+	if author.Nickname != "" {
+		article.Author = author.Nickname
+	} else {
+		article.Author = author.Username
+	}
 }

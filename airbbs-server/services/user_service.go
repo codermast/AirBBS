@@ -54,6 +54,18 @@ func DeleteUserByID(userID string) error {
 // UserLogin 用户登录
 func UserLogin(user *models.User) error {
 
-	err := daos.UserLogin(user)
-	return err
+	return daos.UserLogin(user)
+}
+
+func ResetUserPassword(account string, password string) error {
+	mail, err := daos.GetMailByAccount(account)
+
+	if err != nil {
+		return err
+	}
+
+	// 密码加密
+	encryptPassword := utils.EncryptPassword(password)
+
+	return daos.ResetUserPassword(mail, encryptPassword)
 }

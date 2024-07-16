@@ -12,16 +12,13 @@ const themeOverrides = computed(() => ({
   }
 }));
 
-
-
-
 </script>
 
 <template>
   <n-config-provider :theme-overrides="themeOverrides" :locale="zhCN" :date-locale="dateZhCN">
     <n-loading-bar-provider>
       <n-message-provider>
-        <n-grid :cols="1" :y-gap="20" class="container">
+        <n-grid :cols="1" y-gap="20" class="container">
           <n-gi :span="1" class="header">
             <Navbar></Navbar>
           </n-gi>
@@ -45,6 +42,7 @@ const themeOverrides = computed(() => ({
 }
 
 .main {
-  flex-grow: 1;
+
+  min-height: 51vh;
 }
 </style>

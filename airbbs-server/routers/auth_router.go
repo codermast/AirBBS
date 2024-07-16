@@ -12,7 +12,13 @@ func SetupAuthCodeRoutes(r *gin.Engine) {
 	authCodeGroup := r.Group("/auths")
 
 	{
-		// 发送验证码
-		authCodeGroup.POST("/", authController.SendAuthCodeToMail)
+		// 注册验证码
+		authCodeGroup.POST("/register", authController.SendRegisterAuthCodeToMail)
+
+		// 重置密码验证码
+		authCodeGroup.POST("/reset", authController.SendResetAuthCodeToMail)
+
+		// 匹配重置密码验证码
+		authCodeGroup.POST("/reset/match", authController.MatchResetAuthCodeToMail)
 	}
 }
