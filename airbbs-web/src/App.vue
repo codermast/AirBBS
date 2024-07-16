@@ -4,7 +4,7 @@ import Footer from "@/layouts/Footer.vue";
 import { useLoadingBar } from "naive-ui";
 
 import { computed } from 'vue';
-
+import { dateZhCN, zhCN } from 'naive-ui'
 
 const themeOverrides = computed(() => ({
   common: {
@@ -18,7 +18,7 @@ const themeOverrides = computed(() => ({
 </script>
 
 <template>
-  <n-config-provider :theme-overrides="themeOverrides">
+  <n-config-provider :theme-overrides="themeOverrides" :locale="zhCN" :date-locale="dateZhCN">
     <n-loading-bar-provider>
       <n-message-provider>
         <n-grid :cols="1" :y-gap="20" class="container">

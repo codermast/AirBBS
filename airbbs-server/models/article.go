@@ -29,3 +29,9 @@ type ArticleListPage struct {
 	TotalCount int       `json:"totalCount"`
 	Articles   []Article `json:"articles"`
 }
+
+type Author struct {
+	ID       string `json:"id"`
+	Username string `json:"username"`
+	Nickname string `json:"nickname"`
+}

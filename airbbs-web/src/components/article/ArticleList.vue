@@ -48,8 +48,9 @@ watch(() => articlePageRequest.value.pageNumber, async (newValue) => {
 })
 
 // 监听页面大小变动
-watch(() => articlePageRequest.value.pageSize, (newValue) => {
+watch(() => articlePageRequest.value.pageSize, async (newValue) => {
   console.log(`count 变为 ${ newValue }`);
+  await fetchArticleList()
 })
 
 // 获取 Markdown 中的第一张图片
@@ -67,31 +68,23 @@ function getFirstImageUrl(markdownText: string): string {
   return "https://bing.img.run/rand_1366x768.php?" + Math.random(); // 没有匹配到图片链接
 }
 
-// 去除 Markdown 中的所有图片
 function cleanMarkdownText(markdownText: string): string {
-  // Regular expression to match Markdown image syntax ![alt](url)
-  const imageRegex = /!\[.*?\]\(.*?\)/g;
+  // Regular expressions to match various Markdown elements
+  const imageRegex = /!\[.*?\]\(.*?\)/g;         // Markdown image syntax ![alt](url)
+  const headerRegex = /^#+\s*/gm;               // Markdown headers (lines starting with #)
+  const linkRegex = /\[([^\]]+)\]\([^\)]+\)/g;  // Markdown hyperlinks [text](url)
+  const boldItalicRegex = /(\*\*|__)(.*?)\1/g;  // Markdown bold and italic (**bold**, *italic*)
 
-  // Regular expression to match Markdown headers (lines starting with #)
-  const headerRegex = /^#+\s*/gm;
-
-  // Replace all images with an empty string
-  let result = markdownText.replace(imageRegex, '');
-
-  // Replace all headers with an empty string, keeping only text
-  result = result.replace(headerRegex, '');
+  // Replace images, headers, links, bold and italic with an empty string
+  let result = markdownText.replace(imageRegex, '')
+      .replace(headerRegex, '')
+      .replace(linkRegex, (_, text) => text)
+      .replace(boldItalicRegex, (_, text) => text);
 
   // Remove all newline characters and trim whitespace
   result = result.replace(/\n/g, '').trim();
 
   return result;
-}
-
-
-
-// 创建带参数的计算属性工厂函数
-function useAbstractArticle(markdownText: string) {
-  return computed(() => cleanMarkdownText(markdownText));
 }
 
 </script>

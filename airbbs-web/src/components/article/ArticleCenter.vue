@@ -76,6 +76,10 @@ const columns = [
     }
   },
   {
+    title: '作者',
+    key: 'author',
+  },
+  {
     title: '状态',
     key: 'state',
     render(article: Article) {

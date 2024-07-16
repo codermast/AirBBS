@@ -26,11 +26,22 @@ func GetArticle(status int) (*[]models.Article, error) {
 		if result.Error != nil {
 			return nil, result.Error
 		}
-
 	} else {
 		result := DB.Table("articles").Order("id desc").Where("status = ?", status).Find(&articles)
 		if result.Error != nil {
 			return nil, result.Error
+		}
+	}
+
+	// 根据 作者 id 获取名称
+	for i := range articles {
+		var author models.Author
+		DB.Table("users").Where("id = ?", articles[i].Author).First(&author)
+
+		if author.Nickname != "" {
+			articles[i].Author = author.Nickname
+		} else {
+			articles[i].Author = author.Username
 		}
 	}
 
