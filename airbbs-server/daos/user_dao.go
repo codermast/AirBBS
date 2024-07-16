@@ -102,3 +102,17 @@ func UserLogin(user *models.User) error {
 
 	return nil
 }
+
+// IsAdminByUserId 判断指定用户是否为管理员
+func IsAdminByUserId(userId string) error {
+	var user models.User
+	result := DB.First(&user, userId)
+	if result.Error != nil || result.RowsAffected == 0 {
+		return errors.New("用户不存在！")
+	}
+
+	if user.Admin {
+		return nil
+	}
+	return errors.New("权限不足！")
+}

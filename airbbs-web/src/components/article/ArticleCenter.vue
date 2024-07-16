@@ -30,6 +30,9 @@ async function getArticleListInfo() {
     console.log("response: ", response);
     articleList.value = response.data.data;
     console.log("articleList: ", articleList.value)
+  }else{
+    message.error(response.data.message)
+    router.push({ name : "Index"})
   }
 }
 
@@ -166,7 +169,7 @@ function getStatusName(status: number) {
 }
 
 let pagination = {
-  pageSize: 15
+  pageSize: 10
 }
 
 function renderIcon(icon: Component) {

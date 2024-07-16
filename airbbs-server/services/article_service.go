@@ -40,3 +40,7 @@ func UpdateArticleByID(article *models.Article) (*models.Article, error) {
 func UpdateArticleListStatusById(ids []string, status int) error {
 	return daos.UpdateArticleListStatusById(ids, status)
 }
+
+func GetArticleListPage(articleListPageRequest *models.ArticleListPageRequest) (models.ArticleListPage, error) {
+	return daos.GetArticleListPage(articleListPageRequest)
+}

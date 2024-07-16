@@ -130,3 +130,23 @@ func (ac *ArticleController) UpdateArticleListStatusById(c *gin.Context) {
 
 	c.JSON(http.StatusOK, utils.SuccessMsg("更新成功！"))
 }
+
+// GetArticleListPage 分页查询文章
+func (ac *ArticleController) GetArticleListPage(c *gin.Context) {
+	var ArticleListPageRequest models.ArticleListPageRequest
+
+	// 分页请求解析
+	if err := c.ShouldBindQuery(&ArticleListPageRequest); err != nil {
+		c.JSON(http.StatusBadRequest, utils.Error(fmt.Sprintf("%v", err)))
+		return
+	}
+
+	ArticleListPage, err := services.GetArticleListPage(&ArticleListPageRequest)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, utils.Error(fmt.Sprintf("%v", err)))
+		return
+	}
+
+	c.JSON(http.StatusOK, utils.Success("查询成功！", ArticleListPage))
+}

@@ -8,7 +8,24 @@ type Article struct {
 	Author  string `gorm:"size:255" json:"author"`
 }
 
+func (Article) TableName() string {
+	return "article"
+}
+
 type ArticleUpdateStatusRequest struct {
 	IDs    []string `json:"ids"`
 	Status int      `json:"status"`
+}
+
+type ArticleListPageRequest struct {
+	PageNumber int `form:"pageNumber"`
+	PageSize   int `form:"pageSize"`
+}
+
+type ArticleListPage struct {
+	PageNumber int       `json:"pageNumber"`
+	PageSize   int       `json:"pageSize"`
+	PageCount  int       `json:"pageCount"`
+	TotalCount int       `json:"totalCount"`
+	Articles   []Article `json:"articles"`
 }

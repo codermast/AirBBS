@@ -6,3 +6,16 @@ export type Article = {
 	author: string
 }
 
+export type ArticlePageRequest = {
+	pageNumber: number
+	pageSize: number
+}
+
+
+export type ArticleListPage = {
+	pageNumber: int
+	pageSize: int
+	pageCount: int
+	totalCount: int
+	articles: Article[]
+}

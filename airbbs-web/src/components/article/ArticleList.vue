@@ -1,23 +1,40 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
-
-import PageNum from "@/components/article/Pagination.vue";
+import { onMounted, ref, watch } from "vue";
 import { useRouter } from "vue-router";
-import { getArticlePublicList } from "@/api/article";
+import { getArticleListPage } from "@/api/article";
+import type { ArticleListPage, ArticlePageRequest } from "@/models/article";
+import { useMessage } from "naive-ui";
 
 const router = useRouter()
+const message = useMessage()
 
-let articleList = ref();
+let articleListPage = ref<ArticleListPage>();
+
+// 文章数量
+let articleCount = ref(0);
+
+let articlePageRequest = ref<ArticlePageRequest>({
+  pageNumber: 1,
+  pageSize: 10,
+})
 
 onMounted(async () => {
-
-  let response = await getArticlePublicList()
-
-  if (response.status == 200) {
-    articleList.value = response.data.data;
-    console.log("articleList: ", articleList)
-  }
+  // 获取文章列表
+  await fetchArticleList()
 })
+
+async function fetchArticleList() {
+
+  let response = await getArticleListPage(articlePageRequest.value)
+  console.log(response)
+  if (response.status == 200) {
+    articleListPage.value = response.data.data;
+    console.log("articleListPage: ", articleListPage.value)
+  } else {
+    message.error(response.data.message)
+  }
+}
+
 
 // 文章被点击
 function articleClick(articleID: any) {
@@ -25,13 +42,25 @@ function articleClick(articleID: any) {
   router.push(`/articles/${ articleID }`);
 }
 
+// 监听页码变动
+watch(() => articlePageRequest.value.pageNumber, async (newValue) => {
+  console.log(`count 变为 ${ newValue }`);
+  await fetchArticleList()
+})
+
+// 监听页面大小变动
+watch(() => articlePageRequest.value.pageSize, (newValue) => {
+  console.log(`count 变为 ${ newValue }`);
+})
+
+
 </script>
 
 <template>
   <n-grid :cols="1" y-gap="10">
     <n-gi :span="1">
       <n-grid :cols="1" y-gap="15">
-        <n-gi :span="1" v-for="article in articleList">
+        <n-gi :span="1" v-for="article in articleListPage?.articles">
           <n-card
               class="articleInfo"
               hoverable
@@ -47,7 +76,16 @@ function articleClick(articleID: any) {
       </n-grid>
     </n-gi>
     <n-gi :span="1" style="margin:auto">
-      <PageNum></PageNum>
+      <n-pagination
+          v-model:page="articlePageRequest.pageNumber"
+          v-model:page-size="articlePageRequest.pageSize"
+          :page-sizes="[10, 20, 30, 40]"
+          :page-count="articleListPage?.pageCount"
+          show-size-picker
+      />
+
+      <!--          show-quick-jumper-->
+      <!--          -->
     </n-gi>
   </n-grid>
 </template>

@@ -3,6 +3,7 @@ package daos
 import (
 	"codermast.com/airbbs/models"
 	"errors"
+	"math"
 )
 
 // CreateArticle 文章发布
@@ -91,4 +92,33 @@ func UpdateArticleListStatusById(ids []string, status int) error {
 	}
 
 	return nil
+}
+
+func GetArticleListPage(articleListPageRequest *models.ArticleListPageRequest) (models.ArticleListPage, error) {
+	// 页号
+	pageNumber := articleListPageRequest.PageNumber
+
+	// 页面大小
+	pageSize := articleListPageRequest.PageSize
+
+	// 偏移量
+	offset := (pageNumber - 1) * pageSize
+
+	var articleListPage models.ArticleListPage
+
+	var totalCount int64
+
+	DB.Table("articles").Count(&totalCount)
+	// 分页查询
+	result := DB.Table("articles").Where("status = ?", 1).Limit(pageSize).Offset(offset).Find(&articleListPage.Articles)
+	if result.Error != nil {
+		return models.ArticleListPage{}, result.Error
+	}
+
+	articleListPage.PageNumber = pageNumber
+	articleListPage.PageSize = pageSize
+	articleListPage.TotalCount = int(totalCount)
+	articleListPage.PageCount = int(math.Ceil(float64(int(totalCount) / pageSize)))
+
+	return articleListPage, nil
 }

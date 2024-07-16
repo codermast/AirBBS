@@ -1,5 +1,5 @@
 import axios from "@/api/axios";
-import type { Article } from "@/models/article";
+import type { Article, ArticlePageRequest } from "@/models/article";
 
 const BASE_URL: string = "articles"
 
@@ -12,8 +12,6 @@ export const getArticleAllList = () => {
 export const getArticlePublicList = () => {
 	return axios.get(`${ BASE_URL }/publish`);
 };
-
-
 
 // GET /articles/:aid
 export const getArticleById = (articleId: string) => {
@@ -41,4 +39,9 @@ export const updateArticleListStatus = (articleIdList: string[], status: number)
 		ids: articleIdList,
 		status: status
 	})
+}
+
+// GET /articles/page
+export const getArticleListPage = (articlePageRequest: ArticlePageRequest) => {
+	return axios.get(`${ BASE_URL }/page`, { params : articlePageRequest })
 }
