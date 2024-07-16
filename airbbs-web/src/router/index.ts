@@ -15,6 +15,7 @@ import ArticleCenter from '@/components/article/ArticleCenter.vue';
 import ResetPassword from "@/pages/ResetPassword.vue";
 import UserResetPassword from "@/components/setting/UserResetPassword.vue";
 import UserTelBind from "@/components/setting/UserTelBind.vue";
+import Blink from "@/pages/Blink.vue";
 
 const routes = [
 	{
@@ -111,6 +112,12 @@ const routes = [
 		name: 'Register',
 		component: Register
 	},
+
+	{
+		path: "/blink",
+		name: 'Blink',
+		component : Blink
+	}
 
 ];
 

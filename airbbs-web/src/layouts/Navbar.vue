@@ -113,7 +113,12 @@ let editOptions = ref([
   {
     label: '分享动态',
     key: 'status',
-    icon: renderIcon(BalloonIcon)
+    icon: renderIcon(BalloonIcon),
+    props: {
+      onClick: () => {
+        router.push({name: "Blink"})
+      }
+    }
   }
 
 ])
@@ -158,7 +163,7 @@ function renderIcon(icon: Component) {
           </div>
         </div>
 
-        <div class="navbar-item" @click="router.push({name : 'Index'})">
+        <div class="navbar-item" @click="router.push({name : 'Blink'})">
 
           <n-icon :component="BalloonIcon" size="18px"></n-icon>
           <div class="navbar-item-title">
