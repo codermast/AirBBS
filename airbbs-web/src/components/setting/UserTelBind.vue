@@ -5,32 +5,30 @@ import { Key } from "@vicons/ionicons5";
 import { useStatusStore } from "@/stores/statusStore";
 import { onMounted, ref } from "vue";
 import { getUserById } from "@/api/user";
-import { useMessage } from "naive-ui";
+import { type FormItemRule, useMessage } from "naive-ui";
 
 const statusStore = useStatusStore();
 const message = useMessage()
 
 let userId = statusStore.userLoginId
 
-let userInfo = ref();
-
-let tel = ref("")
-let code = ref("")
-
 let isSendAuthCode = ref(false)
 
 let resetTelRequest = ref({
-  id : userId,
-  tel : tel.value,
-  code : code.value
+  id: userId,
+  oldTel: "",
+  newTel: "",
+  code: ""
 })
+
+let formRef = ref();
 
 onMounted(async () => {
   let response = await getUserById(userId)
   console.log(response)
 
   if (response.status === 200) {
-    userInfo.value = response.data.data
+    resetTelRequest.value.oldTel = response.data.data.tel
   } else {
     message.error("登录用户异常，请重新登录！")
 
@@ -38,7 +36,52 @@ onMounted(async () => {
   }
 })
 
+let rules = ref({
+  newTel: [
+    {
+      required: true,
+      message: '请输入新的手机号！',
+      trigger: ['input', "blur"]
+    },
+    {
+      validator: validatePhoneNumber,
+      message: "手机号格式错误！",
+      trigger: ["blur", "tel-input"]
+    },
+    {
+      validator: validatePhoneNumberSame,
+      message: "新手机号不能与原手机号重复！",
+      trigger: ["blur"]
+    }
+  ],
+})
 
+// 手机号格式校验
+function validatePhoneNumber(rule: FormItemRule, value: string): boolean {
+  const phoneRegex = /^1[3-9]\d{9}$/;
+  return phoneRegex.test(value);
+}
+
+// 手机号相同校验
+function validatePhoneNumberSame(rule: FormItemRule, value: string) {
+  return value != resetTelRequest.value.oldTel
+}
+
+// 发送更换手机验证码
+function sendChangeTelAuthCode(e: MouseEvent) {
+  e.preventDefault()
+  formRef.value?.validate((errors: boolean) => {
+    if (!errors) {
+
+      // 格式校验成功后，发送验证码
+      // TODO:发送手机验证码
+      message.success('发送成功！')
+      isSendAuthCode.value = true
+    } else {
+      message.error('手机号填写有误，请核对后重试！')
+    }
+  })
+}
 </script>
 
 <template>
@@ -53,13 +96,17 @@ onMounted(async () => {
     </template>
 
     <n-form
+        ref="formRef"
+        :rules="rules"
+        :model="resetTelRequest"
         label-placement="left"
         class="edit-userinfo-form"
     >
       <n-grid :cols="1">
         <n-gi :span="1">
-          <n-form-item >
+          <n-form-item>
             <n-input
+                v-model:value="resetTelRequest.oldTel"
                 disabled
                 placeholder="已绑定手机号"
             >
@@ -71,11 +118,12 @@ onMounted(async () => {
         </n-gi>
 
         <n-gi :span="1">
-          <n-form-item >
+          <n-form-item path="newTel">
             <n-input-group>
               <n-input
-                  v-model:value="tel"
-                  placeholder="手机号"
+                  v-model:value="resetTelRequest.newTel"
+                  maxlength="11"
+                  placeholder="新手机号"
               >
                 <template #prefix>
                   <n-icon :component="Phone"></n-icon>
@@ -83,7 +131,7 @@ onMounted(async () => {
               </n-input>
 
               <n-button
-                  @click=""
+                  @click="sendChangeTelAuthCode"
               >发送验证码
               </n-button>
             </n-input-group>
@@ -93,6 +141,7 @@ onMounted(async () => {
         <n-gi :span="1">
           <n-form-item>
             <n-input
+                v-model:value="resetTelRequest.code"
                 :disabled="!isSendAuthCode"
                 show-count
                 :maxlength="6"

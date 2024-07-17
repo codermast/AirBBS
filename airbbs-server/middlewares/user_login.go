@@ -5,17 +5,19 @@ import (
 	"codermast.com/airbbs/constant"
 	"codermast.com/airbbs/models"
 	"codermast.com/airbbs/utils"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"regexp"
 	"strings"
 )
 
 // 放行的路由列表
 var unauthenticatedRoutes = []models.Router{
 	{"/users/login", "POST"},
-	{"/users/", "POST"},
-	{"/articles/", "GET"},
-	{"/articles/**", "GET"},
+	{"/users/register", "POST"},
+	{"/articles/page", "GET"},
+	{`/articles/\d+`, "GET"},
 }
 
 // UserLoginAuthMiddleware 用户登录校验
@@ -24,10 +26,13 @@ func UserLoginAuthMiddleware() gin.HandlerFunc {
 
 		requestMethod := c.Request.Method
 		requestUrl := c.Request.URL.Path
+		uid := c.Param("uid")
+
+		fmt.Println(uid)
 
 		// 0. 放行指定路由
 		for _, route := range unauthenticatedRoutes {
-			if (requestUrl == route.Url || matchesWildcardRoute(route.Url, requestUrl)) && requestMethod == route.Method {
+			if (requestUrl == route.Url || matchRoute(requestUrl, route.Url)) && requestMethod == route.Method {
 				c.Next()
 				return
 			}
@@ -68,13 +73,27 @@ func UserLoginAuthMiddleware() gin.HandlerFunc {
 			c.Abort()
 		} else {
 			c.Set(constant.USERID, claims.UserID)
+			userid, _ := c.Get(constant.USERID)
+			userId := c.GetString(constant.USERID)
+
+			fmt.Printf("Get : %s \n", userid)
+			fmt.Printf("GetString : %s \n", userId)
 			c.Next()
 		}
 	}
 }
 
-// matchesWildcardRoute 检查是否匹配通配符路由
-func matchesWildcardRoute(wildcardRoute string, actualRoute string) bool {
-	// 这里简单示例，你可以根据实际情况进行更复杂的通配符匹配
-	return len(actualRoute) >= len(wildcardRoute) && actualRoute[:len(wildcardRoute)-1] == wildcardRoute[:len(wildcardRoute)-1]
+// 路由匹配
+func matchRoute(sourceRoute string, ruleRoute string) bool {
+
+	// 如果完全匹配则放行
+	if sourceRoute == ruleRoute {
+		return true
+	}
+
+	// 定义正则表达式
+	re := regexp.MustCompile(ruleRoute)
+
+	// 返回匹配结果
+	return re.MatchString(sourceRoute)
 }

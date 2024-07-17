@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"codermast.com/airbbs/config"
 	"codermast.com/airbbs/constant"
 	"codermast.com/airbbs/daos"
 	"codermast.com/airbbs/models"
@@ -10,6 +11,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
+	"path/filepath"
 )
 
 type UserController struct{}
@@ -246,4 +248,39 @@ func (uc *UserController) ResetUserPassword(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, utils.SuccessMsg("重置成功！"))
+}
+
+// UploadUserPhoto 更新用户头像 /users/photo
+func (uc *UserController) UploadUserPhoto(c *gin.Context) {
+	// 获取表单文件
+	file, err := c.FormFile("file")
+
+	if err != nil {
+		c.String(http.StatusBadRequest, fmt.Sprintf("get form err: %s", err.Error()))
+		return
+	}
+
+	// 定义保存文件的目录和文件名
+	saveDir := "./uploads"
+	savePath := filepath.Join(saveDir, file.Filename)
+
+	// 保存文件到指定目录
+	if err := c.SaveUploadedFile(file, savePath); err != nil {
+		c.String(http.StatusInternalServerError, "Failed to save file: %s", err.Error())
+		return
+	}
+
+	url := "//" + config.GetServerConfig().Host + ":" + config.GetServerConfig().Port + "/" + savePath
+
+	// 用户 ID
+	userID := c.GetString(constant.USERID)
+
+	err = services.UpdateUserPhoto(url, userID)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, utils.Error(fmt.Sprintf("%v", err)))
+		return
+	}
+
+	c.JSON(http.StatusOK, utils.Success("更新成功！", url))
 }

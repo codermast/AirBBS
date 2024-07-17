@@ -68,6 +68,7 @@ function getFirstImageUrl(markdownText: string): string {
   return "https://bing.img.run/rand_1366x768.php?" + Math.random(); // 没有匹配到图片链接
 }
 
+// 清除 Markdown 中的特殊字符
 function cleanMarkdownText(markdownText: string): string {
   // Regular expressions to match various Markdown elements
   const imageRegex = /!\[.*?\]\(.*?\)/g;         // Markdown image syntax ![alt](url)

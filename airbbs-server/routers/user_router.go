@@ -16,10 +16,11 @@ func SetupUserRoutes(r *gin.Engine) {
 	{
 		userGroup.GET("/", userController.GetAllUsers)
 		userGroup.GET("/:uid", userController.GetUserByID)
-		userGroup.POST("/", userController.CreateUser)
+		userGroup.POST("/register", userController.CreateUser)
 		userGroup.PUT("/", userController.UpdateUser)
 		userGroup.DELETE("/:uid", userController.DeleteUser)
 		userGroup.POST("/login", userController.UserLogin)
 		userGroup.POST("/password/reset", userController.ResetUserPassword)
+		userGroup.POST("/photo", userController.UploadUserPhoto)
 	}
 }

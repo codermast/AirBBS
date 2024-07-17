@@ -21,6 +21,7 @@ declare module 'vue' {
     MarkdownIt: typeof import('./src/components/markdown/MarkdownIt.vue')['default']
     MarkdownRender: typeof import('./src/components/markdown/MarkdownRender.vue')['default']
     MdEditor: typeof import('./src/components/markdown/MdEditor.vue')['default']
+    NA: typeof import('naive-ui')['NA']
     NAlert: typeof import('naive-ui')['NAlert']
     NAvatar: typeof import('naive-ui')['NAvatar']
     Navbar: typeof import('./src/components/Navbar.vue')['default']

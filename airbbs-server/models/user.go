@@ -1,16 +1,21 @@
 package models
 
+import "time"
+
 type User struct {
-	ID        string `gorm:"primaryKey;autoIncrement" json:"id"`
-	Username  string `gorm:"size:255" json:"username"`
-	Password  string `gorm:"size:255" json:"password"`
-	Nickname  string `gorm:"size:255" json:"nickname"`
-	Mail      string `gorm:"size:255" json:"mail"`
-	Github    string `gorm:"size:255" json:"github"`
-	Tel       string `gorm:"size:255" json:"tel"`
-	Admin     bool   `gorm:"default:false" json:"admin"`
-	Introduce string `gorm:"size:65535" json:"introduce"`
-	Sex       bool   `gorm:"default:false" json:"sex"`
+	ID           string    `gorm:"primaryKey;autoIncrement" json:"id"`
+	Username     string    `gorm:"size:255" json:"username"`
+	Password     string    `gorm:"size:255" json:"password"`
+	Nickname     string    `gorm:"size:255" json:"nickname"`
+	Photo        string    `gorm:"size:255" json:"photo"`
+	Mail         string    `gorm:"size:255" json:"mail"`
+	Github       string    `gorm:"size:255" json:"github"`
+	Tel          string    `gorm:"size:255" json:"tel"`
+	Admin        bool      `gorm:"default:false" json:"admin"`
+	Introduce    string    `gorm:"size:65535" json:"introduce"`
+	Sex          bool      `gorm:"default:false" json:"sex"`
+	RegisterTime time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"register_time"`
+	LoginTime    time.Time `json:"login_time"`
 }
 
 type UserDTO struct {
@@ -25,6 +30,7 @@ type UserVO struct {
 	ID        string `gorm:"primaryKey;autoIncrement" json:"id"`
 	Username  string `gorm:"size:255" json:"username"`
 	Nickname  string `gorm:"size:255" json:"nickname"`
+	Photo     string `gorm:"size:255" json:"photo"`
 	Mail      string `gorm:"size:255" json:"mail"`
 	Github    string `gorm:"size:255" json:"github"`
 	Tel       string `gorm:"size:255" json:"tel"`

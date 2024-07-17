@@ -21,27 +21,27 @@ func UserAdminAuthMiddleware() gin.HandlerFunc {
 		requestMethod := c.Request.Method
 		requestUrl := c.Request.URL.Path
 
-		// 0. 放行除拦截之外的其他路由
+		// 0. 拦截指定路由
 		for _, route := range adminAuthenticatedRoutes {
-			if !(requestUrl == route.Url || matchesWildcardRoute(route.Url, requestUrl)) && requestMethod == route.Method {
-				c.Next()
-				return
+			if (requestUrl == route.Url || matchRoute(requestUrl, route.Url)) && requestMethod == route.Method {
+				// 1. 获取 User 信息
+				userId := c.GetString(constant.USERID)
+
+				// 2. 判断用户是否为管理员
+
+				err := daos.IsAdminByUserId(userId)
+				if err != nil {
+					// 不是则拦截
+					c.JSON(http.StatusUnauthorized, utils.Error("权限不足！"))
+					c.Abort()
+				} else {
+					// 是管理员则放行
+					c.Next()
+				}
 			}
 		}
 
-		// 1. 获取 User 信息
-		userId := c.GetString(constant.USERID)
-
-		// 2. 判断用户是否为管理员
-
-		err := daos.IsAdminByUserId(userId)
-		if err != nil {
-			// 不是则拦截
-			c.JSON(http.StatusUnauthorized, utils.Error("权限不足！"))
-			c.Abort()
-		} else {
-			// 是管理员则放行
-			c.Next()
-		}
+		// 3. 拦截失败，则直接放行
+		c.Next()
 	}
 }
