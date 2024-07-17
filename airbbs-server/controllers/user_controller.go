@@ -120,10 +120,13 @@ func (uc *UserController) UpdateUser(c *gin.Context) {
 	}
 
 	// 判断 JWT 中 UserID 和 UserVo 中是否匹配
-	if c.GetString(constant.USERID) == userVo.ID {
+	if c.GetString(constant.USERID) != userVo.ID {
 		c.JSON(http.StatusBadRequest, utils.Error("用户ID不匹配！"))
 		return
 	}
+
+	// 不更新 username
+	userVo.Username = ""
 
 	err := services.UpdateUser(&userVo)
 	if err != nil {

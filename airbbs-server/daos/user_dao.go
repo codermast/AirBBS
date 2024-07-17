@@ -68,8 +68,8 @@ func UpdateUser(userVo *models.UserVO) error {
 		return errors.New("用户不存在")
 	}
 
-	// 更新操作
-	result := DB.Save(userVo)
+	// 更新操作，仅更新非零值的字段
+	result := DB.Table("users").Updates(userVo)
 
 	// 更新失败
 	if result.Error != nil {
