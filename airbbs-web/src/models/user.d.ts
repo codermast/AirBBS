@@ -1,3 +1,18 @@
+export type User = {
+	id: string
+	username: string
+	nickname: string
+	photo: string
+	mail: string
+	github: string
+	tel: string
+	admin: string
+	introduce: string
+	sex: string
+	registerTime: string
+	loginTime: string
+}
+
 export type UserRegisterInfo = {
 	id: string
 	username: string

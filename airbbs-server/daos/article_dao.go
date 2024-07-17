@@ -113,7 +113,7 @@ func GetArticleListPage(articleListPageRequest *models.ArticleListPageRequest) (
 
 	var totalCount int64
 
-	DB.Table("articles").Count(&totalCount)
+	DB.Table("articles").Where("status = ?", 1).Count(&totalCount)
 	// 分页查询
 	result := DB.Table("articles").Where("status = ?", 1).Limit(pageSize).Offset(offset).Find(&articleListPage.Articles)
 	if result.Error != nil {

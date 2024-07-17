@@ -69,3 +69,8 @@ func ResetUserPassword(account string, password string) error {
 
 	return daos.ResetUserPassword(mail, encryptPassword)
 }
+
+// UpdateUserPhoto 上传用户头像
+func UpdateUserPhoto(url string, userID string) error {
+	return daos.UpdateUserPhoto(url, userID)
+}

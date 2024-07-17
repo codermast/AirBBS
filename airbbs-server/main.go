@@ -24,6 +24,9 @@ func main() {
 	// 2. 初始化 Gin
 	r := gin.Default()
 
+	// 提供静态文件夹"assets"，所有的文件都可以通过"/static"访问
+	r.Static("/uploads", "./uploads")
+
 	// 打印每个请求的日志
 	r.Use(gin.Logger())
 

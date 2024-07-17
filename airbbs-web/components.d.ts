@@ -15,6 +15,7 @@ declare module 'vue' {
     ArticleModify: typeof import('./src/components/article/ArticleModify.vue')['default']
     ArticlePreviewList: typeof import('./src/components/article/ArticlePreviewList.vue')['default']
     ArticleSidebar: typeof import('./src/components/Sidebar/ArticleSidebar.vue')['default']
+    BlinkMain: typeof import('./src/components/BlinkMain.vue')['default']
     Create: typeof import('./src/components/article/Create.vue')['default']
     Footer: typeof import('./src/components/Footer.vue')['default']
     MarkdownIt: typeof import('./src/components/markdown/MarkdownIt.vue')['default']

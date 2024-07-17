@@ -116,10 +116,17 @@ function resetUserInfo() {
                   label="用户名"
                   path="inputValue"
               >
-                <n-input
-                    v-model:value="userInfo.username"
-                    placeholder="username"
-                />
+                <n-tooltip trigger="hover" placement="top-start">
+                  <template #trigger>
+                    <n-input
+                        disabled
+                        v-model:value="userInfo.username"
+                        placeholder="username"
+                    />
+                  </template>
+                  用户名禁止修改！
+                </n-tooltip>
+
               </n-form-item>
             </n-gi>
 

@@ -1,6 +1,7 @@
 # 系统配置信息
 server:
   name: airblog
+  host: localhost
   port: 8080
 #  数据库配置信息
 database:

@@ -3,16 +3,48 @@
 import Edit from "@/icons/Edit.vue";
 import { ArchiveOutline as Archive } from "@vicons/ionicons5";
 import { type UploadFileInfo, useMessage } from 'naive-ui'
+import { onMounted, ref } from "vue";
+import { useStatusStore } from "@/stores/statusStore";
+import { getUserById, uploadUserPhoto } from "@/api/user";
 
+
+const statusStore = useStatusStore();
 const message = useMessage()
+
+let userId = statusStore.userLoginId;
+let userPhoto = ref()
+let photoFile = ref()
+
+onMounted(async () => {
+  // 获取用户信息
+  let response = await getUserById(userId)
+
+  if (response.status == 200) {
+    userPhoto.value = response.data.data.photo
+  }
+})
 
 // 图片上传之前校验图片格式，这里是头像上传，故只支持单文件
 function beforeUpload(file: UploadFileInfo) {
   if (file.file?.type !== 'image/png' && file.file?.type !== 'image/jpg') {
-    message.error('只能上传png格式的图片文件，请重新上传')
+    message.error('只能上传png、jpg格式的图片文件，请重新上传')
     return false
+  } else {
+    // 此时校验成功
+    photoFile.value = file.file
+    userPhoto.value = URL.createObjectURL(photoFile.value.file)
+    return true
   }
-  return true
+}
+
+// 更新头像
+async function updatePhoto() {
+  let response = await uploadUserPhoto(photoFile.value.file)
+
+  if  (response.status == 200){
+    message.success("success")
+    userPhoto.value = response.data.data
+  }
 }
 </script>
 
@@ -39,8 +71,7 @@ function beforeUpload(file: UploadFileInfo) {
         </n-gi>
         <n-gi :span="1">
           <n-image
-
-              src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg"
+              :src="userPhoto"
               class="edit-user-avatar-image"
           />
 
@@ -56,7 +87,6 @@ function beforeUpload(file: UploadFileInfo) {
                 <n-upload
                     :multiple="false"
                     directory-dnd
-                    action="https://www.mocky.io/v2/5e4bafc63100007100d8b70f"
                     :max="1"
                     :show-file-list="true"
                     accept="image/png,image/jpeg"
@@ -85,6 +115,7 @@ function beforeUpload(file: UploadFileInfo) {
         <n-gi :span="1">
           <div class="action-button-list">
             <n-button
+                @click="updatePhoto"
                 class="action-button-item"
                 type="primary"
             >上传头像

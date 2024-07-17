@@ -4,6 +4,7 @@ import (
 	"codermast.com/airbbs/models"
 	"codermast.com/airbbs/utils"
 	"errors"
+	"time"
 )
 
 // GetAllUsers 查询所有用户
@@ -29,6 +30,7 @@ func GetUserByID(userID string) (models.UserVO, error) {
 	userVo.ID = user.ID
 	userVo.Username = user.Username
 	userVo.Nickname = user.Nickname
+	userVo.Photo = user.Photo
 	userVo.Mail = user.Mail
 	userVo.Github = user.Github
 	userVo.Tel = user.Tel
@@ -68,8 +70,8 @@ func UpdateUser(userVo *models.UserVO) error {
 		return errors.New("用户不存在")
 	}
 
-	// 更新操作
-	result := DB.Save(userVo)
+	// 更新操作，仅更新非零值的字段
+	result := DB.Table("users").Updates(userVo)
 
 	// 更新失败
 	if result.Error != nil {
@@ -99,6 +101,10 @@ func UserLogin(user *models.User) error {
 	if !utils.ComparePassword(user.Password, oldPassword) {
 		return errors.New("用户名与密码不匹配！")
 	}
+	// 此时登录成功
+	user.LoginTime = time.Now()
+	// 更新最后登录时间
+	DB.Table("users").Where("id = ?", user.ID).Update("login_time", user.LoginTime)
 
 	return nil
 }
@@ -132,4 +138,9 @@ func ResetUserPassword(mail string, password string) error {
 	result := DB.Table("users").Where("mail = ?", mail).Update("password", password)
 
 	return result.Error
+}
+
+func UpdateUserPhoto(url string, id string) error {
+	DB.Table("users").Where("id = ?", id).Update("photo", url)
+	return nil
 }

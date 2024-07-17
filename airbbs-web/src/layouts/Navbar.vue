@@ -11,7 +11,7 @@ import {
   Search,
 } from '@vicons/ionicons5'
 import MarkPen from "@/icons/Edit.vue";
-import type { Component } from 'vue'
+import { type Component, onMounted } from 'vue'
 import { computed, h, ref } from "vue";
 import { NIcon, useMessage } from "naive-ui"
 import { useRouter } from "vue-router";
@@ -19,6 +19,8 @@ import UserPlus from "@/icons/UserPlus.vue";
 import About from "@/icons/AboutOutline.vue";
 import { useStatusStore } from "@/stores/statusStore";
 import Hot from "@/icons/Hot.vue";
+import { getUserById } from "@/api/user";
+import type { User } from "@/models/user";
 
 const router = useRouter()
 const message = useMessage()
@@ -27,6 +29,8 @@ const statusStore = useStatusStore()
 let isLogin = computed(() => statusStore.userLoginStatus);
 
 let notifyColor = ref("#c03f53")
+
+let userInfo = ref<User>()
 
 // 通知被点击
 function notifyClick() {
@@ -113,7 +117,12 @@ let editOptions = ref([
   {
     label: '分享动态',
     key: 'status',
-    icon: renderIcon(BalloonIcon)
+    icon: renderIcon(BalloonIcon),
+    props: {
+      onClick: () => {
+        router.push({name: "Blink"})
+      }
+    }
   }
 
 ])
@@ -125,6 +134,16 @@ function renderIcon(icon: Component) {
     })
   }
 }
+
+onMounted(async () => {
+  let response = await getUserById(statusStore.userLoginId)
+  if (response.status == 200) {
+    userInfo.value = response.data.data
+    console.log(userInfo.value)
+  }else{
+    message.error(response.data.message)
+  }
+})
 
 
 </script>
@@ -158,7 +177,7 @@ function renderIcon(icon: Component) {
           </div>
         </div>
 
-        <div class="navbar-item" @click="router.push({name : 'Index'})">
+        <div class="navbar-item" @click="router.push({name : 'Blink'})">
 
           <n-icon :component="BalloonIcon" size="18px"></n-icon>
           <div class="navbar-item-title">
@@ -246,11 +265,12 @@ function renderIcon(icon: Component) {
                   @click.stop="userClick"
                   round
                   size="medium"
-                  src="https://cdn.learnku.com/uploads/avatars/82441_1621694272.jpeg!/both/100x100"
+                  color="white"
+                  :src="userInfo?.photo"
               />
 
             </n-badge>
-            <div class="navbar-username">codermast</div>
+            <div class="navbar-username">{{ userInfo?.nickname != "" ? userInfo?.nickname : userInfo?.username}}</div>
           </div>
         </n-dropdown>
       </n-gi>
@@ -317,6 +337,7 @@ function renderIcon(icon: Component) {
 .navbar-user {
   display: flex;
   align-items: center;
+  width: 100%;
   margin-left: 30px;
 }
 
