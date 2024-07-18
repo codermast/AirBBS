@@ -11,8 +11,7 @@ import {
   Search,
 } from '@vicons/ionicons5'
 import MarkPen from "@/icons/Edit.vue";
-import { type Component, onMounted } from 'vue'
-import { computed, h, ref } from "vue";
+import { type Component, computed, h, onMounted, ref } from 'vue'
 import { NIcon, useMessage } from "naive-ui"
 import { useRouter } from "vue-router";
 import UserPlus from "@/icons/UserPlus.vue";
@@ -136,13 +135,18 @@ function renderIcon(icon: Component) {
 }
 
 onMounted(async () => {
-  let response = await getUserById(statusStore.userLoginId)
-  if (response.status == 200) {
-    userInfo.value = response.data.data
-    console.log(userInfo.value)
-  }else{
-    message.error(response.data.message)
+
+  // 当用户状态为登录的时候，才开始请求，未登录时不请求
+  if (statusStore.userLoginStatus) {
+    let response = await getUserById(statusStore.userLoginId)
+    if (response.status == 200) {
+      userInfo.value = response.data.data
+      console.log(userInfo.value)
+    } else {
+      message.error(response.data.message)
+    }
   }
+
 })
 
 
@@ -270,7 +274,7 @@ onMounted(async () => {
               />
 
             </n-badge>
-            <div class="navbar-username">{{ userInfo?.nickname != "" ? userInfo?.nickname : userInfo?.username}}</div>
+            <div class="navbar-username">{{ userInfo?.nickname != "" ? userInfo?.nickname : userInfo?.username }}</div>
           </div>
         </n-dropdown>
       </n-gi>

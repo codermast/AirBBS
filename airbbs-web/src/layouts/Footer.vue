@@ -77,7 +77,7 @@ import Hot from "@/icons/Hot.vue";
 
                   </n-icon>
                   <div class="card-header-title">
-                    资源推荐
+                    友情链接
 
                   </div>
                 </div>
