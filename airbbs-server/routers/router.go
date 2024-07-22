@@ -14,4 +14,7 @@ func AirBlogRouterConfig(r *gin.Engine) {
 
 	// 设置验证码模块路由
 	SetupAuthCodeRoutes(r)
+
+	// 设置关注模块路由
+	SetupFollowRoutes(r)
 }

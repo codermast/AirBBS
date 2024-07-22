@@ -115,7 +115,7 @@ const routes = [
 		path: "/blink",
 		name: 'Blink',
 		component: Blink
-	}
+	},
 ];
 
 const router = createRouter({
