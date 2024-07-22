@@ -90,6 +90,7 @@ declare module 'vue' {
     SocialBind: typeof import('./src/components/setting/SocialBind.vue')['default']
     TimeNow: typeof import('./src/components/TimeNow.vue')['default']
     UserAvatar: typeof import('./src/components/setting/UserAvatar.vue')['default']
+    UserCenter: typeof import('./src/components/user/UserCenter.vue')['default']
     UserInfo: typeof import('./src/components/setting/UserInfo.vue')['default']
     UserInfoSidebar: typeof import('./src/components/Sidebar/UserInfoSidebar.vue')['default']
     UserResetPassword: typeof import('./src/components/setting/UserResetPassword.vue')['default']

@@ -84,7 +84,6 @@ emitter.on("sendArticleAuthorInfo", (articleAuthorInfo : AuthorInfo) => {
 
                       <n-gi span="1">
                         文章
-
                       </n-gi>
                     </n-grid>
 
