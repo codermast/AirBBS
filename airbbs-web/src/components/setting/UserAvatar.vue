@@ -4,14 +4,14 @@ import Edit from "@/icons/Edit.vue";
 import { ArchiveOutline as Archive } from "@vicons/ionicons5";
 import { type UploadFileInfo, useMessage } from 'naive-ui'
 import { onMounted, ref } from "vue";
-import { useStatusStore } from "@/stores/statusStore";
+import { useUserStore } from "@/stores/userStore";
 import { getUserById, uploadUserPhoto } from "@/api/user";
 
 
-const statusStore = useStatusStore();
+const userStore = useUserStore();
 const message = useMessage()
 
-let userId = statusStore.userLoginId;
+let userId = userStore.userId;
 let userPhoto = ref()
 let photoFile = ref()
 

@@ -1,31 +1,32 @@
 package daos
 
 import (
-	"codermast.com/airbbs/models"
+	"codermast.com/airbbs/models/po"
+	"codermast.com/airbbs/models/vo"
 	"codermast.com/airbbs/utils"
 	"errors"
 	"time"
 )
 
 // GetAllUsers 查询所有用户
-func GetAllUsers() []models.User {
-	var users []models.User
+func GetAllUsers() []po.User {
+	var users []po.User
 	DB.Find(&users)
 	return users
 }
 
 // GetUserByID 根据 ID 查询指定用户信息
-func GetUserByID(userID string) (models.UserVO, error) {
-	var user models.User
+func GetUserByID(userID string) (vo.UserVO, error) {
+	var user po.User
 	// 根据 ID 查询用户
 	result := DB.First(&user, userID)
 
 	if result != nil && result.RowsAffected == 0 {
-		return models.UserVO{}, errors.New("用户不存在！")
+		return vo.UserVO{}, errors.New("用户不存在！")
 	}
 
 	// 拼接 UserVo
-	var userVo models.UserVO
+	var userVo vo.UserVO
 
 	userVo.ID = user.ID
 	userVo.Username = user.Username
@@ -42,7 +43,7 @@ func GetUserByID(userID string) (models.UserVO, error) {
 }
 
 // CreateUser 保存用户
-func CreateUser(user *models.User) error {
+func CreateUser(user *po.User) error {
 	// 保存用户，Gorm 会自动创建 UserID
 	result := DB.Create(user)
 
@@ -50,8 +51,8 @@ func CreateUser(user *models.User) error {
 }
 
 // GetUserByUserName 根据 UserName 查用户
-func GetUserByUserName(username string) (models.User, error) {
-	var userQuery models.User
+func GetUserByUserName(username string) (po.User, error) {
+	var userQuery po.User
 	result := DB.First(&userQuery, "username = ?", username)
 
 	// 查询为空
@@ -62,7 +63,7 @@ func GetUserByUserName(username string) (models.User, error) {
 }
 
 // UpdateUser 更新用户信息
-func UpdateUser(userVo *models.UserVO) error {
+func UpdateUser(userVo *vo.UserVO) error {
 	_, err := GetUserByID(userVo.ID)
 
 	// 用户不存在
@@ -81,7 +82,7 @@ func UpdateUser(userVo *models.UserVO) error {
 }
 
 func DeleteUserByID(userID string) error {
-	result := DB.Delete(&models.User{}, userID)
+	result := DB.Delete(&po.User{}, userID)
 
 	if result.Error != nil || result.RowsAffected == 0 {
 		return errors.New("删除失败")
@@ -89,10 +90,10 @@ func DeleteUserByID(userID string) error {
 	return result.Error
 }
 
-func UserLogin(user *models.User) error {
+func UserLogin(user *po.User) error {
 	oldPassword := user.Password
 
-	result := DB.Where("username = ?", user.Username).First(&user)
+	result := DB.Table("users").Where("username = ?", user.Username).First(&user)
 
 	if result.Error != nil || result.RowsAffected == 0 {
 		return errors.New("用户名不存在！")
@@ -111,7 +112,7 @@ func UserLogin(user *models.User) error {
 
 // IsAdminByUserId 判断指定用户是否为管理员
 func IsAdminByUserId(userId string) error {
-	var user models.User
+	var user po.User
 	result := DB.First(&user, userId)
 	if result.Error != nil || result.RowsAffected == 0 {
 		return errors.New("用户不存在！")
@@ -124,7 +125,7 @@ func IsAdminByUserId(userId string) error {
 }
 
 func GetMailByAccount(account string) (string, error) {
-	var user models.User
+	var user po.User
 	result := DB.First(&user, account)
 
 	if result.Error != nil || result.RowsAffected == 0 {

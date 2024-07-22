@@ -96,7 +96,6 @@ const routes = [
 			},
 		]
 	},
-
 	{
 		path: "/login",
 		name: 'Login',
@@ -112,13 +111,11 @@ const routes = [
 		name: 'Register',
 		component: Register
 	},
-
 	{
 		path: "/blink",
 		name: 'Blink',
-		component : Blink
+		component: Blink
 	}
-
 ];
 
 const router = createRouter({
@@ -126,14 +123,34 @@ const router = createRouter({
 	routes
 });
 
-router.beforeEach((to, from) => {
+// 前置导航守卫
+router.beforeEach((to, from, next) => {
+	// 加载进度条
 	emitter.emit("loadingBarStart")
-	return true
+	next();
 })
 
+// 后置导航守卫
 router.afterEach((to, from) => {
+	// 加载进度条
 	emitter.emit("loadingBarFinish")
-
 });
 
 export default router;
+
+
+const interceptRules: string[] = [
+	"/setting/**",
+]
+
+// 正则匹配方法，拦截指定路由
+function matchRegex(targetUrl: string): boolean {
+	interceptRules.forEach((router) => {
+		const regexStr = router.replace(/\*\*/g, '.*');
+		const regex = new RegExp(`^${regexStr}$`)
+		if (regex.test(targetUrl)) {
+			return false
+		}
+	})
+	return true;
+}

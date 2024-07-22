@@ -13,7 +13,6 @@ let randomTheme = () => {
   return theme[randomIndex];
 }
 
-
 </script>
 
 <template>

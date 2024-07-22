@@ -3,7 +3,7 @@ package middlewares
 import (
 	"codermast.com/airbbs/config"
 	"codermast.com/airbbs/constant"
-	"codermast.com/airbbs/models"
+	"codermast.com/airbbs/models/pojo"
 	"codermast.com/airbbs/utils"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -13,7 +13,7 @@ import (
 )
 
 // 放行的路由列表
-var unauthenticatedRoutes = []models.Router{
+var unauthenticatedRoutes = []pojo.Router{
 	{"/users/login", "POST"},
 	{"/users/register", "POST"},
 	{"/articles/page", "GET"},

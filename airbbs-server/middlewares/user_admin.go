@@ -3,14 +3,14 @@ package middlewares
 import (
 	"codermast.com/airbbs/constant"
 	"codermast.com/airbbs/daos"
-	"codermast.com/airbbs/models"
+	"codermast.com/airbbs/models/pojo"
 	"codermast.com/airbbs/utils"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
 // 拦截的路由列表
-var adminAuthenticatedRoutes = []models.Router{
+var adminAuthenticatedRoutes = []pojo.Router{
 	{"/articles/all", "GET"},
 	{"/articles/", "DELETE"},
 }

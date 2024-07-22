@@ -2,6 +2,8 @@ module codermast.com/airbbs
 
 go 1.22.2
 
+require gorm.io/gorm v1.25.10
+
 require (
 	filippo.io/edwards25519 v1.1.0 // indirect
 	github.com/bytedance/sonic v1.11.9 // indirect
@@ -41,5 +43,4 @@ require (
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	gorm.io/driver/mysql v1.5.7 // indirect
-	gorm.io/gorm v1.25.10 // indirect
 )

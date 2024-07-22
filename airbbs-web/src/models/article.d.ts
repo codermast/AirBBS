@@ -2,6 +2,8 @@ export type Article = {
 	id: string
 	title: string
 	content: string
+	publish_time: string
+	update_time: string
 	status: number
 	author: string
 }
@@ -18,4 +20,13 @@ export type ArticleListPage = {
 	pageCount: int
 	totalCount: int
 	articles: Article[]
+}
+
+export  type AuthorInfo = {
+	id: string
+	nickname: string
+	username: string
+	articleTotal: string
+	fansTotal: string
+	viewTotal: string
 }

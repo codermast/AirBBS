@@ -89,7 +89,7 @@ import Hot from "@/icons/Hot.vue";
                     <n-image
                         height="50"
                         preview-disabled
-                        src="static/images/golangnotes-logo.png"></n-image>
+                        src="/static/images/golangnotes-logo.png"></n-image>
                   </div>
 
                 </n-gi>
@@ -101,7 +101,7 @@ import Hot from "@/icons/Hot.vue";
                         height="50"
 
                         preview-disabled
-                        src="static/images/codermast-logo.png"></n-image>
+                        src="/static/images/codermast-logo.png"></n-image>
 
                   </div>
 

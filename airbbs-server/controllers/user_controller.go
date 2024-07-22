@@ -4,7 +4,9 @@ import (
 	"codermast.com/airbbs/config"
 	"codermast.com/airbbs/constant"
 	"codermast.com/airbbs/daos"
-	"codermast.com/airbbs/models"
+	"codermast.com/airbbs/models/po"
+	"codermast.com/airbbs/models/ro"
+	"codermast.com/airbbs/models/vo"
 	"codermast.com/airbbs/services"
 	"codermast.com/airbbs/utils"
 	"fmt"
@@ -44,9 +46,9 @@ func (uc *UserController) GetUserByID(c *gin.Context) {
 
 // CreateUser 创建用户 POST /users
 func (uc *UserController) CreateUser(c *gin.Context) {
-	var user models.User
+	var user po.User
 
-	var userRegisterDto models.UserRegisterDto
+	var userRegisterDto ro.UserRegisterRequest
 
 	// 用户解析
 	if err := c.BindJSON(&userRegisterDto); err != nil {
@@ -100,7 +102,7 @@ func (uc *UserController) CreateUser(c *gin.Context) {
 		log.Println("验证码删除失败")
 	}
 
-	var userVO models.UserVO
+	var userVO vo.UserVO
 	userVO.ID = user.ID
 	userVO.Username = user.Username
 	userVO.Nickname = user.Nickname
@@ -113,7 +115,7 @@ func (uc *UserController) CreateUser(c *gin.Context) {
 
 // UpdateUser 更新指定 userID 的用户信息 PUT /users
 func (uc *UserController) UpdateUser(c *gin.Context) {
-	var userVo models.UserVO
+	var userVo vo.UserVO
 
 	// 用户解析
 	if err := c.BindJSON(&userVo); err != nil {
@@ -155,7 +157,7 @@ func (uc *UserController) DeleteUser(c *gin.Context) {
 
 // UserLogin 用户登录 POST /users/login
 func (uc *UserController) UserLogin(c *gin.Context) {
-	var userLoginDto models.UserLoginDto
+	var userLoginDto ro.UserLoginRequest
 
 	// 用户解析
 	if err := c.BindJSON(&userLoginDto); err != nil {
@@ -168,7 +170,7 @@ func (uc *UserController) UserLogin(c *gin.Context) {
 		return
 	}
 
-	var user models.User
+	var user po.User
 
 	user.Username = userLoginDto.Username
 	user.Password = userLoginDto.Password
@@ -187,7 +189,7 @@ func (uc *UserController) UserLogin(c *gin.Context) {
 		return
 	}
 
-	response := &models.UserLoginResponse{
+	response := &vo.UserLoginVo{
 		Token:  tokenString,
 		UserId: user.ID,
 	}
@@ -198,17 +200,17 @@ func (uc *UserController) UserLogin(c *gin.Context) {
 
 // ResetUserPassword 重置用户密码 /users/password/reset
 func (uc *UserController) ResetUserPassword(c *gin.Context) {
-	var userResetPasswordDto models.UserResetPasswordDto
+	var userResetPasswordRequest ro.UserResetPasswordRequest
 
 	// 用户解析
-	if err := c.BindJSON(&userResetPasswordDto); err != nil {
+	if err := c.BindJSON(&userResetPasswordRequest); err != nil {
 		c.JSON(http.StatusBadRequest, utils.Error("数据格式错误！"))
 		return
 	}
 
-	account := userResetPasswordDto.Account
-	password := userResetPasswordDto.Password
-	code := userResetPasswordDto.Code
+	account := userResetPasswordRequest.Account
+	password := userResetPasswordRequest.Password
+	code := userResetPasswordRequest.Code
 
 	// 账户为空返回
 	if account == "" {

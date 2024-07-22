@@ -1,7 +1,8 @@
 package controllers
 
 import (
-	"codermast.com/airbbs/models"
+	"codermast.com/airbbs/models/po"
+	"codermast.com/airbbs/models/ro"
 	"codermast.com/airbbs/services"
 	"codermast.com/airbbs/utils"
 	"fmt"
@@ -17,7 +18,7 @@ func NewArticleController() *ArticleController {
 
 // CreateArticle 文章发布 POST /article
 func (ac *ArticleController) CreateArticle(c *gin.Context) {
-	var article models.Article
+	var article po.Article
 
 	// 文章解析
 	if err := c.BindJSON(&article); err != nil {
@@ -96,7 +97,7 @@ func (ac *ArticleController) GetArticleByID(c *gin.Context) {
 
 // UpdateArticleByID 根据 ID 更新指定文章 PUT /articles
 func (ac *ArticleController) UpdateArticleByID(c *gin.Context) {
-	var article models.Article
+	var article po.Article
 
 	// 文章解析
 	if err := c.BindJSON(&article); err != nil {
@@ -116,7 +117,7 @@ func (ac *ArticleController) UpdateArticleByID(c *gin.Context) {
 
 // UpdateArticleListStatusById 根据 ID 批量修改文章状态
 func (ac *ArticleController) UpdateArticleListStatusById(c *gin.Context) {
-	var req models.ArticleUpdateStatusRequest
+	var req ro.ArticleUpdateStatusRequest
 	if err := c.BindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, utils.Error(fmt.Sprintf("%v", err)))
 		return
@@ -133,7 +134,7 @@ func (ac *ArticleController) UpdateArticleListStatusById(c *gin.Context) {
 
 // GetArticleListPage 分页查询文章
 func (ac *ArticleController) GetArticleListPage(c *gin.Context) {
-	var ArticleListPageRequest models.ArticleListPageRequest
+	var ArticleListPageRequest ro.ArticleListPageRequest
 
 	// 分页请求解析
 	if err := c.ShouldBindQuery(&ArticleListPageRequest); err != nil {
@@ -149,4 +150,12 @@ func (ac *ArticleController) GetArticleListPage(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, utils.Success("查询成功！", ArticleListPage))
+}
+
+// GetAuthorInfoById 根据作者 ID 获取作者信息
+func (ac *ArticleController) GetAuthorInfoById(c *gin.Context) {
+	authorId := c.Param("id")
+
+	authorInfo := services.GetAuthorInfoById(authorId)
+	c.JSON(http.StatusOK, utils.Success("查询成功！", authorInfo))
 }

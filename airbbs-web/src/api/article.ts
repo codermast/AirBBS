@@ -45,3 +45,8 @@ export const updateArticleListStatus = (articleIdList: string[], status: number)
 export const getArticleListPage = (articlePageRequest: ArticlePageRequest) => {
 	return axios.get(`${ BASE_URL }/page`, { params : articlePageRequest })
 }
+
+// GET /articles/author/:id
+export const getAuthorInfo = (authorId : string) => {
+	return axios.get(`${ BASE_URL }/author/${ authorId }`)
+}

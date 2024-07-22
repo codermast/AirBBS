@@ -4,44 +4,162 @@ import GolangLogo from "@/icons/GolangLogo.vue";
 import Edit from "@/icons/Edit.vue";
 import ArrowRight from "@/icons/ArrowRight.vue";
 import { MdCatalog } from "md-editor-v3";
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
+import { Add } from "@vicons/ionicons5";
+import Message from "@/icons/Message.vue";
+import emitter from "@/utils/emitter";
+import type { AuthorInfo } from "@/models/article";
 
 const openGolangNotes = () => {
   window.open('https://www.golangnotes.com', '_blank')
 }
 
 const id = ref("air-bbs-md-id")
+
+const authorInfo = ref<AuthorInfo | null>(null)
+
+
+
+emitter.on("sendArticleAuthorInfo", (articleAuthorInfo : AuthorInfo) => {
+  console.log(articleAuthorInfo)
+  authorInfo.value = articleAuthorInfo;
+})
+
+
+
 </script>
 
 <template>
   <n-grid cols="1" y-gap="10">
     <n-gi :span="1">
-      <n-card>
-        <n-grid cols="5">
+      <n-card
+          :segmented="{
+               footer: true,
+          }"
+      >
+        <n-grid :cols="1">
           <n-gi :span="1">
-            <n-image
-                style="border: #dddddd 1px solid"
-                width="100%"
-                src="https://cdn.learnku.com/uploads/avatars/82441_1621694272.jpeg!/both/100x100"
-            >
-            </n-image>
-          </n-gi>
-          <n-gi :span="2">
-            <div style="margin-left: 10px;line-height: 26px">
-              友人
-            </div>
-            <div style="margin-left: 10px;line-height: 26px">
 
-              CoderMast
-            </div>
+            <n-grid :cols="4" x-gap="10">
+
+              <n-gi :span="1">
+
+                <div style="width: 100%;">
+                  <n-avatar
+                      style="height: 100%;display: flex;margin: auto"
+                      size="40"
+                      color="white"
+                      src="http://localhost:8080/uploads/logo.png"
+                  />
+                </div>
+              </n-gi>
+              <n-gi :span="3">
+                <n-grid :cols="1" y-gap="5px">
+
+                  <n-gi span="1" style="height: 20px">
+                    <b>{{ authorInfo?.nickname == "" ? authorInfo?.username : authorInfo?.nickname }}</b>
+                  </n-gi>
+
+                  <n-gi span="1" style="height: 20px">
+                    一个很酷的 Golang 程序员
+                  </n-gi>
+                </n-grid>
+              </n-gi>
+
+            </n-grid>
+
+
           </n-gi>
-          <n-gi :span="2">
-            <div style="height: 100%;">
-              <n-button style="height: 25px" type="info">发帖</n-button>
-              <n-button style="height: 25px;margin-top: 5px" type="success">发帖</n-button>
-            </div>
+
+          <n-gi :span="1">
+            <n-grid :cols="3">
+              <n-gi :span="1">
+                <div style="display:flex; justify-content: center;">
+                  <n-button text>
+                    <n-grid cols="1" y-gap="8px">
+                      <n-gi span="1">
+                        {{ authorInfo?.articleTotal }}
+                      </n-gi>
+
+                      <n-gi span="1">
+                        文章
+
+                      </n-gi>
+                    </n-grid>
+
+                  </n-button>
+                </div>
+              </n-gi>
+
+              <n-gi :span="1">
+                <div style="display:flex; justify-content: center;">
+                  <n-button text>
+
+                    <n-grid cols="1" y-gap="8px">
+                      <n-gi span="1">
+                        {{ authorInfo?.viewTotal }}
+
+                      </n-gi>
+
+                      <n-gi span="1">
+                        <div>阅读</div>
+
+                      </n-gi>
+                    </n-grid>
+
+                  </n-button>
+                </div>
+              </n-gi>
+
+              <n-gi :span="1">
+                <div style="display:flex; justify-content: center;">
+                  <n-button text>
+
+                    <n-grid cols="1" y-gap="8px">
+                      <n-gi span="1">
+                        {{ authorInfo?.fansTotal }}
+
+                      </n-gi>
+
+                      <n-gi span="1">
+                        粉丝
+
+
+                      </n-gi>
+                    </n-grid>
+
+                  </n-button>
+                </div>
+              </n-gi>
+            </n-grid>
           </n-gi>
+
+
         </n-grid>
+
+
+        <template #footer>
+          <n-grid cols="1" y-gap="10px">
+            <n-gi span="1">
+              <n-button style="width: 100%">
+                <template #icon>
+                  <n-icon :component="Add"></n-icon>
+                </template>
+                关注
+              </n-button>
+            </n-gi>
+
+            <n-gi span="1">
+              <n-button style="width: 100%">
+                <template #icon>
+                  <n-icon :component="Message"></n-icon>
+                </template>
+
+                私信
+              </n-button>
+            </n-gi>
+          </n-grid>
+        </template>
       </n-card>
     </n-gi>
     <n-gi :span="1">

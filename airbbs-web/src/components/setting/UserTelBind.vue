@@ -2,15 +2,15 @@
 
 import Phone from "@/icons/Phone.vue";
 import { Key } from "@vicons/ionicons5";
-import { useStatusStore } from "@/stores/statusStore";
+import { useUserStore } from "@/stores/userStore";
 import { onMounted, ref } from "vue";
 import { getUserById } from "@/api/user";
 import { type FormItemRule, useMessage } from "naive-ui";
 
-const statusStore = useStatusStore();
+const userStore = useUserStore();
 const message = useMessage()
 
-let userId = statusStore.userLoginId
+let userId = userStore.userLoginId
 
 let isSendAuthCode = ref(false)
 

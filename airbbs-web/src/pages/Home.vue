@@ -14,6 +14,11 @@ emitter.on('loadingBarStart', () => {
 })
 
 // 绑定事件
+emitter.on('loadingBarError', () => {
+  loadingBar.error();
+})
+
+// 绑定事件
 emitter.on('loadingBarFinish', () => {
   loadingBar.finish();
 })

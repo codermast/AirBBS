@@ -16,20 +16,19 @@ import { NIcon, useMessage } from "naive-ui"
 import { useRouter } from "vue-router";
 import UserPlus from "@/icons/UserPlus.vue";
 import About from "@/icons/AboutOutline.vue";
-import { useStatusStore } from "@/stores/statusStore";
+import { useUserStore } from "@/stores/userStore";
 import Hot from "@/icons/Hot.vue";
-import { getUserById } from "@/api/user";
 import type { User } from "@/models/user";
 
 const router = useRouter()
 const message = useMessage()
-const statusStore = useStatusStore()
+const userStore = useUserStore()
 
-let isLogin = computed(() => statusStore.userLoginStatus);
+let isLogin = computed(() => userStore.userLoginStatus);
 
 let notifyColor = ref("#c03f53")
 
-let userInfo = ref<User>()
+let userInfo = ref()
 
 // 通知被点击
 function notifyClick() {
@@ -82,9 +81,7 @@ let userOptions = ref([
     props: {
       onClick: () => {
         // 执行退出操作，清空登录记录信息
-        statusStore.JWTToken = ""
-        statusStore.userLoginId = "-1"
-        statusStore.userLoginStatus = false
+        userStore.logout();
         message.success('退出成功!')
         router.push({name: "Index"})
       }
@@ -136,15 +133,10 @@ function renderIcon(icon: Component) {
 
 onMounted(async () => {
 
-  // 当用户状态为登录的时候，才开始请求，未登录时不请求
-  if (statusStore.userLoginStatus) {
-    let response = await getUserById(statusStore.userLoginId)
-    if (response.status == 200) {
-      userInfo.value = response.data.data
-      console.log(userInfo.value)
-    } else {
-      message.error(response.data.message)
-    }
+  // 当用户状态为已登录时，获取用户信息
+  if (userStore.userLoginStatus) {
+    userInfo.value = userStore.userInfo
+    console.log("nav-userInfo : ",userInfo)
   }
 
 })

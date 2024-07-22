@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
-import { getArticleById } from "@/api/article";
+import { getArticleById, getAuthorInfo } from "@/api/article";
 import { MdPreview } from "md-editor-v3";
+import type { AuthorInfo } from "@/models/article";
+import emitter from "@/utils/emitter";
 
 const route = useRoute()
 
@@ -17,6 +19,8 @@ let loading = ref(true);
 
 let article = ref<Article>({title: "", content: "", author: ""});
 let articleUrl = ref(window.location.href);
+let authorInfo = ref<AuthorInfo>()
+
 onMounted(async () => {
   let articleID = route.params.articleID
   console.log("articleID", articleID)
@@ -29,6 +33,17 @@ onMounted(async () => {
     console.log("article: ", article)
     loading.value = false
   }
+
+
+  // 获取文章作者信息
+  let authorRet = await getAuthorInfo(article.value.author)
+  if (authorRet.status == 200){
+    authorInfo.value = authorRet.data.data
+    console.log(authorInfo)
+  }
+
+  // 发送文章作者信息到侧边栏组件
+  emitter.emit("sendArticleAuthorInfo",authorInfo.value)
 })
 
 </script>
@@ -62,7 +77,7 @@ onMounted(async () => {
       <n-skeleton v-if="loading" text :repeat="6"/>
 
       <div v-else>
-        作者：{{ article.author }}
+        作者：{{ authorInfo?.nickname == "" ? authorInfo?.username : authorInfo?.nickname }}
       </div>
     </template>
 
@@ -80,8 +95,12 @@ onMounted(async () => {
       <n-skeleton v-if="loading" text width="60%"/>
 
       <div style="font-size: 0.9em;" v-else>
-        <li>本文地址：<a href="{{ articleUrl }}">{{ articleUrl }}</a></li>
-        <li>转载必须注明作者和本文链接</li>
+
+
+        <n-alert title="Default 类型" type="success">
+          <li>本文地址：<a href="{{ articleUrl }}">{{ articleUrl }}</a></li>
+          <li>转载必须注明作者和本文链接</li>
+        </n-alert>
       </div>
 
     </template>

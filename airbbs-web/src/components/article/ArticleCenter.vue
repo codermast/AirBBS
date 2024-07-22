@@ -1,7 +1,7 @@
 <!-- 文章管理列表 -->
 <script setup lang="ts">
 import { type Component, h, onMounted, ref } from "vue";
-import { deleteArticle, getArticleAllList, getArticlePublicList, updateArticleListStatus } from "@/api/article";
+import { deleteArticle, getArticleAllList, getAuthorInfo, updateArticleListStatus } from "@/api/article";
 import type { DataTableRowKey } from 'naive-ui'
 import { NButton, NIcon, NTag, useMessage } from "naive-ui";
 import type { Article } from "@/models/article";
@@ -27,12 +27,23 @@ async function getArticleListInfo() {
   let response = await getArticleAllList();
 
   if (response.status == 200) {
-    console.log("response: ", response);
     articleList.value = response.data.data;
-    console.log("articleList: ", articleList.value)
-  }else{
+
+    if (articleList.value != undefined) {
+      for (let article of articleList.value) {
+        let ret = await getAuthorInfo(article.author)
+
+        if (ret.data.data.nickname != "") {
+          article.author = ret.data.data.nickname
+        } else {
+          article.author = ret.data.data.username
+        }
+
+      }
+    }
+  } else {
     message.error(response.data.message)
-    router.push({ name : "Index"})
+    router.push({name: "Index"})
   }
 }
 
@@ -94,6 +105,34 @@ const columns = [
           },
           {
             default: () => getStatusName(article.status)
+          }
+      )
+    }
+  },
+  {
+    title: '发表时间',
+    key: 'publish',
+    render(article: Article) {
+      return h(
+          "div", {style: 'display: flex;align-items: center;'}, {
+            default: () => {
+              let publishTime = new Date(article.publish_time);
+              return publishTime.toLocaleDateString();
+            }
+          }
+      )
+    }
+  },
+  {
+    title: '更新时间',
+    key: 'update',
+    render(article: Article) {
+      return h(
+          "div", {style: 'display: flex;align-items: center;'}, {
+            default: () => {
+              let updateTime = new Date(article.update_time);
+              return updateTime.toLocaleDateString();
+            }
           }
       )
     }

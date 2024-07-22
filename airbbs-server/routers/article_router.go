@@ -27,5 +27,7 @@ func SetupArticleRoutes(r *gin.Engine) {
 		articleRoute.PUT("/:aid", articleController.UpdateArticleByID)
 		articleRoute.GET("/:aid", articleController.GetArticleByID)
 		articleRoute.PUT("/", articleController.UpdateArticleListStatusById)
+		articleRoute.GET("/author/:id", articleController.GetAuthorInfoById)
+
 	}
 }
