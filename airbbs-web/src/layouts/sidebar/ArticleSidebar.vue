@@ -9,6 +9,7 @@ import { Add } from "@vicons/ionicons5";
 import Message from "@/icons/Message.vue";
 import emitter from "@/utils/emitter";
 import type { AuthorInfo } from "@/models/article";
+import { formatNumber } from "@/utils/format";
 
 const openGolangNotes = () => {
   window.open('https://www.golangnotes.com', '_blank')
@@ -97,7 +98,7 @@ emitter.on("sendArticleAuthorInfo", (articleAuthorInfo : AuthorInfo) => {
 
                     <n-grid cols="1" y-gap="8px">
                       <n-gi span="1">
-                        {{ authorInfo?.viewTotal }}
+                        {{ formatNumber(authorInfo?.viewTotal) }}
 
                       </n-gi>
 

@@ -140,9 +140,16 @@ func getAuthorNameListByIds(articles []po.Article) {
 func GetAuthorInfoById(authorId string) vo.AuthorVo {
 	var author vo.AuthorVo
 	DB.Table("users").Where("id = ?", authorId).First(&author)
+
+	// 文章总数
 	var articleTotal int64
 	DB.Table("articles").Where("status = ? AND author = ?", 1, authorId).Count(&articleTotal)
 	author.ArticleTotal = int(articleTotal)
+
+	// 浏览量总数
+	var viewTotal int64
+	DB.Table("articles").Where("status = ? AND author = ?", 1, authorId).Select("SUM(views) as total_views").Scan(&viewTotal)
+	author.ViewTotal = int(viewTotal)
 
 	return author
 }

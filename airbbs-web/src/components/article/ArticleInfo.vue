@@ -68,10 +68,10 @@ onMounted(async () => {
           </n-breadcrumb-item>
           <n-breadcrumb-item>
             <n-icon :component="Time" size="15"></n-icon>
-            {{ formatDate(article.publish_time) }}
+            {{ timeAgo(article.publish_time) }}发布
           </n-breadcrumb-item>
 
-          <n-breadcrumb-item>{{ timeAgo(article.update_time) }}</n-breadcrumb-item>
+          <n-breadcrumb-item>{{ timeAgo(article.update_time) }}来过</n-breadcrumb-item>
 
           <n-breadcrumb-item>
             <n-icon :component="View" size="15"></n-icon>
