@@ -5,19 +5,18 @@ import { getArticleById, getAuthorInfo } from "@/api/article";
 import { MdPreview } from "md-editor-v3";
 import type { AuthorInfo } from "@/models/article";
 import emitter from "@/utils/emitter";
+import User from "@/icons/User.vue";
+import { Time } from "@vicons/ionicons5";
+import View from "@/icons/View.vue";
+import { formatDate, timeAgo } from "@/utils/date";
 
 const route = useRoute()
 
-type Article = {
-  title: string
-  content: string
-  author: string
-}
 
 let loading = ref(true);
 
 
-let article = ref<Article>({title: "", content: "", author: ""});
+let article = ref();
 let articleUrl = ref(window.location.href);
 let authorInfo = ref<AuthorInfo>()
 
@@ -37,14 +36,15 @@ onMounted(async () => {
 
   // 获取文章作者信息
   let authorRet = await getAuthorInfo(article.value.author)
-  if (authorRet.status == 200){
+  if (authorRet.status == 200) {
     authorInfo.value = authorRet.data.data
     console.log(authorInfo)
   }
 
   // 发送文章作者信息到侧边栏组件
-  emitter.emit("sendArticleAuthorInfo",authorInfo.value)
+  emitter.emit("sendArticleAuthorInfo", authorInfo.value)
 })
+
 
 </script>
 
@@ -63,22 +63,24 @@ onMounted(async () => {
         <n-breadcrumb class="bread-crumbs-nav">
 
           <n-breadcrumb-item>
-            Friend
+            <n-icon :component="User" size="15"></n-icon>
+            {{ authorInfo?.nickname == "" ? authorInfo?.username : authorInfo?.nickname }}
           </n-breadcrumb-item>
-          <n-breadcrumb-item>95</n-breadcrumb-item>
-          <n-breadcrumb-item>2 周前</n-breadcrumb-item>
-          <n-breadcrumb-item>1 分钟前</n-breadcrumb-item>
+          <n-breadcrumb-item>
+            <n-icon :component="Time" size="15"></n-icon>
+            {{ formatDate(article.publish_time) }}
+          </n-breadcrumb-item>
+
+          <n-breadcrumb-item>{{ timeAgo(article.update_time) }}</n-breadcrumb-item>
+
+          <n-breadcrumb-item>
+            <n-icon :component="View" size="15"></n-icon>
+            {{ article.views }}
+          </n-breadcrumb-item>
+
         </n-breadcrumb>
       </div>
 
-    </template>
-
-    <template #header-extra>
-      <n-skeleton v-if="loading" text :repeat="6"/>
-
-      <div v-else>
-        作者：{{ authorInfo?.nickname == "" ? authorInfo?.username : authorInfo?.nickname }}
-      </div>
     </template>
 
     <n-skeleton v-if="loading" text :repeat="6"/>
@@ -96,9 +98,8 @@ onMounted(async () => {
 
       <div style="font-size: 0.9em;" v-else>
 
-
         <n-alert title="Default 类型" type="success">
-          <li>本文地址：<a href="{{ articleUrl }}">{{ articleUrl }}</a></li>
+          <li>本文地址：<a target="_blank" :href="articleUrl">{{ articleUrl }}</a></li>
           <li>转载必须注明作者和本文链接</li>
         </n-alert>
       </div>

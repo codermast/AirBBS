@@ -64,15 +64,12 @@ func GetArticleByID(articleID string) (*po.Article, error) {
 // UpdateArticleByID 根据 ID 更新指定文章
 func UpdateArticleByID(article *po.Article) (*po.Article, error) {
 	// 1. 首先根据 ID 查文章是否存在
-	articleByID, err := GetArticleByID(article.ID)
+	_, err := GetArticleByID(article.ID)
 
 	// 2. 查询时异常，即查询失败，即文章不存在
 	if err != nil {
 		return nil, errors.New("文章不存在")
 	}
-
-	// 维护好作者信息
-	article.Author = articleByID.Author
 
 	// 此时文章存在，才进行更新
 	result := DB.Table("articles").Updates(article)
@@ -148,4 +145,10 @@ func GetAuthorInfoById(authorId string) vo.AuthorVo {
 	author.ArticleTotal = int(articleTotal)
 
 	return author
+}
+
+func UpdateArticleViewsById(articleId string, views int) error {
+	result := DB.Table("articles").Where("id = ?", articleId).Update("views", views)
+
+	return result.Error
 }

@@ -52,7 +52,7 @@ func (ac *ArticleController) GetArticleAllList(c *gin.Context) {
 	c.JSON(http.StatusOK, utils.Success("查询成功", article))
 }
 
-// GetArticlePublishList 获取所有文章 GET /articles/publish
+// GetArticlePublishList 获取所有公开发布文章 GET /articles/publish
 func (ac *ArticleController) GetArticlePublishList(c *gin.Context) {
 	article, err := services.GetArticle(1)
 	if err != nil {
@@ -91,6 +91,9 @@ func (ac *ArticleController) GetArticleByID(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, utils.Error("查询文章失败"))
 		return
 	}
+
+	// 浏览量 + 1
+	_ = services.UpdateArticleViewsById(article.ID, article.Views+1)
 
 	c.JSON(http.StatusOK, utils.Success("查询成功", article))
 }

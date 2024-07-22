@@ -56,3 +56,7 @@ func GetArticleListPage(articleListPageRequest *ro.ArticleListPageRequest) (vo.A
 func GetAuthorInfoById(authorId string) vo.AuthorVo {
 	return daos.GetAuthorInfoById(authorId)
 }
+
+func UpdateArticleViewsById(articleId string, views int) error {
+	return daos.UpdateArticleViewsById(articleId, views)
+}
