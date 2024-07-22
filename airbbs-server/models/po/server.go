@@ -1,4 +1,4 @@
-package models
+package po
 
 type Server struct {
 	Name string `yaml:"name" json:"name"`

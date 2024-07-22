@@ -2,24 +2,25 @@ package services
 
 import (
 	"codermast.com/airbbs/daos"
-	"codermast.com/airbbs/models"
+	"codermast.com/airbbs/models/po"
+	"codermast.com/airbbs/models/vo"
 	"codermast.com/airbbs/utils"
 	"errors"
 )
 
 // GetAllUsers 查询所有用户
-func GetAllUsers() []models.User {
+func GetAllUsers() []po.User {
 	users := daos.GetAllUsers()
 	return users
 }
 
 // GetUserByID 根据ID获取指定用户
-func GetUserByID(userID string) (models.UserVO, error) {
+func GetUserByID(userID string) (vo.UserVO, error) {
 	return daos.GetUserByID(userID)
 }
 
 // CreateUser 创建用户
-func CreateUser(user *models.User) error {
+func CreateUser(user *po.User) error {
 
 	// 加密密码
 	hashedPassword := utils.EncryptPassword(user.Password)
@@ -41,7 +42,7 @@ func CreateUser(user *models.User) error {
 }
 
 // UpdateUser 更新用户
-func UpdateUser(userVo *models.UserVO) error {
+func UpdateUser(userVo *vo.UserVO) error {
 	return daos.UpdateUser(userVo)
 }
 
@@ -52,7 +53,7 @@ func DeleteUserByID(userID string) error {
 }
 
 // UserLogin 用户登录
-func UserLogin(user *models.User) error {
+func UserLogin(user *po.User) error {
 
 	return daos.UserLogin(user)
 }

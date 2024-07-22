@@ -4,8 +4,9 @@
 import { defineStore } from 'pinia'
 import { ref, watch } from "vue"
 import { HeaderAuthTokenName } from "@/config";
+import type { UserQueryInfo } from "@/models/user";
 // 定义并暴露一个 store
-export const useStatusStore = defineStore('status', () => {
+export const useUserStore = defineStore('status', () => {
 	// 用户登录状态
 	let userLoginStatus = ref(localStorage.getItem('userLoginStatus') === 'true')
 
@@ -16,24 +17,39 @@ export const useStatusStore = defineStore('status', () => {
 	});
 
 	// 当前登录用户的 ID
-	let userLoginId = ref(localStorage.getItem("userId") || "-1");
+	let userId = ref(localStorage.getItem("userId") || "-1");
 
 	// 监听 userLoginId 的变化，更新到 LocalStorage 中
-	watch(userLoginId, (newValue) => {
+	watch(userId, (newValue) => {
 		console.log("userLoginId 更新", newValue)
 		localStorage.setItem('userId', newValue);
 	});
 
 	// JWT Token
 	let JWTToken = ref(localStorage.getItem(HeaderAuthTokenName) || "");
-
-
-	// 监听 JWT Token 的变化，更新到 LocalStorage 中
+	// 持久化 JWT Token
 	watch(JWTToken, (newValue) => {
-		console.log("JWTToken 更新", newValue)
 		localStorage.setItem(HeaderAuthTokenName, newValue);
 	});
 
+	const storedUserInfo = localStorage.getItem("userInfo");
+	let userInfo = ref(storedUserInfo ? JSON.parse(storedUserInfo) : null)
+
+	// 持久化 userInfo
+	watch(userInfo, (newValue: any) => {
+		localStorage.setItem("userInfo", JSON.stringify(newValue));
+	});
+
+	// 退出登录
+	function logout() {
+		userLoginStatus.value = false;
+		userInfo.value = '';
+		JWTToken.value = '';
+		localStorage.removeItem('userLoginStatus');
+		localStorage.removeItem('userId');
+		localStorage.removeItem(HeaderAuthTokenName);
+	}
+
 	// 需要手动进行返回暴露，这和 Vue3 中的 setup 有些差别
-	return {userLoginStatus, userLoginId, JWTToken};
+	return {userLoginStatus, userInfo, JWTToken, userId, logout};
 })

@@ -1,17 +1,19 @@
 package utils
 
-import "codermast.com/airbbs/models"
+import (
+	"codermast.com/airbbs/models/pojo"
+)
 
-func SuccessData(data interface{}) models.Result {
+func SuccessData(data interface{}) pojo.Result {
 	return Success("", data)
 }
 
-func SuccessMsg(msg string) models.Result {
+func SuccessMsg(msg string) pojo.Result {
 	return Success(msg, nil)
 }
 
-func Success(msg string, data interface{}) models.Result {
-	result := models.Result{
+func Success(msg string, data interface{}) pojo.Result {
+	result := pojo.Result{
 		Code:    200,
 		Message: msg,
 		Data:    data,
@@ -19,8 +21,8 @@ func Success(msg string, data interface{}) models.Result {
 	return result
 }
 
-func Error(msg string) models.Result {
-	result := models.Result{
+func Error(msg string) pojo.Result {
+	result := pojo.Result{
 		Code:    400,
 		Message: msg,
 		Data:    nil,

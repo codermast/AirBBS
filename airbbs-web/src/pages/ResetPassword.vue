@@ -5,13 +5,13 @@ import ArrowRight from "@/icons/ArrowRight.vue";
 import { useRouter } from "vue-router";
 import type { FormItemRule, StepsProps } from 'naive-ui'
 import { useMessage } from "naive-ui"
-import { useStatusStore } from "@/stores/statusStore";
+import { useUserStore } from "@/stores/userStore";
 import ForgetPassword from "@/icons/ForgetPassword.vue";
 import { ref } from "vue"
 import { matchResetAuthCode, sendResetAuthCode } from "@/api/auth";
 import { resetUserPassword } from "@/api/user";
 
-const statusStore = useStatusStore()
+const userStore = useUserStore()
 const router = useRouter();
 const message = useMessage();
 

@@ -1,4 +1,4 @@
-package models
+package pojo
 
 type Result struct {
 	Code    int         `json:"code"`

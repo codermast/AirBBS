@@ -1,6 +1,8 @@
-package models
+package po
 
-import "time"
+import (
+	"time"
+)
 
 // Config 配置结构体
 type Config struct {

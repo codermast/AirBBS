@@ -1,4 +1,4 @@
-package models
+package pojo
 
 type Router struct {
 	Url    string

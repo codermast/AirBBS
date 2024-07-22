@@ -1,13 +1,15 @@
 package daos
 
 import (
-	"codermast.com/airbbs/models"
+	"codermast.com/airbbs/models/po"
+	"codermast.com/airbbs/models/ro"
+	"codermast.com/airbbs/models/vo"
 	"errors"
 	"math"
 )
 
 // CreateArticle 文章发布
-func CreateArticle(article *models.Article) error {
+func CreateArticle(article *po.Article) error {
 	result := DB.Create(article)
 
 	if result.Error != nil || result.RowsAffected == 0 {
@@ -18,8 +20,8 @@ func CreateArticle(article *models.Article) error {
 }
 
 // GetArticle 获取所有文章
-func GetArticle(status int) (*[]models.Article, error) {
-	var articles []models.Article
+func GetArticle(status int) (*[]po.Article, error) {
+	var articles []po.Article
 
 	if status == -1 {
 		result := DB.Table("articles").Order("id desc").Find(&articles)
@@ -32,9 +34,6 @@ func GetArticle(status int) (*[]models.Article, error) {
 			return nil, result.Error
 		}
 	}
-
-	// 根据作者id获取作者名称
-	getAuthorNameListByIds(articles)
 
 	return &articles, nil
 }
@@ -51,34 +50,29 @@ func DeleteArticleByID(articleId string) error {
 }
 
 // GetArticleByID 查询指定 ID 文章
-func GetArticleByID(articleID string) (*models.Article, error) {
-	var article models.Article
+func GetArticleByID(articleID string) (*po.Article, error) {
+	var article po.Article
 	result := DB.Table("articles").Where("id = ?", articleID).First(&article)
 
 	if result.Error != nil || result.RowsAffected == 0 {
 		return nil, result.Error
 	}
 
-	// 根据作者id获取作者名称
-	getAuthorNameById(&article)
 	return &article, nil
 }
 
 // UpdateArticleByID 根据 ID 更新指定文章
-func UpdateArticleByID(article *models.Article) (*models.Article, error) {
+func UpdateArticleByID(article *po.Article) (*po.Article, error) {
 	// 1. 首先根据 ID 查文章是否存在
-	articleByID, err := GetArticleByID(article.ID)
+	_, err := GetArticleByID(article.ID)
 
 	// 2. 查询时异常，即查询失败，即文章不存在
 	if err != nil {
 		return nil, errors.New("文章不存在")
 	}
 
-	// 维护好作者信息
-	article.Author = articleByID.Author
-
 	// 此时文章存在，才进行更新
-	result := DB.Save(article)
+	result := DB.Table("articles").Updates(article)
 
 	if result.Error != nil || result.RowsAffected == 0 {
 		return nil, result.Error
@@ -99,7 +93,7 @@ func UpdateArticleListStatusById(ids []string, status int) error {
 	return nil
 }
 
-func GetArticleListPage(articleListPageRequest *models.ArticleListPageRequest) (models.ArticleListPage, error) {
+func GetArticleListPage(articleListPageRequest *ro.ArticleListPageRequest) (vo.ArticleListPageVo, error) {
 	// 页号
 	pageNumber := articleListPageRequest.PageNumber
 
@@ -109,7 +103,7 @@ func GetArticleListPage(articleListPageRequest *models.ArticleListPageRequest) (
 	// 偏移量
 	offset := (pageNumber - 1) * pageSize
 
-	var articleListPage models.ArticleListPage
+	var articleListPage vo.ArticleListPageVo
 
 	var totalCount int64
 
@@ -117,7 +111,7 @@ func GetArticleListPage(articleListPageRequest *models.ArticleListPageRequest) (
 	// 分页查询
 	result := DB.Table("articles").Where("status = ?", 1).Limit(pageSize).Offset(offset).Find(&articleListPage.Articles)
 	if result.Error != nil {
-		return models.ArticleListPage{}, result.Error
+		return vo.ArticleListPageVo{}, result.Error
 	}
 
 	articleListPage.PageNumber = pageNumber
@@ -129,9 +123,9 @@ func GetArticleListPage(articleListPageRequest *models.ArticleListPageRequest) (
 }
 
 // 根据 作者 id 获取名称
-func getAuthorNameListByIds(articles []models.Article) {
+func getAuthorNameListByIds(articles []po.Article) {
 	for i := range articles {
-		var author models.Author
+		var author vo.AuthorVo
 		DB.Table("users").Where("id = ?", articles[i].Author).First(&author)
 
 		if author.Nickname != "" {
@@ -142,14 +136,26 @@ func getAuthorNameListByIds(articles []models.Article) {
 	}
 }
 
-// 根据 作者 id 获取名称
-func getAuthorNameById(article *models.Article) {
-	var author models.Author
-	DB.Table("users").Where("id = ?", article.Author).First(&author)
+// GetAuthorInfoById 根据作者 id 获取作者信息
+func GetAuthorInfoById(authorId string) vo.AuthorVo {
+	var author vo.AuthorVo
+	DB.Table("users").Where("id = ?", authorId).First(&author)
 
-	if author.Nickname != "" {
-		article.Author = author.Nickname
-	} else {
-		article.Author = author.Username
-	}
+	// 文章总数
+	var articleTotal int64
+	DB.Table("articles").Where("status = ? AND author = ?", 1, authorId).Count(&articleTotal)
+	author.ArticleTotal = int(articleTotal)
+
+	// 浏览量总数
+	var viewTotal int64
+	DB.Table("articles").Where("status = ? AND author = ?", 1, authorId).Select("SUM(views) as total_views").Scan(&viewTotal)
+	author.ViewTotal = int(viewTotal)
+
+	return author
+}
+
+func UpdateArticleViewsById(articleId string, views int) error {
+	result := DB.Table("articles").Where("id = ?", articleId).Update("views", views)
+
+	return result.Error
 }

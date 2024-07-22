@@ -3,23 +3,13 @@ import { onMounted, ref } from 'vue'
 import Edit from "@/icons/Edit.vue";
 import { getUserById, updateUserInfo } from "@/api/user"
 
-import { useStatusStore } from "@/stores/statusStore";
+import { useUserStore } from "@/stores/userStore";
 import { useMessage } from "naive-ui";
-import type { UserQueryInfo } from "@/models/user";
 
-const statusStore = useStatusStore();
+const userStore = useUserStore();
 const message = useMessage()
 
-let userInfo = ref<UserQueryInfo>({
-  id: "",
-  github: "",
-  introduce: "",
-  mail: "",
-  nickname: "",
-  sex: "",
-  tel: "",
-  username: ""
-})
+let userInfo = ref(JSON.parse(JSON.stringify(userStore.userInfo)))
 
 
 let sexOptions = ref([
@@ -33,60 +23,23 @@ let sexOptions = ref([
   }
 ])
 
-// 初始数据
-let initialUserInfo = ref<UserQueryInfo>({
-  id: "",
-  github: "",
-  introduce: "",
-  mail: "",
-  nickname: "",
-  sex: "",
-  tel: "",
-  username: ""
-})
-
-
-onMounted(async () => {
-  // 获取用户信息
-  let response = await getUserById(statusStore.userLoginId)
-
-  if (response.status == 200) {
-    // message.success("查询成功！")
-    console.log(response)
-    userInfo.value = response.data.data
-
-    if (response.data.data.sex) {
-      userInfo.value.sex = "male"
-    } else {
-      userInfo.value.sex = "female"
-    }
-
-    // 保存初始数据
-    initialUserInfo = ref<UserQueryInfo>({ ...userInfo.value })
-  } else {
-    message.error("用户信息获取失败！")
-  }
-})
 
 // 保存用户信息
 async function saveUserInfo() {
-  // 转换用户信息状态
-  const submitUserInfo = {...userInfo.value, sex: userInfo.value.sex === "male"}
-  console.log("123", submitUserInfo)
   // 保存数据
-  let response = await updateUserInfo(submitUserInfo)
+  let response = await updateUserInfo(userInfo.value)
   console.log(response)
   if (response.status == 200) {
     message.success("更新成功！")
+    userStore.userInfo = userInfo.value
   } else {
-    8
     message.error(response.data.message)
   }
 }
 
 // 重置用户信息
 function resetUserInfo() {
-  userInfo.value = initialUserInfo.value
+  userInfo.value = userStore.userInfo
   message.info("重置成功！")
 }
 </script>

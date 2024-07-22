@@ -43,5 +43,5 @@ export type UserQueryInfo = {
 	tel: string
 	github: string
 	introduce: string
-	sex: boolean | string
+	sex: string
 }

@@ -3,15 +3,15 @@ import User from "@/icons/User.vue";
 import { Glasses, GlassesOutline, LockClosedOutline, LogoGithub, LogoWechat } from '@vicons/ionicons5'
 import LogoQQ from '@/icons/QQ.vue'
 import ArrowRight from "@/icons/ArrowRight.vue";
-import { loginUser } from "@/api/user";
+import { getUserById, loginUser } from "@/api/user";
 import { ref } from 'vue'
 import type { UserLoginInfo } from "@/models/user";
 import { useRouter } from "vue-router";
 import { useMessage,useLoadingBar } from "naive-ui"
 import { HeaderAuthTokenName } from "@/config";
-import { useStatusStore } from "@/stores/statusStore";
+import { useUserStore } from "@/stores/userStore";
 
-const statusStore = useStatusStore()
+const userStore = useUserStore()
 const router = useRouter();
 const message = useMessage();
 const loadingBar = useLoadingBar()
@@ -34,26 +34,30 @@ let rules = ref({
   },
 })
 
+// 登录执行方法
 async function login() {
-  loadingBar.start()
   let response = await loginUser(user.value)
   console.log("loginResponse",response)
   if (response.status == 200) {
-
     // 登录成功，更新登录信息
-    statusStore.JWTToken = response.data.data.token
-    statusStore.userLoginStatus = true
-    statusStore.userLoginId = response.data.data.user_id
+    userStore.JWTToken = response.data.data.token
+    userStore.userLoginStatus = true
+    userStore.userId = response.data.data.user_id
+
+    let userInfoResponse = await getUserById(userStore.userId)
+    console.log("userInfoResponse",userInfoResponse)
+    if (userInfoResponse.status == 200){
+      userStore.userInfo = userInfoResponse.data.data
+      console.log("userInfo:",userStore.userInfo)
+    }
 
     message.success("登录成功！")
 
     // 路由跳转
     router.push({name: "Index"})
 
-    loadingBar.finish()
   }else{
     message.error(response.data.message)
-    loadingBar.error()
   }
 }
 

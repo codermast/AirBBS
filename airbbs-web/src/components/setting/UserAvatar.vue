@@ -4,14 +4,14 @@ import Edit from "@/icons/Edit.vue";
 import { ArchiveOutline as Archive } from "@vicons/ionicons5";
 import { type UploadFileInfo, useMessage } from 'naive-ui'
 import { onMounted, ref } from "vue";
-import { useStatusStore } from "@/stores/statusStore";
+import { useUserStore } from "@/stores/userStore";
 import { getUserById, uploadUserPhoto } from "@/api/user";
 
 
-const statusStore = useStatusStore();
+const userStore = useUserStore();
 const message = useMessage()
 
-let userId = statusStore.userLoginId;
+let userId = userStore.userId;
 let userPhoto = ref()
 let photoFile = ref()
 
@@ -26,7 +26,7 @@ onMounted(async () => {
 
 // 图片上传之前校验图片格式，这里是头像上传，故只支持单文件
 function beforeUpload(file: UploadFileInfo) {
-  if (file.file?.type !== 'image/png' && file.file?.type !== 'image/jpg') {
+  if (file.file?.type !== 'image/png' && file.file?.type !== 'image/jpeg') {
     message.error('只能上传png、jpg格式的图片文件，请重新上传')
     return false
   } else {
@@ -89,7 +89,7 @@ async function updatePhoto() {
                     directory-dnd
                     :max="1"
                     :show-file-list="true"
-                    accept="image/png,image/jpeg"
+                    accept="image/png,image/jpg"
                     @before-upload="beforeUpload"
                 >
                   <n-upload-dragger>
