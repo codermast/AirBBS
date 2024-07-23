@@ -16,11 +16,13 @@ func SetupFollowRoutes(r *gin.Engine) {
 	followGroup.Use(middlewares.UserLoginAuthMiddleware())
 
 	{
+		// 关注指定用户
 		followGroup.POST("/:id", followController.FollowUser)
-		// UnfollowUser 取消关注指定用户	DELETE /follow/:id
+
+		// 取消关注指定用户
 		followGroup.DELETE("/:id", followController.UnfollowUser)
 
-		// GetUserFans 查看指定用户的粉丝列表	GET /follow/:id
+		// 查看指定用户的粉丝列表
 		followGroup.GET("/:id", followController.GetUserFans)
 
 	}
