@@ -37,7 +37,7 @@ function notifyClick() {
 
 // user 被点击
 function userClick() {
-  console.log("user")
+    router.push({ name : "SettingUserInfo" })
 }
 
 function notifyOver() {

@@ -10,9 +10,27 @@ type UserVO struct {
 	Mail      string `gorm:"size:255" json:"mail"`
 	Github    string `gorm:"size:255" json:"github"`
 	Tel       string `gorm:"size:255" json:"tel"`
-	Admin     bool   `gorm:"default:false" json:"admin"`
 	Introduce string `gorm:"size:65535" json:"introduce"`
 	Sex       string `gorm:"size:255" json:"sex"`
+}
+
+// 保存之前
+func (userVo *UserVO) BeforeCreate(tx *gorm.DB) (err error) {
+	if userVo.Sex == "male" {
+		userVo.Sex = "1"
+	} else {
+		userVo.Sex = "0"
+	}
+	return
+}
+
+func (userVo *UserVO) BeforeUpdate(tx *gorm.DB) (err error) {
+	if userVo.Sex == "male" {
+		userVo.Sex = "1"
+	} else {
+		userVo.Sex = "0"
+	}
+	return
 }
 
 func (userVo *UserVO) AfterFind(tx *gorm.DB) (err error) {

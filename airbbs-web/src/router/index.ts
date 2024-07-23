@@ -138,19 +138,3 @@ router.afterEach((to, from) => {
 
 export default router;
 
-
-const interceptRules: string[] = [
-	"/setting/**",
-]
-
-// 正则匹配方法，拦截指定路由
-function matchRegex(targetUrl: string): boolean {
-	interceptRules.forEach((router) => {
-		const regexStr = router.replace(/\*\*/g, '.*');
-		const regex = new RegExp(`^${regexStr}$`)
-		if (regex.test(targetUrl)) {
-			return false
-		}
-	})
-	return true;
-}

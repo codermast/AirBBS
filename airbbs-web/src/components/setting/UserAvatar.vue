@@ -3,26 +3,17 @@
 import Edit from "@/icons/Edit.vue";
 import { ArchiveOutline as Archive } from "@vicons/ionicons5";
 import { type UploadFileInfo, useMessage } from 'naive-ui'
-import { onMounted, ref } from "vue";
+import { ref } from "vue";
 import { useUserStore } from "@/stores/userStore";
-import { getUserById, uploadUserPhoto } from "@/api/user";
+import { uploadUserPhoto } from "@/api/user";
 
 
 const userStore = useUserStore();
 const message = useMessage()
 
-let userId = userStore.userId;
-let userPhoto = ref()
+let userPhoto = ref(userStore.userInfo.photo)
 let photoFile = ref()
 
-onMounted(async () => {
-  // 获取用户信息
-  let response = await getUserById(userId)
-
-  if (response.status == 200) {
-    userPhoto.value = response.data.data.photo
-  }
-})
 
 // 图片上传之前校验图片格式，这里是头像上传，故只支持单文件
 function beforeUpload(file: UploadFileInfo) {
@@ -39,11 +30,18 @@ function beforeUpload(file: UploadFileInfo) {
 
 // 更新头像
 async function updatePhoto() {
+
+  // 1. 先判断是否上传了图片
+  if (photoFile.value == null){
+    message.error("请先上传图片！")
+    return
+  }
   let response = await uploadUserPhoto(photoFile.value.file)
 
-  if  (response.status == 200){
-    message.success("success")
+  if (response.status == 200) {
+    message.success("更新成功！")
     userPhoto.value = response.data.data
+    userStore.userInfo.photo = response.data.data
   }
 }
 </script>

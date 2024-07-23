@@ -73,11 +73,6 @@ func UserLoginAuthMiddleware() gin.HandlerFunc {
 			c.Abort()
 		} else {
 			c.Set(constant.USERID, claims.UserID)
-			userid, _ := c.Get(constant.USERID)
-			userId := c.GetString(constant.USERID)
-
-			fmt.Printf("Get : %s \n", userid)
-			fmt.Printf("GetString : %s \n", userId)
 			c.Next()
 		}
 	}
