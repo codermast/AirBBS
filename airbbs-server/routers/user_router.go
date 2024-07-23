@@ -10,7 +10,7 @@ import (
 func SetupUserRoutes(r *gin.Engine) {
 	userController := controllers.NewUserController()
 
-	userGroup := r.Group("/users")
+	userGroup := r.Group("/user")
 
 	// 登录校验中间件
 	userGroup.Use(middlewares.UserLoginAuthMiddleware())
@@ -20,9 +20,9 @@ func SetupUserRoutes(r *gin.Engine) {
 		userGroup.POST("/register", userController.CreateUser)
 
 		// 用户查询
-		userGroup.GET("/", userController.GetAllUsers)
+		userGroup.GET("/all", userController.GetAllUsers)
 		userGroup.GET("/:uid", userController.GetUserByID)
-		userGroup.PUT("/", userController.UpdateUser)
+		userGroup.PUT("/:uid", userController.UpdateUser)
 
 		// 用户删除
 		userGroup.DELETE("/:uid", userController.DeleteUser)

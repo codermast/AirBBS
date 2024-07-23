@@ -1,9 +1,10 @@
 <script setup lang="ts">
 
-import Sidebar from "@/layouts/sidebar/ArticleSidebar.vue";
 
 import emitter from '@/utils/emitter'
 import { useLoadingBar } from "naive-ui";
+import Article from "@/icons/Article.vue";
+import ArticleSidebar from "@/layouts/sidebar/ArticleSidebar.vue";
 
 const loadingBar = useLoadingBar();
 
@@ -35,7 +36,7 @@ emitter.on('loadingBarFinish', () => {
         <router-view></router-view>
       </n-gi>
       <n-gi :span="2">
-        <Sidebar></Sidebar>
+        <ArticleSidebar></ArticleSidebar>
       </n-gi>
       <n-gi :span="1">
       </n-gi>

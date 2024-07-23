@@ -1,7 +1,7 @@
 import axios from "@/api/axios";
 import type { Article, ArticlePageRequest } from "@/models/article";
 
-const BASE_URL: string = "articles"
+const BASE_URL: string = "article"
 
 // GET /articles/all 获取所有文章
 export const getArticleAllList = () => {

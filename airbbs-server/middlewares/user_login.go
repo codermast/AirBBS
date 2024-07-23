@@ -5,7 +5,6 @@ import (
 	"codermast.com/airbbs/constant"
 	"codermast.com/airbbs/models/pojo"
 	"codermast.com/airbbs/utils"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"regexp"
@@ -14,8 +13,8 @@ import (
 
 // 放行的路由列表
 var unauthenticatedRoutes = []pojo.Router{
-	{"/users/login", "POST"},
-	{"/users/register", "POST"},
+	{"/user/login", "POST"},
+	{"/user/register", "POST"},
 	{"/articles/page", "GET"},
 	{`/articles/\d+`, "GET"},
 }
@@ -26,9 +25,6 @@ func UserLoginAuthMiddleware() gin.HandlerFunc {
 
 		requestMethod := c.Request.Method
 		requestUrl := c.Request.URL.Path
-		uid := c.Param("uid")
-
-		fmt.Println(uid)
 
 		// 0. 放行指定路由
 		for _, route := range unauthenticatedRoutes {

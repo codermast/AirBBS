@@ -3,23 +3,23 @@ package services
 import (
 	"codermast.com/airbbs/daos"
 	"codermast.com/airbbs/models/po"
+	"codermast.com/airbbs/models/ro"
 	"codermast.com/airbbs/models/vo"
 	"codermast.com/airbbs/utils"
 	"errors"
 )
 
-// GetAllUsers 查询所有用户
-func GetAllUsers() []po.User {
-	users := daos.GetAllUsers()
-	return users
+// GetAllUsers 获取所有用户 Get /user/all
+func GetAllUsers() []vo.UserVO {
+	return daos.GetAllUsers()
 }
 
-// GetUserByID 根据ID获取指定用户
+// GetUserByID 根据 ID 获取指定用户 Get /user/:uid
 func GetUserByID(userID string) (vo.UserVO, error) {
 	return daos.GetUserByID(userID)
 }
 
-// CreateUser 创建用户
+// CreateUser 创建用户 POST /user/register
 func CreateUser(user *po.User) error {
 
 	// 加密密码
@@ -30,9 +30,9 @@ func CreateUser(user *po.User) error {
 	user.Nickname = randomNickname
 
 	// 密码加密后存入数据库
-	user.Password = string(hashedPassword)
+	user.Password = hashedPassword
 
-	// 1. 判断用户名是否重复
+	// 判断用户名是否重复
 	_, err := daos.GetUserByUserName(user.Username)
 	if err == nil {
 		// 此时用户名已经存在
@@ -41,9 +41,9 @@ func CreateUser(user *po.User) error {
 	return daos.CreateUser(user)
 }
 
-// UpdateUser 更新用户
-func UpdateUser(userVo *vo.UserVO) error {
-	return daos.UpdateUser(userVo)
+// UpdateUser 更新指定 userID 的用户信息 PUT /user/:uid
+func UpdateUser(userRo *ro.UserUpdateInfoRequest) error {
+	return daos.UpdateUser(userRo)
 }
 
 // DeleteUserByID 根据 ID 删除用户

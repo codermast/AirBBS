@@ -2,49 +2,38 @@ package daos
 
 import (
 	"codermast.com/airbbs/models/po"
+	"codermast.com/airbbs/models/ro"
 	"codermast.com/airbbs/models/vo"
 	"codermast.com/airbbs/utils"
 	"errors"
+	"github.com/jinzhu/copier"
 	"time"
 )
 
-// GetAllUsers 查询所有用户
-func GetAllUsers() []po.User {
-	var users []po.User
-	DB.Find(&users)
-	return users
+// GetAllUsers 获取所有用户 Get /user/all
+func GetAllUsers() []vo.UserVO {
+	var userVos []vo.UserVO
+	DB.Table("users").Find(&userVos)
+	return userVos
 }
 
-// GetUserByID 根据 ID 查询指定用户信息
+// GetUserByID 根据 ID 获取指定用户 Get /user/:uid
 func GetUserByID(userID string) (vo.UserVO, error) {
-	var user po.User
+	var userVo vo.UserVO
 	// 根据 ID 查询用户
-	result := DB.First(&user, userID)
+	result := DB.Table("users").First(&userVo, userID)
 
 	if result != nil && result.RowsAffected == 0 {
 		return vo.UserVO{}, errors.New("用户不存在！")
 	}
 
-	// 拼接 UserVo
-	var userVo vo.UserVO
-
-	userVo.ID = user.ID
-	userVo.Username = user.Username
-	userVo.Nickname = user.Nickname
-	userVo.Photo = user.Photo
-	userVo.Mail = user.Mail
-	userVo.Github = user.Github
-	userVo.Tel = user.Tel
-	userVo.Introduce = user.Introduce
-	userVo.Sex = user.Sex
-
 	return userVo, nil
 }
 
-// CreateUser 保存用户
+// CreateUser 创建用户 POST /user/register
 func CreateUser(user *po.User) error {
 	// 保存用户，Gorm 会自动创建 UserID
-	result := DB.Create(user)
+	result := DB.Table("users").Create(user)
 
 	return result.Error
 }
@@ -61,17 +50,21 @@ func GetUserByUserName(username string) (po.User, error) {
 	return userQuery, nil
 }
 
-// UpdateUser 更新用户信息
-func UpdateUser(userVo *vo.UserVO) error {
-	_, err := GetUserByID(userVo.ID)
+// UpdateUser 更新指定 userID 的用户信息 PUT /user/:uid
+func UpdateUser(userRo *ro.UserUpdateInfoRequest) error {
+	_, err := GetUserByID(userRo.ID)
 
 	// 用户不存在
 	if err != nil {
 		return errors.New("用户不存在")
 	}
 
+	var user po.User
+
+	_ = copier.Copy(&user, userRo)
+
 	// 更新操作，仅更新非零值的字段
-	result := DB.Table("users").Updates(userVo)
+	result := DB.Table("users").Updates(&user)
 
 	// 更新失败
 	if result.Error != nil {

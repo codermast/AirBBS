@@ -40,7 +40,7 @@ func (ac *ArticleController) CreateArticle(c *gin.Context) {
 	c.JSON(http.StatusOK, utils.Success("发布成功！", article))
 }
 
-// GetArticleAllList 获取所有文章 GET /articles/all
+// GetArticleAllList 获取所有文章 GET /article/all
 func (ac *ArticleController) GetArticleAllList(c *gin.Context) {
 
 	article, err := services.GetArticle(-1)
@@ -52,7 +52,7 @@ func (ac *ArticleController) GetArticleAllList(c *gin.Context) {
 	c.JSON(http.StatusOK, utils.Success("查询成功", article))
 }
 
-// GetArticlePublishList 获取所有公开发布文章 GET /articles/publish
+// GetArticlePublishList 获取所有公开发布文章 GET /article/publish
 func (ac *ArticleController) GetArticlePublishList(c *gin.Context) {
 	article, err := services.GetArticle(1)
 	if err != nil {
@@ -63,7 +63,7 @@ func (ac *ArticleController) GetArticlePublishList(c *gin.Context) {
 	c.JSON(http.StatusOK, utils.Success("查询成功", article))
 }
 
-// DeleteArticleByID 根据 ID 删除指定文章 DELETE /articles/:aid
+// DeleteArticleByID 根据 ID 删除指定文章 DELETE /article/:aid
 func (ac *ArticleController) DeleteArticleByID(c *gin.Context) {
 	articleID := c.Param("aid")
 
@@ -77,7 +77,7 @@ func (ac *ArticleController) DeleteArticleByID(c *gin.Context) {
 	c.JSON(http.StatusOK, utils.SuccessMsg("删除成功"))
 }
 
-// GetArticleByID 查询指定 ID 文章 GET /articles/:aid
+// GetArticleByID 查询指定 ID 文章 GET /article/:aid
 func (ac *ArticleController) GetArticleByID(c *gin.Context) {
 	articleID := c.Param("aid")
 
@@ -98,7 +98,7 @@ func (ac *ArticleController) GetArticleByID(c *gin.Context) {
 	c.JSON(http.StatusOK, utils.Success("查询成功", article))
 }
 
-// UpdateArticleByID 根据 ID 更新指定文章 PUT /articles
+// UpdateArticleByID 根据 ID 更新指定文章 PUT /article
 func (ac *ArticleController) UpdateArticleByID(c *gin.Context) {
 	var article po.Article
 

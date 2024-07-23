@@ -12,7 +12,7 @@ func SetupArticleRoutes(r *gin.Engine) {
 	articleController := controllers.NewArticleController()
 
 	// 文章路由器
-	articleRoute := r.Group("/articles")
+	articleRoute := r.Group("/article")
 
 	articleRoute.Use(middlewares.UserLoginAuthMiddleware())
 

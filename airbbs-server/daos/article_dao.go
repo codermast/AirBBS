@@ -10,7 +10,7 @@ import (
 
 // CreateArticle 文章发布
 func CreateArticle(article *po.Article) error {
-	result := DB.Create(article)
+	result := DB.Table("articles").Create(article)
 
 	if result.Error != nil || result.RowsAffected == 0 {
 		return result.Error

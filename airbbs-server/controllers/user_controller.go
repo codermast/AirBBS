@@ -11,6 +11,7 @@ import (
 	"codermast.com/airbbs/utils"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/copier"
 	"log"
 	"net/http"
 	"path/filepath"
@@ -22,15 +23,15 @@ func NewUserController() *UserController {
 	return &UserController{}
 }
 
-// GetAllUsers 获取所有用户 Get /users
+// GetAllUsers 获取所有用户 Get /user/all
 func (uc *UserController) GetAllUsers(c *gin.Context) {
-	users := services.GetAllUsers()
+	userVos := services.GetAllUsers()
 
 	// 处理获取所有用户的逻辑
-	c.JSON(http.StatusOK, utils.Success("查询成功", users))
+	c.JSON(http.StatusOK, utils.Success("查询成功", userVos))
 }
 
-// GetUserByID 根据 ID 获取指定用户 Get /users/:uid
+// GetUserByID 根据 ID 获取指定用户 Get /user/:uid
 func (uc *UserController) GetUserByID(c *gin.Context) {
 	// 获取路径参数
 	userID := c.Param("uid")
@@ -39,36 +40,37 @@ func (uc *UserController) GetUserByID(c *gin.Context) {
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, utils.Error(fmt.Sprintf("%v", err)))
+		return
 	}
 	// 处理根据用户ID获取用户信息的逻辑
 	c.JSON(http.StatusOK, utils.SuccessData(userVo))
 }
 
-// CreateUser 创建用户 POST /users
+// CreateUser 创建用户 POST /user/register
 func (uc *UserController) CreateUser(c *gin.Context) {
-	var user po.User
 
-	var userRegisterDto ro.UserRegisterRequest
+	var userRegisterRequest ro.UserRegisterRequest
 
 	// 用户解析
-	if err := c.BindJSON(&userRegisterDto); err != nil {
+	if err := c.BindJSON(&userRegisterRequest); err != nil {
 		c.JSON(http.StatusBadRequest, utils.Error(fmt.Sprintf("%v", err)))
 		return
 	}
 
 	// 获取验证码
-	code := userRegisterDto.Code
+	code := userRegisterRequest.Code
 
 	if code == "" {
 		c.JSON(http.StatusBadRequest, utils.Error(fmt.Sprintf("验证码为空！")))
 		return
 	}
 
-	user.Username = userRegisterDto.Username
-	user.Password = userRegisterDto.Password
-	user.Mail = userRegisterDto.Mail
-	user.Tel = userRegisterDto.Tel
-	user.Nickname = userRegisterDto.Nickname
+	// 构建 User 对象
+	var user po.User
+
+	_ = copier.Copy(&user, &userRegisterRequest)
+
+	// 默认创建的用户为非管理员
 	user.Admin = false
 
 	// 账号或密码为空
@@ -97,51 +99,53 @@ func (uc *UserController) CreateUser(c *gin.Context) {
 	}
 
 	// 此时验证码正确且用户注册成功，则通过校验，删除 Redis 中验证码，减少资源占用
-	err = utils.Del(userRegisterDto.Mail)
+	err = utils.Del(userRegisterRequest.Mail)
 	if err != nil {
 		log.Println("验证码删除失败")
 	}
 
 	var userVO vo.UserVO
-	userVO.ID = user.ID
-	userVO.Username = user.Username
-	userVO.Nickname = user.Nickname
-	userVO.Mail = user.Mail
-	userVO.Tel = user.Tel
+
+	_ = copier.Copy(&userVO, &user)
+
+	if err != nil {
+		log.Println("结构体赋值异常！")
+	}
 
 	// 处理根据用户ID获取用户信息的逻辑
 	c.JSON(http.StatusOK, utils.Success("注册成功！", userVO))
 }
 
-// UpdateUser 更新指定 userID 的用户信息 PUT /users
+// UpdateUser 更新指定 userID 的用户信息 PUT /user/:uid
 func (uc *UserController) UpdateUser(c *gin.Context) {
-	var userVo vo.UserVO
+
+	userId := c.Param("uid")
+
+	var userRo ro.UserUpdateInfoRequest
 
 	// 用户解析
-	if err := c.BindJSON(&userVo); err != nil {
+	if err := c.BindJSON(&userRo); err != nil {
 		c.JSON(http.StatusBadRequest, utils.Error("数据格式错误！"))
 		return
 	}
 
 	// 判断 JWT 中 UserID 和 UserVo 中是否匹配
-	if c.GetString(constant.USERID) != userVo.ID {
+	if c.GetString(constant.USERID) != userRo.ID || userId != c.GetString(constant.USERID) {
 		c.JSON(http.StatusBadRequest, utils.Error("用户ID不匹配！"))
 		return
 	}
 
-	// 不更新 username
-	userVo.Username = ""
-
-	err := services.UpdateUser(&userVo)
+	err := services.UpdateUser(&userRo)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, utils.Error(fmt.Sprintf("%v", err)))
 		return
 	}
+
 	// 处理根据用户ID获取用户信息的逻辑
 	c.JSON(http.StatusOK, utils.SuccessMsg("更新成功！"))
 }
 
-// DeleteUser 删除指定 userID 的用户 DELETE /users/:uid
+// DeleteUser 删除指定 userID 的用户 DELETE /user/:uid
 func (uc *UserController) DeleteUser(c *gin.Context) {
 	userID := c.Param("uid")
 
