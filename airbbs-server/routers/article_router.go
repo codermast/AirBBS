@@ -19,15 +19,23 @@ func SetupArticleRoutes(r *gin.Engine) {
 	articleRoute.Use(middlewares.UserAdminAuthMiddleware())
 
 	{
+		// 文章发布
 		articleRoute.POST("/", articleController.CreateArticle)
+
+		// 文章查询
+		articleRoute.GET("/:aid", articleController.GetArticleByID)
 		articleRoute.GET("/all", articleController.GetArticleAllList)
 		articleRoute.GET("/publish", articleController.GetArticlePublishList)
 		articleRoute.GET("/page", articleController.GetArticleListPage)
-		articleRoute.DELETE("/:aid", articleController.DeleteArticleByID)
-		articleRoute.PUT("/:aid", articleController.UpdateArticleByID)
-		articleRoute.GET("/:aid", articleController.GetArticleByID)
-		articleRoute.PUT("/", articleController.UpdateArticleListStatusById)
-		articleRoute.GET("/author/:id", articleController.GetAuthorInfoById)
 
+		// 文章删除
+		articleRoute.DELETE("/:aid", articleController.DeleteArticleByID)
+
+		// 文章修改
+		articleRoute.PUT("/", articleController.UpdateArticleListStatusById)
+		articleRoute.PUT("/:aid", articleController.UpdateArticleByID)
+
+		// 作者查询
+		articleRoute.GET("/author/:id", articleController.GetAuthorInfoById)
 	}
 }
