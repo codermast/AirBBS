@@ -35,7 +35,6 @@ func GetUserByID(userID string) (vo.UserVO, error) {
 	userVo.Mail = user.Mail
 	userVo.Github = user.Github
 	userVo.Tel = user.Tel
-	userVo.Admin = user.Admin
 	userVo.Introduce = user.Introduce
 	userVo.Sex = user.Sex
 

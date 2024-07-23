@@ -9,12 +9,3 @@ type ArticleListPageVo struct {
 	TotalCount int          `json:"totalCount"`
 	Articles   []po.Article `json:"articles"`
 }
-
-type AuthorVo struct {
-	ID           string `json:"id"`
-	Username     string `json:"username"`
-	Nickname     string `json:"nickname"`
-	ArticleTotal int    `json:"articleTotal"` // 文章总数
-	ViewTotal    int    `json:"viewTotal"`    // 总访问量
-	FansTotal    int    `json:"fansTotal"`    // 粉丝量
-}

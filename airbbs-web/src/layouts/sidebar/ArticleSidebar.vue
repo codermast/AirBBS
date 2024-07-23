@@ -50,7 +50,7 @@ emitter.on("sendArticleAuthorInfo", (articleAuthorInfo : AuthorInfo) => {
                       style="height: 100%;display: flex;margin: auto"
                       size="40"
                       color="white"
-                      src="http://localhost:8080/uploads/logo.png"
+                      :src="authorInfo?.photo"
                   />
                 </div>
               </n-gi>
@@ -62,7 +62,7 @@ emitter.on("sendArticleAuthorInfo", (articleAuthorInfo : AuthorInfo) => {
                   </n-gi>
 
                   <n-gi span="1" style="height: 20px">
-                    一个很酷的 Golang 程序员
+                    {{ authorInfo?.introduce }}
                   </n-gi>
                 </n-grid>
               </n-gi>

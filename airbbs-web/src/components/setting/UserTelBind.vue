@@ -3,38 +3,25 @@
 import Phone from "@/icons/Phone.vue";
 import { Key } from "@vicons/ionicons5";
 import { useUserStore } from "@/stores/userStore";
-import { onMounted, ref } from "vue";
-import { getUserById } from "@/api/user";
+import { ref } from "vue";
 import { type FormItemRule, useMessage } from "naive-ui";
 
 const userStore = useUserStore();
 const message = useMessage()
 
-let userId = userStore.userLoginId
+let userInfo = userStore.userInfo
+
+let resetTelRequest = ref({
+  id: userInfo.id,
+  oldTel: userInfo.tel,
+  newTel: "",
+  code: ""
+});
 
 let isSendAuthCode = ref(false)
 
-let resetTelRequest = ref({
-  id: userId,
-  oldTel: "",
-  newTel: "",
-  code: ""
-})
 
 let formRef = ref();
-
-onMounted(async () => {
-  let response = await getUserById(userId)
-  console.log(response)
-
-  if (response.status === 200) {
-    resetTelRequest.value.oldTel = response.data.data.tel
-  } else {
-    message.error("登录用户异常，请重新登录！")
-
-    localStorage.removeItem("userLoginId")
-  }
-})
 
 let rules = ref({
   newTel: [
