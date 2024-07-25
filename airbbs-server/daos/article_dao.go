@@ -118,7 +118,8 @@ func GetArticleListPage(articleListPageRequest *ro.ArticleListPageRequest) (vo.A
 
 	DB.Table("articles").Where("status = ?", 1).Count(&totalCount)
 	// 分页查询
-	result := DB.Table("articles").Where("status = ?", 1).Limit(pageSize).Offset(offset).Find(&articleListPage.Articles)
+	result := DB.Table("articles").Where("status = ?", 1).Order("update_time desc").Limit(pageSize).Offset(offset).Find(&articleListPage.Articles)
+
 	if result.Error != nil {
 		return vo.ArticleListPageVo{}, result.Error
 	}
