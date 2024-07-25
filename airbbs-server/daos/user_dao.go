@@ -82,22 +82,24 @@ func DeleteUserByID(userID string) error {
 	return result.Error
 }
 
-func UserLogin(user po.User) error {
-	var userInfo po.User
+func UserLogin(user *po.User) error {
 
-	result := DB.Table("users").Where("username = ?", user.Username).First(&userInfo)
+	oldPassword := user.Password
+
+	result := DB.Table("users").Where("username = ?", user.Username).First(&user)
 
 	if result.Error != nil || result.RowsAffected == 0 {
 		return errors.New("用户名不存在！")
 	}
 
-	if !utils.ComparePassword(userInfo.Password, user.Password) {
+	if !utils.ComparePassword(user.Password, oldPassword) {
 		return errors.New("用户名与密码不匹配！")
 	}
 	// 此时登录成功
-	userInfo.LoginTime = time.Now()
+	user.LoginTime = time.Now()
+
 	// 更新最后登录时间
-	DB.Table("users").Where("id = ?", user.ID).Update("login_time", userInfo.LoginTime)
+	DB.Table("users").Where("id = ?", user.ID).Update("login_time", user.LoginTime)
 
 	return nil
 }

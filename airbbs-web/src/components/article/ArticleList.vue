@@ -27,8 +27,11 @@ async function fetchArticleList() {
   let response = await getArticleListPage(articlePageRequest.value)
   console.log(response)
   if (response.status == 200) {
+    // 更新文章信息
     articleListPage.value = response.data.data;
     console.log("articleListPage: ", articleListPage.value)
+    // 更新文章页码信息
+
   } else {
     message.error(response.data.message)
   }

@@ -178,7 +178,7 @@ func (uc *UserController) UserLogin(c *gin.Context) {
 
 	_ = copier.Copy(&user, &userLoginRo)
 
-	err := services.UserLogin(user)
+	err := services.UserLogin(&user)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, utils.Error(fmt.Sprintf("%v", err)))
 		return

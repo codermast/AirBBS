@@ -42,9 +42,8 @@ async function login() {
     // 登录成功，更新登录信息
     userStore.JWTToken = response.data.data.token
     userStore.userLoginStatus = true
-    userStore.userId = response.data.data.user_id
 
-    let userInfoResponse = await getUserById(userStore.userId)
+    let userInfoResponse = await getUserById(response.data.data.user_id)
     console.log("userInfoResponse",userInfoResponse)
     if (userInfoResponse.status == 200){
       userStore.userInfo = userInfoResponse.data.data

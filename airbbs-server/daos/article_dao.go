@@ -126,7 +126,7 @@ func GetArticleListPage(articleListPageRequest *ro.ArticleListPageRequest) (vo.A
 	articleListPage.PageNumber = pageNumber
 	articleListPage.PageSize = pageSize
 	articleListPage.TotalCount = int(totalCount)
-	articleListPage.PageCount = int(math.Ceil(float64(int(totalCount) / pageSize)))
+	articleListPage.PageCount = int(math.Ceil(float64(totalCount) / float64(pageSize)))
 
 	return articleListPage, nil
 }
