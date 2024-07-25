@@ -4,23 +4,22 @@ import { PaperPlane, SaveOutline } from "@vicons/ionicons5";
 import File from "@/icons/File.vue";
 import Title from "@/icons/Title.vue";
 import MdEditor from "@/components/markdown/MdEditor.vue";
-import { createArticle, getArticleById, updateArticle } from "@/api/article";
-import type { Article } from "@/models/article";
+import { getArticleById, updateArticle } from "@/api/article";
 import { useMessage } from "naive-ui"
 import Edit from "@/icons/Edit.vue";
-import { useRoute } from "vue-router"
-import { useRouter } from "vue-router"
+import { useRoute, useRouter } from "vue-router"
 import { articleTypeOptions } from "@/utils/options";
+
 const message = useMessage()
 const route = useRoute()
 const router = useRouter()
 
-let article = ref<Article>({
+let article = ref({
   id: "",
   title: "",
   content: "Hello Air BBS!",
-  status:1,
-  author: ""
+  status: 1,
+  author: "",
 })
 
 onMounted(async () => {
@@ -28,8 +27,8 @@ onMounted(async () => {
   let id = route.query.id
 
   if (id === "" || id === null || id === undefined) {
-      message.error("Url 异常！")
-      router.push({ name : "Index"})
+    message.error("Url 异常！")
+    router.push({name: "Index"})
     return
   }
 
@@ -38,7 +37,7 @@ onMounted(async () => {
 
   if (response.status == 200) {
     article.value = response.data.data
-  }else{
+  } else {
     message.error(response.data.message)
   }
 })
@@ -50,7 +49,7 @@ async function saveArticle() {
 
   if (response.status == 200) {
     message.success("保存成功！")
-  }else{
+  } else {
     message.error(response.data.message)
   }
 }

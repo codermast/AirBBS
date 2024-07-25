@@ -87,7 +87,7 @@ async function unfollowUser() {
               <n-button text>
                 <n-grid cols="1" y-gap="8px">
                   <n-gi span="1">
-                    {{ authorInfo?.articleTotal }}
+                    {{ formatNumber(authorInfo?.articleTotal) }}
                   </n-gi>
 
                   <n-gi span="1">
@@ -125,14 +125,11 @@ async function unfollowUser() {
 
                 <n-grid cols="1" y-gap="8px">
                   <n-gi span="1">
-                    {{ authorInfo?.fansTotal }}
-
+                    {{ formatNumber(authorInfo?.fansTotal) }}
                   </n-gi>
 
                   <n-gi span="1">
                     粉丝
-
-
                   </n-gi>
                 </n-grid>
 

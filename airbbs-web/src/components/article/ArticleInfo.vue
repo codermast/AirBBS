@@ -8,7 +8,7 @@ import emitter from "@/utils/emitter";
 import User from "@/icons/User.vue";
 import { Time } from "@vicons/ionicons5";
 import View from "@/icons/View.vue";
-import { formatDate, timeAgo } from "@/utils/date";
+import { timeAgo } from "@/utils/date";
 
 const route = useRoute()
 
@@ -71,7 +71,7 @@ onMounted(async () => {
             {{ timeAgo(article.publish_time) }}发布
           </n-breadcrumb-item>
 
-          <n-breadcrumb-item>{{ timeAgo(article.update_time) }}来过</n-breadcrumb-item>
+          <n-breadcrumb-item>{{ timeAgo(article.update_time) }}更新</n-breadcrumb-item>
 
           <n-breadcrumb-item>
             <n-icon :component="View" size="15"></n-icon>

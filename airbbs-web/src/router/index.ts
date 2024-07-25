@@ -16,6 +16,7 @@ import ResetPassword from "@/pages/ResetPassword.vue";
 import UserResetPassword from "@/components/setting/UserResetPassword.vue";
 import UserTelBind from "@/components/setting/UserTelBind.vue";
 import Blink from "@/pages/Blink.vue";
+import Article from "@/pages/Article.vue";
 
 const routes = [
 	{
@@ -32,7 +33,7 @@ const routes = [
 	},
 	{
 		path: '/articles',
-		component: Home,
+		component: Article,
 		children: [
 			{
 				path: ":articleID",
