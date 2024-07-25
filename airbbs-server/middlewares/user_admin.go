@@ -11,8 +11,9 @@ import (
 
 // 拦截的路由列表
 var adminAuthenticatedRoutes = []pojo.Router{
-	{"/articles/all", "GET"},
-	{"/articles/", "DELETE"},
+	// 暂时全部放行
+	//{"/articles/all", "GET"},
+	//{"/articles/", "DELETE"},
 }
 
 // UserAdminAuthMiddleware 是否为管理员校验

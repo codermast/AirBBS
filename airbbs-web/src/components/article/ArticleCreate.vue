@@ -6,24 +6,24 @@ import File from "@/icons/File.vue";
 import Title from "@/icons/Title.vue";
 import MdEditor from "@/components/markdown/MdEditor.vue";
 import { createArticle } from "@/api/article";
-import type { Article } from "@/models/article";
 import { useMessage } from "naive-ui"
 import { articleTypeOptions } from "@/utils/options";
+import { useUserStore } from "@/stores/userStore";
 
 const message = useMessage()
+const userStore = useUserStore();
 
-let article = ref<Article>({
-  id: "",
+let articleCreateRequest = ref<ArticleCreateRequest>({
   title: "",
   content: "Hello Air BBS!",
   status: 1,
-  author: ""
+  author: userStore.userInfo.id
 })
 
 // 文章发布
 async function saveArticle() {
   // 在这里可以将 Markdown 内容保存到数据库或进行其他操作
-  let response = await createArticle(article.value);
+  let response = await createArticle(articleCreateRequest.value);
 
   if (response.status == 200) {
     message.success("发布成功！")
@@ -35,9 +35,9 @@ async function saveArticle() {
 // 保存草稿
 async function saveDraft() {
   // 先置为草稿状态
-  article.value.status = 0
+  articleCreateRequest.value.status = 0
   // 在这里可以将 Markdown 内容保存到数据库或进行其他操作
-  let response = await createArticle(article.value);
+  let response = await createArticle(articleCreateRequest.value);
 
   if (response.status == 200) {
     message.success("保存成功！")
@@ -60,7 +60,7 @@ async function saveDraft() {
       <n-gi :span="1">
         <div class="article-title">
           <n-input
-              v-model:value="article.title"
+              v-model:value="articleCreateRequest.title"
               placeholder="请输入文章标题"
           >
             <template #prefix>
@@ -71,7 +71,7 @@ async function saveDraft() {
       </n-gi>
       <n-gi :span="1">
         <div class="editor-container">
-          <MdEditor v-model="article.content"></MdEditor>
+          <MdEditor v-model="articleCreateRequest.content"></MdEditor>
         </div>
       </n-gi>
 
@@ -100,7 +100,7 @@ async function saveDraft() {
 
               <n-form-item label="文章状态" path="inputValue">
                 <n-select
-                    v-model:value="article.status"
+                    v-model:value="articleCreateRequest.status"
                     :options="articleTypeOptions"
                     placeholder="请选择文章状态">
 

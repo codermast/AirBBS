@@ -159,27 +159,26 @@ func (uc *UserController) DeleteUser(c *gin.Context) {
 	c.JSON(http.StatusOK, utils.SuccessMsg("删除成功！"))
 }
 
-// UserLogin 用户登录 POST /users/login
+// UserLogin 用户登录 POST /user/login
 func (uc *UserController) UserLogin(c *gin.Context) {
-	var userLoginDto ro.UserLoginRequest
+	var userLoginRo ro.UserLoginRequest
 
 	// 用户解析
-	if err := c.BindJSON(&userLoginDto); err != nil {
+	if err := c.BindJSON(&userLoginRo); err != nil {
 		c.JSON(http.StatusBadRequest, utils.Error("用户数据解析失败！"))
 		return
 	}
 
-	if userLoginDto.Username == "" || userLoginDto.Password == "" {
+	if userLoginRo.Username == "" || userLoginRo.Password == "" {
 		c.JSON(http.StatusBadRequest, utils.Error("用户名或账号密码为空！"))
 		return
 	}
 
 	var user po.User
 
-	user.Username = userLoginDto.Username
-	user.Password = userLoginDto.Password
+	_ = copier.Copy(&user, &userLoginRo)
 
-	err := services.UserLogin(&user)
+	err := services.UserLogin(user)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, utils.Error(fmt.Sprintf("%v", err)))
 		return

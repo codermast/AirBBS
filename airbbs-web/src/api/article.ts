@@ -19,7 +19,7 @@ export const getArticleById = (articleId: string) => {
 };
 
 // POST /articles/
-export const createArticle = (article: Article) => {
+export const createArticle = (article: ArticleCreateRequest) => {
 	return axios.post(`${ BASE_URL }/`, article);
 }
 

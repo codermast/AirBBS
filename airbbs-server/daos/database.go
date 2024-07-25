@@ -30,5 +30,7 @@ func DatabaseInit() {
 	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{Logger: newLogger})
 	if err != nil {
 		log.Printf("failed to connect to database: %v", err)
+	} else {
+		log.Printf("successfully connected to database")
 	}
 }

@@ -8,18 +8,18 @@ import (
 	"errors"
 )
 
-// CreateArticle 文章发布
-func CreateArticle(article *po.Article) error {
-	if article.Title == "" {
+// CreateArticle 文章发布 POST /article
+func CreateArticle(articleCreateRequest *ro.ArticleCreateRequest) error {
+	if articleCreateRequest.Title == "" {
 		return errors.New("文章标题不能为空！")
 	}
 
-	return daos.CreateArticle(article)
+	return daos.CreateArticle(articleCreateRequest)
 }
 
-// GetArticle 获取所有文章
-func GetArticle(status int) (*[]po.Article, error) {
-	article, err := daos.GetArticle(status)
+// GetArticleByStatus 获取指定状态的所有文章
+func GetArticleByStatus(status int) (*[]po.Article, error) {
+	article, err := daos.GetArticleByStatus(status)
 	return article, err
 }
 
@@ -39,7 +39,7 @@ func GetArticleByID(articleID string) (*po.Article, error) { // 根据作者id�
 }
 
 // UpdateArticleByID 根据 ID 更新指定文章
-func UpdateArticleByID(article *po.Article) (*po.Article, error) {
+func UpdateArticleByID(article *ro.ArticleUpdateRequest) (*po.Article, error) {
 	return daos.UpdateArticleByID(article)
 }
 

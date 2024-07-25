@@ -1,13 +1,13 @@
 # 系统配置信息
 server:
-  name: airblog
+  name: airbbs
   host: localhost
   port: 8080
 #  数据库配置信息
 database:
-  host: localhost
+  host: 127.0.0.1
   port: 3306
-  dbname: airblog
+  dbname: airbbs
   username: codermast
   password: 123456
 # JWT 配置信息
@@ -15,7 +15,7 @@ jwt:
   signing_key: "jwt_key_golangnotes"
   header: "Authorization"
   secret: "jwt_key_golangnotes"
-  issuer: "air_blog"
+  issuer: "air_bbs"
   subject : "test"
   expire_hours: 24
 # Redis 配置信息

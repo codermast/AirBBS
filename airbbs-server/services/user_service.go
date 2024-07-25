@@ -53,7 +53,7 @@ func DeleteUserByID(userID string) error {
 }
 
 // UserLogin 用户登录
-func UserLogin(user *po.User) error {
+func UserLogin(user po.User) error {
 
 	return daos.UserLogin(user)
 }

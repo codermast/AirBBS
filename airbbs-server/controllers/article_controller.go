@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"codermast.com/airbbs/models/po"
+	"codermast.com/airbbs/constant"
 	"codermast.com/airbbs/models/ro"
 	"codermast.com/airbbs/services"
 	"codermast.com/airbbs/utils"
@@ -18,32 +18,32 @@ func NewArticleController() *ArticleController {
 
 // CreateArticle 文章发布 POST /article
 func (ac *ArticleController) CreateArticle(c *gin.Context) {
-	var article po.Article
+	var articleCreateRequest ro.ArticleCreateRequest
 
 	// 文章解析
-	if err := c.BindJSON(&article); err != nil {
+	if err := c.BindJSON(&articleCreateRequest); err != nil {
 		c.JSON(http.StatusBadRequest, utils.Error(fmt.Sprintf("%v", err)))
 		return
 	}
 
 	// author 作者信息
-	article.Author = c.GetString("userID")
+	articleCreateRequest.Author = c.GetString(constant.USERID)
 
 	// 文章发布
-	err := services.CreateArticle(&article)
+	err := services.CreateArticle(&articleCreateRequest)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, utils.Error(fmt.Sprintf("%v", err)))
 		return
 	}
 
-	c.JSON(http.StatusOK, utils.Success("发布成功！", article))
+	c.JSON(http.StatusOK, utils.Success("发布成功！", articleCreateRequest))
 }
 
 // GetArticleAllList 获取所有文章 GET /article/all
 func (ac *ArticleController) GetArticleAllList(c *gin.Context) {
 
-	article, err := services.GetArticle(-1)
+	article, err := services.GetArticleByStatus(-1)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, utils.Error(fmt.Sprintf("%v", err)))
 		return
@@ -54,7 +54,7 @@ func (ac *ArticleController) GetArticleAllList(c *gin.Context) {
 
 // GetArticlePublishList 获取所有公开发布文章 GET /article/publish
 func (ac *ArticleController) GetArticlePublishList(c *gin.Context) {
-	article, err := services.GetArticle(1)
+	article, err := services.GetArticleByStatus(1)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, utils.Error(fmt.Sprintf("%v", err)))
 		return
@@ -100,7 +100,7 @@ func (ac *ArticleController) GetArticleByID(c *gin.Context) {
 
 // UpdateArticleByID 根据 ID 更新指定文章 PUT /article
 func (ac *ArticleController) UpdateArticleByID(c *gin.Context) {
-	var article po.Article
+	var article ro.ArticleUpdateRequest
 
 	// 文章解析
 	if err := c.BindJSON(&article); err != nil {

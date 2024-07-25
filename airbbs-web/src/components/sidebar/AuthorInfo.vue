@@ -6,12 +6,38 @@ import { formatNumber } from "@/utils/format";
 import { ref } from "vue";
 import type { AuthorInfo } from "@/models/article";
 import emitter from "@/utils/emitter";
+import { followUserToId, unfollowUserToId } from "@/api/follow";
+import { useMessage } from "naive-ui"
 
-const authorInfo = ref<AuthorInfo | null>(null)
+const authorInfo = ref()
+
+const message = useMessage()
 
 emitter.on("sendArticleAuthorInfo", (articleAuthorInfo: AuthorInfo) => {
   authorInfo.value = articleAuthorInfo;
 })
+
+// 关注用户
+async function followUser() {
+  let response = await followUserToId(authorInfo.value?.id);
+
+  if (response.status == 200) {
+    message.success("关注成功！")
+  }else {
+    message.error(response.data.message)
+  }
+}
+
+// 取关用户
+async function unfollowUser() {
+  let response = await unfollowUserToId(authorInfo.value?.id);
+
+  if (response.status == 200) {
+    message.success("取关成功！")
+  }else {
+    message.error(response.data.message)
+  }
+}
 </script>
 
 <template>
@@ -123,7 +149,9 @@ emitter.on("sendArticleAuthorInfo", (articleAuthorInfo: AuthorInfo) => {
     <template #footer>
       <n-grid cols="1" y-gap="10px">
         <n-gi span="1">
-          <n-button style="width: 100%">
+          <n-button style="width: 100%"
+                    @click="followUser"
+          >
             <template #icon>
               <n-icon :component="Add"></n-icon>
             </template>

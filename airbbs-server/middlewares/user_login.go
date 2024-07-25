@@ -15,8 +15,8 @@ import (
 var unauthenticatedRoutes = []pojo.Router{
 	{"/user/login", "POST"},
 	{"/user/register", "POST"},
-	{"/articles/page", "GET"},
-	{`/articles/\d+`, "GET"},
+	{"/article/page", "GET"},
+	{`/article/\d+`, "GET"},
 }
 
 // UserLoginAuthMiddleware 用户登录校验

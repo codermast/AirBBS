@@ -13,12 +13,29 @@ func FollowUser(userId string, targetId string) error {
 	follow.Follower = userId
 	follow.Followed = targetId
 
+	// 1. 先判断是否已经关注
+	isFollowed := IsFollowed(userId, targetId)
+	if isFollowed {
+		return errors.New("已经关注！")
+	}
+
 	result := DB.Table("follows").Create(&follow)
 
 	if result.Error != nil || result.RowsAffected == 0 {
 		return errors.New("关注失败！")
 	}
 	return nil
+}
+
+// IsFollowed 是否已经关注
+func IsFollowed(userId string, targetId string) bool {
+	var follow po.Follow
+	result := DB.Table("follows").Where("follower=? AND followed=?", userId, targetId).Find(&follow)
+
+	if result.Error != nil || result.RowsAffected != 0 {
+		return true
+	}
+	return false
 }
 
 // UnfollowUser 取消关注指定用户	DELETE /follow/:id

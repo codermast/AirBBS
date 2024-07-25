@@ -5,12 +5,17 @@ import (
 	"codermast.com/airbbs/models/ro"
 	"codermast.com/airbbs/models/vo"
 	"errors"
+	"github.com/jinzhu/copier"
 	"math"
 )
 
-// CreateArticle 文章发布
-func CreateArticle(article *po.Article) error {
-	result := DB.Table("articles").Create(article)
+// CreateArticle 文章发布 POST /article
+func CreateArticle(articleCreateRequest *ro.ArticleCreateRequest) error {
+	var article po.Article
+
+	_ = copier.Copy(&article, articleCreateRequest)
+
+	result := DB.Table("articles").Create(&article)
 
 	if result.Error != nil || result.RowsAffected == 0 {
 		return result.Error
@@ -19,8 +24,8 @@ func CreateArticle(article *po.Article) error {
 	return nil
 }
 
-// GetArticle 获取所有文章
-func GetArticle(status int) (*[]po.Article, error) {
+// GetArticleByStatus 获取指定状态的所有文章
+func GetArticleByStatus(status int) (*[]po.Article, error) {
 	var articles []po.Article
 
 	if status == -1 {
@@ -62,23 +67,27 @@ func GetArticleByID(articleID string) (*po.Article, error) {
 }
 
 // UpdateArticleByID 根据 ID 更新指定文章
-func UpdateArticleByID(article *po.Article) (*po.Article, error) {
+func UpdateArticleByID(articleUpdateRo *ro.ArticleUpdateRequest) (*po.Article, error) {
 	// 1. 首先根据 ID 查文章是否存在
-	_, err := GetArticleByID(article.ID)
+	_, err := GetArticleByID(articleUpdateRo.ID)
 
 	// 2. 查询时异常，即查询失败，即文章不存在
 	if err != nil {
 		return nil, errors.New("文章不存在")
 	}
 
+	var article po.Article
+
+	_ = copier.Copy(&articleUpdateRo, &article)
+
 	// 此时文章存在，才进行更新
-	result := DB.Table("articles").Updates(article)
+	result := DB.Table("articles").Updates(&article)
 
 	if result.Error != nil || result.RowsAffected == 0 {
 		return nil, result.Error
 	}
 
-	return article, nil
+	return &article, nil
 }
 
 // UpdateArticleListStatusById 根据 ID 批量修改文章状态
@@ -150,6 +159,11 @@ func GetAuthorInfoById(authorId string) vo.AuthorVo {
 	var viewTotal int64
 	DB.Table("articles").Where("status = ? AND author = ?", 1, authorId).Select("SUM(views) as total_views").Scan(&viewTotal)
 	author.ViewTotal = int(viewTotal)
+
+	// 粉丝量总数
+	var fansTotal int64
+	DB.Table("follows").Where("followed = ?", authorId).Count(&fansTotal)
+	author.FansTotal = int(fansTotal)
 
 	return author
 }
