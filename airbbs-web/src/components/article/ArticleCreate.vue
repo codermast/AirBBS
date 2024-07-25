@@ -9,9 +9,11 @@ import { createArticle } from "@/api/article";
 import { useMessage } from "naive-ui"
 import { articleTypeOptions } from "@/utils/options";
 import { useUserStore } from "@/stores/userStore";
+import { useRouter } from "vue-router";
 
 const message = useMessage()
 const userStore = useUserStore();
+const router = useRouter();
 
 let articleCreateRequest = ref<ArticleCreateRequest>({
   title: "",
@@ -24,9 +26,12 @@ let articleCreateRequest = ref<ArticleCreateRequest>({
 async function saveArticle() {
   // 在这里可以将 Markdown 内容保存到数据库或进行其他操作
   let response = await createArticle(articleCreateRequest.value);
-
+  console.log(response)
   if (response.status == 200) {
     message.success("发布成功！")
+    setTimeout(() => {
+      router.push({ name : "Index"});
+    }, 200)
   } else {
     message.error(response.data.message)
   }

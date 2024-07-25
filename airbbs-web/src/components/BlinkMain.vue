@@ -1,10 +1,16 @@
 <script setup lang="ts">
 
-import MdEditor from "@/components/markdown/MdEditor.vue";
 import Share from "@/icons/Share.vue";
 import Message from "@/icons/Message.vue";
 import Star from "@/icons/Star.vue";
 import RedPacket from "@/icons/RedPacket.vue";
+
+import { ref } from "vue"
+import { createBlink } from "@/api/blink";
+import type { BlinkCreateRequest } from "@/models/ro/blink";
+import { useMessage } from "naive-ui"
+
+const message = useMessage()
 
 let theme = ["success", "warning", "danger", "info"];
 
@@ -13,6 +19,23 @@ let randomTheme = () => {
   return theme[randomIndex];
 }
 
+let blinkContent = ref<BlinkCreateRequest>({
+  content:""
+})
+
+// 发布 Blink
+async function postBlink() {
+  if (blinkContent.value.content == "") {
+      message.error("请先输入动态信息再发布！")
+  } else {
+    let response = await createBlink(blinkContent.value);
+    if (response.status == 200) {
+      message.success("发布成功！")
+    }else{
+      message.error(response.data.message)
+    }
+  }
+}
 </script>
 
 <template>
@@ -20,7 +43,15 @@ let randomTheme = () => {
     <n-gi :span="1">
       <n-card
       >
-        <MdEditor></MdEditor>
+        <n-input
+            v-model:value="blinkContent.content"
+            type="textarea"
+            placeholder="有什么新的观点，说来看看~"
+        />
+
+        <template #footer>
+          <n-button @click="postBlink">发布</n-button>
+        </template>
       </n-card>
     </n-gi>
     <n-gi :span="1">
@@ -76,7 +107,7 @@ let randomTheme = () => {
                     <div style="display: flex">
                       <n-grid :cols="1">
                         <n-gi :span="1">
-                          <n-qr-code :value="blink.url"/>
+                          <n-qr-code :value="blink"/>
                         </n-gi>
                         <n-gi :span="1">
 

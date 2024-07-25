@@ -17,4 +17,7 @@ func AirBlogRouterConfig(r *gin.Engine) {
 
 	// 设置关注模块路由
 	SetupFollowRoutes(r)
+
+	// 设置动态模块路由
+	SetupBlinkRoutes(r)
 }
