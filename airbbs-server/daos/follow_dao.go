@@ -72,3 +72,14 @@ func GetUserFans(userId string) ([]vo.UserVO, error) {
 
 	return fansList, nil
 }
+
+func GetAlreadyFollowed(curUserId string, targetUserId string) bool {
+	var follow po.Follow
+	result := DB.Table("follows").Where("follower = ? AND followed = ?", curUserId, targetUserId).First(&follow)
+
+	if result.Error != nil || result.RowsAffected == 0 {
+		return false
+	}
+
+	return true
+}

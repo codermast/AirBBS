@@ -31,6 +31,11 @@ func (fc *FollowController) FollowUser(c *gin.Context) {
 		return
 	}
 
+	if targetID == userID {
+		c.JSON(http.StatusBadRequest, utils.Error("自己不能关注自己！"))
+		return
+	}
+
 	err := services.FollowUser(userID, targetID)
 
 	if err != nil {
@@ -83,6 +88,26 @@ func (fc *FollowController) GetUserFans(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, utils.Success("查询成功！", fans))
+}
+
+// GetAlreadyFollowed 查看是否已经关注指定用户 GET /follow/already/:id
+func (fc *FollowController) GetAlreadyFollowed(c *gin.Context) {
+	curUserId := c.GetString(constant.USERID)
+	targetUserId := c.Param("id")
+
+	if curUserId == "" || targetUserId == "" {
+		c.JSON(http.StatusBadRequest, utils.Error("curUserId or targetUserId is required"))
+		return
+	}
+
+	isFollowed := services.GetAlreadyFollowed(curUserId, targetUserId)
+
+	if isFollowed {
+		c.JSON(http.StatusOK, utils.SuccessMsg("已经关注！"))
+		return
+	} else {
+		c.JSON(http.StatusBadRequest, utils.Error("未关注"))
+	}
 }
 
 //// IsMutualFollow 检查是否互关	GET /follow/:id1/:id2

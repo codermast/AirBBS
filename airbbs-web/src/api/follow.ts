@@ -14,3 +14,8 @@ export const followUserToId = (userId: string) => {
 export const unfollowUserToId = (userId: string) => {
 	return axios.delete(`${ BASE_URL }/${ userId }`)
 }
+
+// 判断是否已经关注
+export const getIsAlreadyFollowed = (userId : string) => {
+	return axios.get(`${ BASE_URL }/already/${ userId }`)
+}

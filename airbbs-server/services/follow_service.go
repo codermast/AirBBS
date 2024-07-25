@@ -35,3 +35,7 @@ func GetUserFans(userId string) ([]vo.UserVO, error) {
 
 	return daos.GetUserFans(userId)
 }
+
+func GetAlreadyFollowed(curUserId string, targetUserId string) bool {
+	return daos.GetAlreadyFollowed(curUserId, targetUserId)
+}

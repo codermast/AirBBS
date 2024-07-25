@@ -25,5 +25,8 @@ func SetupFollowRoutes(r *gin.Engine) {
 		// 查看指定用户的粉丝列表
 		followGroup.GET("/:id", followController.GetUserFans)
 
+		// 查看是否已经关注指定用户 GET /follow/already/:id
+		followGroup.GET("/already/:id", followController.GetAlreadyFollowed)
+
 	}
 }

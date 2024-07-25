@@ -3,19 +3,33 @@
 import { Add } from "@vicons/ionicons5";
 import Message from "@/icons/Message.vue";
 import { formatNumber } from "@/utils/format";
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import type { AuthorInfo } from "@/models/article";
 import emitter from "@/utils/emitter";
-import { followUserToId, unfollowUserToId } from "@/api/follow";
+import { followUserToId, getIsAlreadyFollowed, unfollowUserToId } from "@/api/follow";
 import { useMessage } from "naive-ui"
 
 const authorInfo = ref()
 
 const message = useMessage()
 
-emitter.on("sendArticleAuthorInfo", (articleAuthorInfo: AuthorInfo) => {
+let isAlreadyFollowed = ref()
+
+emitter.on("sendArticleAuthorInfo", async (articleAuthorInfo: AuthorInfo) => {
   authorInfo.value = articleAuthorInfo;
+
+  await getAlreadyFollowed();
 })
+
+// 获取是否已经关注
+async function getAlreadyFollowed() {
+  let response = await getIsAlreadyFollowed(authorInfo.value.id);
+
+  if (response.status == 200) {
+    // 已经关注，则更新关注状态
+    isAlreadyFollowed.value = true;
+  }
+}
 
 // 关注用户
 async function followUser() {
@@ -23,6 +37,7 @@ async function followUser() {
 
   if (response.status == 200) {
     message.success("关注成功！")
+    isAlreadyFollowed.value = true;
   }else {
     message.error(response.data.message)
   }
@@ -34,6 +49,7 @@ async function unfollowUser() {
 
   if (response.status == 200) {
     message.success("取关成功！")
+    isAlreadyFollowed.value = false;
   }else {
     message.error(response.data.message)
   }
@@ -145,7 +161,7 @@ async function unfollowUser() {
 
     <template #footer>
       <n-grid cols="1" y-gap="10px">
-        <n-gi span="1">
+        <n-gi span="1" v-if="!isAlreadyFollowed">
           <n-button style="width: 100%"
                     @click="followUser"
           >
@@ -153,6 +169,17 @@ async function unfollowUser() {
               <n-icon :component="Add"></n-icon>
             </template>
             关注
+          </n-button>
+        </n-gi>
+
+        <n-gi span="1" v-else>
+          <n-button style="width: 100%"
+                    @click="unfollowUser"
+          >
+            <template #icon>
+              <n-icon :component="Add"></n-icon>
+            </template>
+            取消关注
           </n-button>
         </n-gi>
 
