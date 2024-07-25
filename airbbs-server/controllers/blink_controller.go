@@ -42,3 +42,17 @@ func (bl *BlinkController) CreateBlink(c *gin.Context) {
 
 	c.JSON(http.StatusOK, utils.Success("发布成功！", blink))
 }
+
+// GetBlinkList 查看动态列表 GET /blink/list
+func (bl *BlinkController) GetBlinkList(c *gin.Context) {
+	var blinkList []po.Blink
+
+	err := services.GetBlinkList(&blinkList)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, utils.Error(fmt.Sprintf("%v", err)))
+		return
+	}
+
+	c.JSON(http.StatusOK, utils.Success("查看成功！", blinkList))
+}

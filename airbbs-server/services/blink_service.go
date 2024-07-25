@@ -9,3 +9,7 @@ import (
 func CreateBlink(blink *po.Blink) error {
 	return daos.CreateBlink(blink)
 }
+
+func GetBlinkList(blinkList *[]po.Blink) error {
+	return daos.GetBlinkList(blinkList)
+}

@@ -11,7 +11,7 @@ func SetupBlinkRoutes(r *gin.Engine) {
 	// 动态控制器
 	blinkController := controllers.NewBlinkController()
 
-	// 文章路由器
+	// 动态路由器
 	blinkRoute := r.Group("/blink")
 
 	blinkRoute.Use(middlewares.UserLoginAuthMiddleware())
@@ -19,7 +19,10 @@ func SetupBlinkRoutes(r *gin.Engine) {
 	blinkRoute.Use(middlewares.UserAdminAuthMiddleware())
 
 	{
-		// 文章发布
+		// 动态发布
 		blinkRoute.POST("/", blinkController.CreateBlink)
+
+		// 查看动态列表
+		blinkRoute.GET("/list", blinkController.GetBlinkList)
 	}
 }

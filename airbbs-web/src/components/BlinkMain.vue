@@ -5,8 +5,8 @@ import Message from "@/icons/Message.vue";
 import Star from "@/icons/Star.vue";
 import RedPacket from "@/icons/RedPacket.vue";
 
-import { ref } from "vue"
-import { createBlink } from "@/api/blink";
+import { onMounted, ref } from "vue"
+import { createBlink, getBlinkList } from "@/api/blink";
 import type { BlinkCreateRequest } from "@/models/ro/blink";
 import { useMessage } from "naive-ui"
 
@@ -20,18 +20,37 @@ let randomTheme = () => {
 }
 
 let blinkContent = ref<BlinkCreateRequest>({
-  content:""
+  content: ""
 })
+
+let blinkList = ref();
+
+onMounted(async () => {
+  await fetchBlinkList();
+})
+
+async function fetchBlinkList() {
+  let response = await getBlinkList();
+
+  if (response.status == 200) {
+    blinkList.value = response.data.data;
+  } else {
+    message.error(response.data.message)
+  }
+
+}
 
 // 发布 Blink
 async function postBlink() {
   if (blinkContent.value.content == "") {
-      message.error("请先输入动态信息再发布！")
+    message.error("请先输入动态信息再发布！")
   } else {
     let response = await createBlink(blinkContent.value);
     if (response.status == 200) {
       message.success("发布成功！")
-    }else{
+      blinkContent.value.content = ""
+      await fetchBlinkList();
+    } else {
       message.error(response.data.message)
     }
   }
@@ -56,7 +75,7 @@ async function postBlink() {
     </n-gi>
     <n-gi :span="1">
       <n-grid cols="1" y-gap="0">
-        <n-gi :span="1" v-for="blink in 10">
+        <n-gi :span="1" v-for="blink in blinkList" :key="blink.id">
           <n-card
 
               style="border-radius: 0"
@@ -88,7 +107,7 @@ async function postBlink() {
             <template #header-extra>
               <n-button>关注</n-button>
             </template>
-            {{ blink }}
+            {{ blink.content }}
 
             <template #footer>
               <n-grid :cols="6">
@@ -107,7 +126,7 @@ async function postBlink() {
                     <div style="display: flex">
                       <n-grid :cols="1">
                         <n-gi :span="1">
-                          <n-qr-code :value="blink"/>
+                          <n-qr-code :value="blink.id"/>
                         </n-gi>
                         <n-gi :span="1">
 
