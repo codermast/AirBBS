@@ -9,6 +9,8 @@ import { onMounted, ref } from "vue"
 import { createBlink, getBlinkList } from "@/api/blink";
 import type { BlinkCreateRequest } from "@/models/ro/blink";
 import { useMessage } from "naive-ui"
+import { timeAgo } from "../utils/date";
+import { getAuthorInfo } from "@/api/article";
 
 const message = useMessage()
 
@@ -26,9 +28,11 @@ let blinkContent = ref<BlinkCreateRequest>({
 let blinkList = ref();
 
 onMounted(async () => {
+  // 获取动态信息
   await fetchBlinkList();
 })
 
+// 获取动态列表
 async function fetchBlinkList() {
   let response = await getBlinkList();
 
@@ -38,6 +42,10 @@ async function fetchBlinkList() {
     message.error(response.data.message)
   }
 
+  // 更新作者信息
+  for (let item of blinkList.value) {
+    item.author = await getAuthorById(item.author);
+  }
 }
 
 // 发布 Blink
@@ -53,6 +61,19 @@ async function postBlink() {
     } else {
       message.error(response.data.message)
     }
+  }
+}
+
+// 获取作者信息
+async function getAuthorById(authorId: string) {
+
+  let authorRet = await getAuthorInfo(authorId)
+
+  if (authorRet.status == 200) {
+    let authorInfo = authorRet.data.data
+    console.log(authorInfo.nickname)
+
+    return authorInfo.nickname != "" ? authorInfo.nickname : authorInfo.username;
   }
 }
 </script>
@@ -92,13 +113,13 @@ async function postBlink() {
                   />
 
                 </n-gi>
-                <n-gi :span="1">
+                <n-gi :span="2">
 
                   <n-gradient-text :type="randomTheme()">
-                    友人
+                    {{ blink.author }}
                   </n-gradient-text>
 
-                  <span style="color: #a5a5a5;font-size: 12px">15 天前</span>
+                  <div style="color: #a5a5a5;font-size: 12px">{{ timeAgo(blink.publish_time) }}发布</div>
                 </n-gi>
 
               </n-grid>

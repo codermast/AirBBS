@@ -3,7 +3,7 @@
 import { type Component, h, onMounted, ref } from "vue";
 import { deleteArticle, getArticleAllList, getAuthorInfo, updateArticleListStatus } from "@/api/article";
 import type { DataTableRowKey } from 'naive-ui'
-import { NButton, NIcon, NTag, useMessage } from "naive-ui";
+import { NButton, NIcon, NTag, useDialog, useMessage } from "naive-ui";
 import type { Article } from "@/models/article";
 import { RouterLink, useRouter } from "vue-router"
 import ArticleIcon from "@/icons/Article.vue"
@@ -13,6 +13,7 @@ import Cancel from "@/icons/Cancel.vue";
 import AroundCheck from "@/icons/ArroundCheck.vue";
 import Multiple from "@/icons/Multiple.vue";
 
+const dialog = useDialog()
 const message = useMessage();
 const router = useRouter()
 
@@ -163,16 +164,28 @@ const columns = [
             {
               strong: true,
               type: "error",
-              onClick: async () => {
-                // 执行文章删除操作
-                let response = await deleteArticle(article.id)
+              onClick: () => {
+                dialog.error({
+                  title: '是否删除文章？',
+                  content: '文章一旦删除，无法恢复！',
+                  positiveText: '删除',
+                  negativeText: "取消",
+                  onPositiveClick: async () => {
+                    // 执行文章删除操作
+                    let response = await deleteArticle(article.id)
 
-                if (response.status === 200) {
-                  message.success("删除成功！")
-                  deleteArticleById(article.id)
-                } else {
-                  message.error(response.data.message)
-                }
+                    if (response.status === 200) {
+                      message.success("删除成功！")
+                      deleteArticleById(article.id)
+                    } else {
+                      message.error(response.data.message)
+                    }
+                  },
+                  onNegativeClick() {
+                    message.info('删除取消！')
+                  },
+                })
+
 
               }
             },
@@ -306,7 +319,10 @@ let options = ref([
     </n-gi>
     <n-gi :span="1">
       <div class="content-center-action-list">
-        <n-button class="content-center-action-item">
+        <n-button
+            class="content-center-action-item"
+            @click="router.push({ name : 'ArticleCreate'})"
+        >
           <template #icon>
             <n-icon :component="ArticleIcon"></n-icon>
           </template>

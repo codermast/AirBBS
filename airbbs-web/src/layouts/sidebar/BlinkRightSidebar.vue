@@ -1,15 +1,18 @@
 <script setup lang="ts">
 
+import GolangNotes from "@/components/sidebar/GolangNotes.vue";
+import FriendLink from "@/components/sidebar/FriendLink.vue";
 </script>
 
 <template>
-  <n-card
-      :bordered="false"
-  >
-    <template #header>
-      右边部分，做用户信息
-    </template>
-  </n-card>
+  <n-grid cols="1" y-gap="10">
+    <n-gi :span="1">
+      <GolangNotes></GolangNotes>
+    </n-gi>
+    <n-gi :span="1">
+      <FriendLink></FriendLink>
+    </n-gi>
+  </n-grid>
 </template>
 
 <style scoped>

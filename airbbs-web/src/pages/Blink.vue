@@ -13,7 +13,7 @@ import BlinkMain from "@/components/BlinkMain.vue";
     <n-gi :span="4">
       <BlinkMain></BlinkMain>
     </n-gi>
-    <n-gi :span="3">
+    <n-gi :span="2">
       <BlinkRightSidebar></BlinkRightSidebar>
     </n-gi>
   </n-grid>
